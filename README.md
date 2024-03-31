@@ -2,13 +2,13 @@
 
 # Replacement for the very unfriendly management discontinued vm2 (https://github.com/patriksimek/vm2/issues/533)
 
-I've tried to send them the replacement solution for the vulnerable of constructor.constructor issue.
+I've tried to send them the replacement solution (at lease a very peaceful discussion) for the vulnerable of constructor.constructor issue.
 
 But their really bad manner just pissing me off.
 
 Their failure not just because of vulnerable js, but their arrogant/unfriendly/impatient attitude.
 
-I post the hide-and-seek solution here for your referece here. Wish you a good day.
+I post the hide-and-seek solution here for your referece here.  Wish you a good day. Challenge still accepted.
 
 The plan is simple, hide before call and recover when done.  Might be dirty but it is useful when sandbox still needed for projects.
 
