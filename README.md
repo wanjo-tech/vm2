@@ -10,6 +10,8 @@ Their failure not just because of vulnerable js, but their arrogant/unfriendly/i
 
 I post the hide-and-seek solution here for your referece here. Wish you a good day.
 
+The plan is simple, hide before call and recover when finally.  It dirty but it is useful when sandbox still needed for some projects.
+
 (round continued 2024-03-31):
 ```
 var jevalx = async(js,ctx,timeout=60000,More=['process','Promise','Symbol','Error','eval','require'],vm=require('node:vm'))=>{
