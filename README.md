@@ -12,7 +12,7 @@ I post the hide-and-seek solution here for your referece here.  Wish you a good 
 
 The plan is simple, hide before call and recover when done.  Might be dirty but it is useful when sandbox still needed for projects.
 
-(round continued 2024-03-31):
+(round continued 2024-03-31, and source code will be cleaned once all set):
 
 ```
 var jevalx_ = async(js,ctx,timeout=60000,More=['process','Error','eval','require'],vm=require('node:vm'))=>{
