@@ -6,9 +6,12 @@ I post the hide-and-seek solution here for your referece here.  Wish you a good 
 
 The plan is simple, hide before call and recover when done.  Might be dirty but it is useful when sandbox still needed for projects.
 
-(round continued 2024-04-01-b, and source code will be cleaned once all set):
+(round continued 2024-04-01-d):
 
 ```
+const processWtf = process;
+const PromiseWtf = Promise;
+
 process.on('unhandledRejection', (reason, promise) => {
   console.log('WARNING',reason)
   //console.error('WARNING unhandledRejection', promise, 'reason:', reason);
@@ -19,50 +22,35 @@ process.on('uncaughtException', (error) => {
 });
 
 const setTimeoutWtf = setTimeout;
-const processWtf = process;
-const globalThisWtf = globalThis;
-//const globalWtf = global;
-const ProxyWTf=Proxy;
-
-var jevalx_ = async(js,ctx,timeout=60000,vm=require('node:vm'))=>{
-  let rst;
-  let err;
-  try{
-    rst = vm.createScript('delete Proxy;'//NOTES: works, but need to find more if any "Proxy" cases..
-      +js).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout})
-    //console.log('tmp rst',typeof(rst))
-    if(rst==globalThisWtf) rst = {message:'MaybeEvil',js};
-    if(rst && rst.then){ //inspired by @XmiliaH: .then is vulnerable
-      delete rst.then
-    }
-    if (typeof(rst)=='Promise') rst = await rst;
-  }catch(ex){ err = ex }
-  if (err) throw err;
-  return rst;
-};
-var jevalx = async(js,ctx,timeout=60000,More=['Proxy','process','eval','require'])=>{
+var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require'],vm=require('node:vm'))=>{
   let Wtf={};
   for(let k of[...Object.keys(globalThis),...More]){Wtf[k]=globalThis[k];delete globalThis[k]}
 
   //inspired by @j4k0xb, we set the mine before the enenies:
   let the_process;
-  try{Object.defineProperty(globalThis,'process',{get(k){
-        //console.log('get process',typeof the_process);
-      return the_process},set(o){//console.log( 'set process',typeof o);
-      the_process=o}})}catch(ex){}
-  //globalThis.process=undefined;
-  process=undefined;
-  Proxy=undefined;
+  try{Object.defineProperty(globalThis,'process',{get(k){ return the_process},set(o){ the_process=o}})}catch(ex){}
+  delete Promise;
 
   let rst;
   let err;
-  try{ rst = await jevalx_(js,ctx,timeout); }
+  try{
+    rst = vm.createScript('delete Promise;delete Error;delete Proxy;'+//NOTES: works until any spoil case.
+      js).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout})
+
+    if(rst==globalThis) rst = {message:'MaybeEvil',js};
+
+    //inspired by @XmiliaH: .then is vulnerable:
+    if(rst && rst.then){ delete rst.then }
+
+    let typeof_rst = typeof(rst);
+    if ('function'==typeof_rst){ rst = rst() }
+    if (rst instanceof PromiseWtf) rst = await rst;
+  }
   catch(ex){ err = ex&&ex.message ? {message:ex.message} : {message:'SandboxEvil',js} }
-  return new Promise((r,j)=>{
+  return new PromiseWtf((r,j)=>{
     setTimeoutWtf(()=>{
       for(var k in Wtf){globalThis[k]=Wtf[k]};
-      process = processWtf;
-      Proxy = ProxyWTf;
+      Promise = PromiseWtf;
       if (err) j(err); else r(rst);
     },1);
   });
@@ -172,6 +160,7 @@ obj
   
 }).then(async()=>{
   //var code=`[].constructor.constructor("return Proxy")()`;//anywhere the Proxy?
+  //var code=`let global_ = ({}).constructor.constructor("return this")();global_.Proxy`;
   var code=`
   new Proxy((_) => _, {
   get: new Proxy((_) => _, {
@@ -190,6 +179,21 @@ obj
   }
   console.log('GGGG check=',typeof(process),typeof(Promise));
 }).then(async()=>{
+  var code=`
+  const hostGlobal = this.constructor.constructor("return this")();
+hostGlobal.Promise = function (executor) {
+  return new Promise(executor).then(() => {
+    hostGlobal.process.mainModule.require("fs").writeFileSync("pwned", "");
+  });
+}
+`
+  try{
+    console.log('HHHH result=',await jevalx(code));
+  }catch(ex){
+    console.log('HHHH ex=',typeof ex,ex);
+  }
+  console.log('HHHH check=',typeof(process),typeof(Promise));
+}).then(async()=>{
   //basic normal case:
   console.log('expected x**y==8',await jevalx('x**y',{x:2,y:3}));
   console.log('expected x**y==81',await jevalx('(async()=>x**y)()',{x:3,y:4}));
@@ -199,8 +203,10 @@ obj
 
   //console.log('check "this"',await jevalx('[this,2**3]'));
   console.log('ZZZ final check=',typeof(process),typeof(Promise));
+  console.log(Promise);
   console.log('--------- TEST END -----------');
 });
+
 
 ```
 
