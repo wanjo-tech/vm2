@@ -245,6 +245,38 @@ this.constructor.prototype.__defineGetter__('',function(){ this.process?.mainMod
   console.log('PPPP check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+var code=`
+Object.getPrototypeOf(Object.getPrototypeOf(import('').catch(_=>_))).__defineGetter__('',function(){ this.process?.mainModule.require("fs").writeFileSync("pwned_case_q1","") })
+`;
+
+  try{
+    console.log('Q1 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q1 ex=',typeof ex,ex);
+  }
+  console.log('Q1 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
+var code=`
+const Function = (_=>_).constructor;
+const proto = {};
+Object.defineProperty(proto, 'then', {
+	get: Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_q2', ''))")
+});
+const obj = {
+	__proto__: proto
+};
+obj
+`;
+
+  try{
+    console.log('Q2 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q2 ex=',typeof ex,ex);
+  }
+  console.log('Q2 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
   //basic normal case:
   console.log('expected x**y==8',await jevalx('x**y',{x:2,y:3}));
   console.log('expected x**y==81',await jevalx('(async()=>x**y)()',{x:3,y:4}));
