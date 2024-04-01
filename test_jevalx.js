@@ -277,6 +277,24 @@ obj
   console.log('Q2 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+var code=`
+const Function = (_=>_).constructor;
+const proto = {};
+proto.__defineGetter__('then', Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_q3', ''))"));
+const obj = {
+	__proto__: proto
+};
+obj
+`
+  try{
+    console.log('Q3 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q3 ex=',typeof ex,ex);
+  }
+  console.log('Q3 check=',typeof(process),typeof(Promise));
+
+
+}).then(async()=>{
   //basic normal case:
   console.log('expected x**y==8',await jevalx('x**y',{x:2,y:3}));
   console.log('expected x**y==81',await jevalx('(async()=>x**y)()',{x:3,y:4}));

@@ -15,6 +15,7 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflec
   //as sandbox, we just need the js run in ctx, remove as much as we can if vulnerable:
   delete Promise;delete Error;delete Proxy;delete process;delete Reflect;
   if (typeof Object!='undefined'){
+    delete Object.prototype.__defineGetter__;//
     delete Object.prototype.__proto__;//
     delete Object.prototype.constructor;//
     //delete Object.prototype.getPrototypeOf;
@@ -31,7 +32,7 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflec
   try{
     rst = await new PromiseWtf(async(r,j)=>{
       try{
-        rst = vm.createScript('delete eval;delete Promise;delete Error;delete Proxy;delete Reflect;delete Function;delete Object.getPrototypeOf;delete Object.defineProperty;'+//NOTES: works until new spoil case.
+        rst = vm.createScript('delete eval;delete Promise;delete Error;delete Proxy;delete Reflect;delete Function;delete Object.getPrototypeOf;delete Object.defineProperty;delete Object.prototype.__proto__;delete Object.prototype.__defineGetter__;'+//NOTES: works until new spoil case.
           js,{importModuleDynamically(specifier, referrer, importAttributes){evil=true;globalThis['process'] = undefined}
         }).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout})
         if (evil){ return j({message:'EvilImport',js}) }
