@@ -6,7 +6,7 @@ I post the hide-and-seek solution here for your referece here.  Wish you a good 
 
 The plan is simple, hide before call and recover when done.  Might be dirty but it is useful when sandbox still needed for projects.
 
-(round continued 2024-04-01a, and source code will be cleaned once all set):
+(round continued 2024-04-01-b, and source code will be cleaned once all set):
 
 ```
 process.on('unhandledRejection', (reason, promise) => {
@@ -20,13 +20,19 @@ process.on('uncaughtException', (error) => {
 
 const setTimeoutWtf = setTimeout;
 const processWtf = process;
+const globalThisWtf = globalThis;
+//const globalWtf = global;
+const ProxyWTf=Proxy;
+
 var jevalx_ = async(js,ctx,timeout=60000,vm=require('node:vm'))=>{
   let rst;
   let err;
   try{
-    rst = vm.createScript(js).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout})
+    rst = vm.createScript('delete Proxy;'//NOTES: works, but need to find more if any "Proxy" cases..
+      +js).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout})
+    //console.log('tmp rst',typeof(rst))
+    if(rst==globalThisWtf) rst = {message:'MaybeEvil',js};
     if(rst && rst.then){ //inspired by @XmiliaH: .then is vulnerable
-      //console.log('wowh rst.then',rst.then)
       delete rst.then
     }
     if (typeof(rst)=='Promise') rst = await rst;
@@ -34,12 +40,19 @@ var jevalx_ = async(js,ctx,timeout=60000,vm=require('node:vm'))=>{
   if (err) throw err;
   return rst;
 };
-var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require'])=>{
+var jevalx = async(js,ctx,timeout=60000,More=['Proxy','process','eval','require'])=>{
   let Wtf={};
   for(let k of[...Object.keys(globalThis),...More]){Wtf[k]=globalThis[k];delete globalThis[k]}
 
   //inspired by @j4k0xb, we set the mine before the enenies:
-  try{Object.defineProperty(globalThis,'process',{get(k){return this._process},set(o){this._process=o}})}catch(ex){}
+  let the_process;
+  try{Object.defineProperty(globalThis,'process',{get(k){
+        //console.log('get process',typeof the_process);
+      return the_process},set(o){//console.log( 'set process',typeof o);
+      the_process=o}})}catch(ex){}
+  //globalThis.process=undefined;
+  process=undefined;
+  Proxy=undefined;
 
   let rst;
   let err;
@@ -49,6 +62,7 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require'])=>{
     setTimeoutWtf(()=>{
       for(var k in Wtf){globalThis[k]=Wtf[k]};
       process = processWtf;
+      Proxy = ProxyWTf;
       if (err) j(err); else r(rst);
     },1);
   });
@@ -131,6 +145,7 @@ const funcCtor = import('').catch(_=>_).constructor.constructor;
 const func = funcCtor.bind(null, 'o', 'r', code);
 const obj = {};
 obj.__defineGetter__("then", func);
+//void(async()=>{await obj})();//wont work too
 obj
 `
   try{
@@ -140,6 +155,40 @@ obj
   }
   console.log('EEEE check=',typeof(process),typeof(Promise));
 
+}).then(async()=>{
+  var code=`
+  ({}).constructor.defineProperty(
+    this.constructor.constructor("return this")(),
+    "_process_or_any",{ set(process) { process.mainModule.require("fs").writeFileSync("pwned_case_f", ""); },
+  }
+)
+  `;
+  try{
+    console.log('FFFF result=',await jevalx(code));
+  }catch(ex){
+    console.log('FFFF ex=',typeof ex,ex);
+  }
+  console.log('FFFF check=',typeof(process),typeof(Promise));
+  
+}).then(async()=>{
+  //var code=`[].constructor.constructor("return Proxy")()`;//anywhere the Proxy?
+  var code=`
+  new Proxy((_) => _, {
+  get: new Proxy((_) => _, {
+    apply: function (target, thisArg, args) {
+      args.constructor
+        .constructor("return process")()
+        ?.mainModule.require("fs")
+        .writeFileSync("pwned_case_g", "");
+    },
+  }),
+});`
+  try{
+    console.log('GGGG result=',await jevalx(code));
+  }catch(ex){
+    console.log('GGGG ex=',typeof ex,ex);
+  }
+  console.log('GGGG check=',typeof(process),typeof(Promise));
 }).then(async()=>{
   //basic normal case:
   console.log('expected x**y==8',await jevalx('x**y',{x:2,y:3}));
@@ -154,3 +203,6 @@ obj
 });
 
 ```
+
+
+
