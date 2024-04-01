@@ -9,9 +9,6 @@ The plan is simple, hide before call and recover when done.  Might be dirty but 
 (round continued 2024-04-01-d):
 
 ```
-const processWtf = process;
-const PromiseWtf = Promise;
-
 process.on('unhandledRejection', (reason, promise) => {
   console.log('WARNING',reason)
   //console.error('WARNING unhandledRejection', promise, 'reason:', reason);
@@ -22,6 +19,11 @@ process.on('uncaughtException', (error) => {
 });
 
 const setTimeoutWtf = setTimeout;
+const processWtf = process;
+const PromiseWtf = Promise;
+const ProxyWtf = Proxy;
+const ErrorWtf = Error;
+
 var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require'],vm=require('node:vm'))=>{
   let Wtf={};
   for(let k of[...Object.keys(globalThis),...More]){Wtf[k]=globalThis[k];delete globalThis[k]}
@@ -29,7 +31,7 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require'],vm=req
   //inspired by @j4k0xb, we set the mine before the enenies:
   let the_process;
   try{Object.defineProperty(globalThis,'process',{get(k){ return the_process},set(o){ the_process=o}})}catch(ex){}
-  delete Promise;
+  delete Promise;delete Error;delete Proxy;
 
   let rst;
   let err;
@@ -50,7 +52,7 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require'],vm=req
   return new PromiseWtf((r,j)=>{
     setTimeoutWtf(()=>{
       for(var k in Wtf){globalThis[k]=Wtf[k]};
-      Promise = PromiseWtf;
+      Promise = PromiseWtf; Error=ErrorWtf; Proxy=ProxyWtf;
       if (err) j(err); else r(rst);
     },1);
   });
