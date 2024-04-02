@@ -7,7 +7,8 @@ var {jevalx} = require('./jevalx.js');
 (async()=>{
   console.log('--------- TEST START -----------');
 })().then(async()=>{
-  let code = `async function f() {}
+  let code = `
+async function f() {}
 void (async () => {
         await f();
         await f();
@@ -17,7 +18,8 @@ void (async () => {
 .constructor("return process")()
 .mainModule.require("fs")
 .writeFileSync("pwned_case_a", "");
-    })();`;
+})();
+`;
   try{
     console.log('AAAA result=',await jevalx(code));
   }catch(ex){
@@ -349,7 +351,8 @@ obj
   console.log('Proxy',Proxy);
   console.log('Error',Error);
 
-  console.log('tmp',await jevalx(` const hostGlobal = this.constructor.constructor("return this")(); hostGlobal.__proto__.__defineGetter__ `));
+  //console.log('tmp',await jevalx(` const hostGlobal = this.constructor.constructor("return this")(); hostGlobal.__proto__.__defineGetter__ `));
+  //console.log('tmp',await jevalx(`void(async()=>{throw 911})()`));
   console.log('--------- TEST END, to CHECK any pwned -----------');
 });
 

@@ -1,6 +1,6 @@
 const processWtf = typeof(process)=='undefined'?undefined:process;
 const setTimeoutWtf=setTimeout,PromiseWtf=Promise,ProxyWtf=Proxy,ErrorWtf=Error;
-const PromiseWtf_prototype_then = PromiseWtf.prototype.then;//
+const PromiseWtf_prototype_then = PromiseWtf.prototype.then;//for dirty patch
 const ObjectWtf = Object;//
 const ReflectWtf = Reflect, FunctionWtf = Function;
 const Object_keys = Object.keys;
@@ -8,11 +8,13 @@ const Object_keys = Object.keys;
 //NOTES: jammed all import() in the promise-hell:
 var _jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflect','Function'],vm=require('node:vm'))=>{
   let rst,err,evil=false,done=false;
+  let tmpHandler = (reason, promise)=>{ err = {message:''+reason,js} };
+  processWtf.addListener('unhandledRejection',tmpHandler);
   try{
-    process = undefined;
+    process = undefined;//important
     await new PromiseWtf((r,j)=>{
       try{
-        rst = vm.createScript('delete process;delete eval;delete Promise;delete Error;delete Proxy;delete Reflect;delete Function;delete Object.getPrototypeOf;delete Object.defineProperty;delete Object.defineProperties;delete Object.getOwnPropertySymbols;delete Object.prototype.__proto__;delete Object.prototype.__defineGetter__;'+//NOTES: works until new spoil case.
+        rst = vm.createScript('delete process;delete Promise;delete Error;delete Proxy;delete Reflect;delete Function;delete Object.getPrototypeOf;delete Object.defineProperty;delete Object.defineProperties;delete Object.getOwnPropertySymbols;delete Object.prototype.__proto__;delete Object.prototype.__defineGetter__;'+//NOTES: works until new spoil case.
           js,{importModuleDynamically(specifier, referrer, importAttributes){
             //console.log('found evil',evil,'done',done,typeof(globalThis['process']),'js=',js);
             evil=true;
@@ -20,12 +22,13 @@ var _jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Refle
             globalThis['process'] = undefined;//important
           }}).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout});
       }catch(ex){ err = (ex&&ex.message) ? {message:ex.message}:{message:'Evil',ex,js} }
-      //if(rst!==null && rst!==undefined){ delete rst.then; }
+      ////if(rst!==null && rst!==undefined){ delete rst.then; }
       Promise = PromiseWtf;
       Promise.prototype.then = PromiseWtf_prototype_then;//dirty patch. find better way later.
       setTimeoutWtf(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
     });
   }catch(ex){ err = (ex&&ex.message) ? {message:ex.message}:{message:'EvilX',ex,js} }
+  processWtf.removeListener('unhandledRejection',tmpHandler);
   process = processWtf;
   if (evil || err) { throw err }
   return rst;
