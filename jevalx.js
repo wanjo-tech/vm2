@@ -19,13 +19,13 @@ var _jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Refle
             err = {message:'EvilImport',js};
             globalThis['process'] = undefined;//important
           }}).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout});
-      }catch(ex){ err = {message:(ex&&ex.message)?ex.message:'Evil',ex,js} }
+      }catch(ex){ err = (ex&&ex.message) ? {message:ex.message}:{message:'Evil',ex,js} }
       //if(rst!==null && rst!==undefined){ delete rst.then; }
       Promise = PromiseWtf;
       Promise.prototype.then = PromiseWtf_prototype_then;//dirty patch. find better way later.
       setTimeoutWtf(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
     });
-  }catch(ex){ err = {message:(ex&&ex.message)?ex.message:'Evil',js};if (!(ex&&ex.message)) err.ex=ex }
+  }catch(ex){ err = (ex&&ex.message) ? {message:ex.message}:{message:'EvilX',ex,js} }
   process = processWtf;
   if (evil || err) { throw err }
   return rst;
@@ -60,6 +60,11 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflec
   let rst,err,evil=false,done=false;
   try{
     rst = await _jevalx(js,ctx,timeout);
+
+    if(rst==globalThis) rst = {message:'EvilGlobal',js};
+    if (rst instanceof PromiseWtf) rst = await rst;
+    if ('function'==typeof rst){ rst = {message:'EvilFunction'} }
+
   }catch(ex){ err = ex&&ex.message ? {message:ex.message,js} : {message:'EvilSandbox',js} }
   return new PromiseWtf((r,j)=>setTimeoutWtf(async()=>{
     Object = ObjectWtf;
