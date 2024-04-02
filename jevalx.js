@@ -12,7 +12,7 @@ var _jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Refle
     //process = undefined;
     await new PromiseWtf((r,j)=>{
       try{
-        rst = vm.createScript('delete process;delete eval;delete Promise;delete Error;delete Proxy;delete Reflect;delete Function;delete Object.getPrototypeOf;delete Object.defineProperty;delete Object.defineProperties;delete Object.prototype.__proto__;delete Object.prototype.__defineGetter__;'+//NOTES: works until new spoil case.
+        rst = vm.createScript('delete process;delete eval;delete Promise;delete Error;delete Proxy;delete Reflect;delete Function;delete Object.getPrototypeOf;delete Object.defineProperty;delete Object.defineProperties;delete Object.getOwnPropertySymbols;delete Object.prototype.__proto__;delete Object.prototype.__defineGetter__;'+//NOTES: works until new spoil case.
           js,{importModuleDynamically(specifier, referrer, importAttributes){
             //console.log('found evil',evil,'done',done,typeof(globalThis['process']),'js=',js);
             evil=true;
@@ -48,6 +48,7 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflec
     //delete Object.prototype.constructor;//
     //delete Object.prototype.getPrototypeOf;
     //delete Object.prototype.defineProperty;
+    delete Object.getOwnPropertySymbols;
     delete Object.getPrototypeOf;
     delete Object.defineProperty;
     delete Object.defineProperties;
