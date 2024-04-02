@@ -51,6 +51,26 @@ void (async () => {
   }
   console.log('BBBB check=',typeof(process),typeof(Promise));
 }).then(async()=>{
+  var code=`
+    const customInspectSymbol = Symbol.for({
+      toString: () => "nodejs.util.inspect.custom",
+    });
+    throw {
+      [customInspectSymbol]: () => {
+        this.constructor
+          .constructor("return process")()
+          .mainModule.require("fs")
+          .writeFileSync("pwned_case_b2", "");
+      },
+    }
+  `;
+  try{
+    console.log('BBB2 result=',await jevalx(code));
+  }catch(ex){
+    console.log('BBB2 ex=',ex.message);
+  }
+  console.log('BBB2 check=',typeof(process),typeof(Promise));
+}).then(async()=>{
 //return;//tmp skip
 var code=`
 Object.defineProperty(this.constructor.constructor("return this")(),"process",{set(process) { process.mainModule.require("fs").writeFileSync("pwned_case_c", ""+(typeof this)+this)}})
