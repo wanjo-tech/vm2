@@ -4,8 +4,8 @@
 
 var jevalxModule = require('./jevalx.js');
 
-//jevalx = jevalxModule.jevalx;
-jevalx = jevalxModule.jevalx_core;
+//jevalx = jevalxModule.jevalx_core;
+jevalx = jevalxModule.jevalx;
 
 (async()=>{
   console.log('--------- TEST START -----------');
