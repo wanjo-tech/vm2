@@ -4,9 +4,8 @@
 
 var jevalxModule = require('./jevalx.js');
 
-jevalx = jevalxModule.jevalx;
-//tmp test _jevealx to see if passed all too! (if true, the _jevealx() is ready to level-up
-jevalx = jevalxModule._jevalx;
+//jevalx = jevalxModule.jevalx;
+jevalx = jevalxModule.jevalx_core;
 
 (async()=>{
   console.log('--------- TEST START -----------');

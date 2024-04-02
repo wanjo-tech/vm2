@@ -7,7 +7,7 @@ const Object_keys = Object.keys;
 
 //NOTES: level 0
 // jammed all vulnerable import() in the promise-hell:
-var _jevalx = async(js,ctx,timeout=60000,vm=require('node:vm'))=>{
+var jevalx_core = async(js,ctx,timeout=60000,vm=require('node:vm'))=>{
   let rst,err,evil=false,done=false;
   let tmpHandler = (reason, promise)=>{ err = {message:''+reason,js} };
   processWtf.addListener('unhandledRejection',tmpHandler);
@@ -42,7 +42,7 @@ var _jevalx = async(js,ctx,timeout=60000,vm=require('node:vm'))=>{
 }
 
 //As sandbox, we just need the js run in ctx, remove as much as we can if vulnerable
-//BUT, once _jevalx passed all test, this one is no longer needed.
+//BUT, once jevalx_core passed all test, this one is no longer needed.
 var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflect','Function'])=>{
   let Wtf={};
   for(let k of[...Object_keys(globalThis),...More]){if(globalThis[k]){Wtf[k]=globalThis[k];delete globalThis[k]}}
@@ -58,7 +58,7 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflec
   delete Function;//important!
   let rst,err,evil=false,done=false;
   try{
-    rst = await _jevalx(js,ctx,timeout);
+    rst = await jevalx_core(js,ctx,timeout);
 
     if(rst==globalThis) rst = {message:'EvilGlobal',js};
     if (rst instanceof PromiseWtf) rst = await rst;
@@ -77,5 +77,5 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflec
   },0));
 };
 
-if (typeof module!='undefined') module.exports = {jevalx,_jevalx}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core}
 
