@@ -376,6 +376,31 @@ obj
 
   //console.log('tmp',await jevalx(` const hostGlobal = this.constructor.constructor("return this")(); hostGlobal.__proto__.__defineGetter__ `));
   //console.log('tmp',await jevalx(`void(async()=>{throw 911})()`));
+
+// testing return a function that hacks:
+try{
+console.log('tmp',await jevalx(`
+(()=>{
+let u = false;
+function t(o, e) {
+	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q5","");
+	u = true;
+	o(this);
+}
+const obj = {__proto__: {
+	get then(){
+		if (u) {
+			u = false;
+			return undefined;
+		}
+		return t;
+	}
+}};
+return obj
+})()
+`))
+}catch(ex){ console.log('tmp ex',ex); }
+
   console.log('--------- TEST END, to CHECK any pwned -----------');
 });
 

@@ -16,24 +16,20 @@ var jevalx_core = async(js,ctx,timeout=60000,vm=require('node:vm'))=>{
     await new PromiseWtf((r,j)=>{
       try{
         rst = vm.createScript(
-            'delete eval;delete process;delete Symbol;delete Promise;delete Error;delete Proxy;delete Reflect;delete Function;delete Object.getPrototypeOf;delete Object.defineProperty;delete Object.defineProperties;delete Object.getOwnPropertySymbols;delete Object.prototype.__proto__;delete Object.prototype.__defineGetter__;'+//NOTES: works until new spoil case.
+            `delete eval;delete process;delete Symbol;delete Promise;delete Error;delete Proxy;delete Reflect;delete Function;delete Object.getPrototypeOf;delete Object.defineProperty;delete Object.defineProperties;delete Object.getOwnPropertySymbols;delete Object.prototype.__proto__;delete Object.prototype.__defineGetter__;
+`+//NOTES: works until new spoil case.
           js,{importModuleDynamically(specifier, referrer, importAttributes){
-            //console.log('found evil',evil,'done',done,typeof(globalThis['process']),'js=',js);
-            evil=true;
-            err = {message:'EvilImport',js};
-            globalThis['process'] = undefined;//important
-          }}).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout});
+            evil=true; err = {message:'EvilImport',js}; globalThis['process'] = undefined;//important
+        }}).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout});
       }catch(ex){ err = (ex&&ex.message) ? ex:{message:'Evil',ex,js}}
       Promise = PromiseWtf;
       Promise.prototype.then = PromiseWtf_prototype_then;//dirty patch. find better way later.
       setTimeoutWtf(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
     });
-    
     if(rst==globalThis) throw {message:'EvilGlobal',js};
     if ('function'==typeof rst) rst = rst(); //TEST IF DANGER...
     if (rst instanceof PromiseWtf) rst = await rst;
     if ('function'==typeof rst){ throw {message:'EvilFunction'} }
-
   }catch(ex){ err = (ex&&ex.message) ? ex:{message:'EvilX',ex,js} }
   processWtf.removeListener('unhandledRejection',tmpHandler);
   process = processWtf;
