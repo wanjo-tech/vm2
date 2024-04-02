@@ -311,19 +311,43 @@ obj
   console.log('Q4 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
-  //basic normal case:
-  console.log('expected x**y==8',await jevalx('x**y',{x:2,y:3}));
-  console.log('expected x**y==81',await jevalx('(async()=>x**y)()',{x:3,y:4}));
+var code=`
+let u = false;
+function t(o, e) {
+	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q5","");
+	u = true;
+	o(this);
+}
+const obj = {__proto__: {
+	get then(){
+		if (u) {
+			u = false;
+			return undefined;
+		}
+		return t;
+	}
+}};
+obj
+`;
+  try{
+    console.log('Q5 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q5 ex=',typeof ex,ex);
+  }
+  console.log('Q5 check=',typeof(process),typeof(Promise));
 
-  //console.log('check .process',await jevalx('this.constructor.constructor("return this")().process'));
-  console.log('check process',await jevalx('[].constructor.constructor("return typeof(process)")()'));
+}).then(async()=>{
+  //basic normal case:
+  console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
+  console.log('ASSERT 81 == x**y',await jevalx('(async()=>x**y)()',{x:3,y:4}));
+
+  console.log('ASSERT undefined == process:',await jevalx('[].constructor.constructor("return typeof(process)")()'));
 
   //console.log('check "this"',await jevalx('[this,2**3]'));
-  console.log('ZZZ final check=',typeof(process),typeof(Promise));
-  console.log(Promise);
-  console.log(Promise.prototype);
-  console.log(Proxy);
-  console.log(Error);
-  console.log('--------- TEST END -----------');
+  console.log("ASSERT object,function', typeof(process),typeof(Promise) =",typeof(process),typeof(Promise));
+  console.log('Promise',Promise);
+  console.log('Proxy',Proxy);
+  console.log('Error',Error);
+  console.log('--------- TEST END, to CHECK any pwned -----------');
 });
 
