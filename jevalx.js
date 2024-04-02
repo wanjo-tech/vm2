@@ -12,8 +12,8 @@ var jevalx_core = async(js,ctx,timeout=60000,vm=require('node:vm'))=>{
   let tmpHandler = (reason, promise)=>{ err = {message:''+reason,js} };
   processWtf.addListener('unhandledRejection',tmpHandler);
   try{
-    //process = undefined;//important
-    delete process;//working too?
+    //delete process;//NO!!!
+    process = undefined;//important!!! NOT 'delete process' !!!
     await new PromiseWtf((r,j)=>{
       try{
         rst = vm.createScript(
