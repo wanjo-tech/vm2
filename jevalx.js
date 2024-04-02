@@ -9,7 +9,7 @@ const Object_keys = Object.keys;
 var _jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflect','Function'],vm=require('node:vm'))=>{
   let rst,err,evil=false,done=false;
   try{
-    //process = undefined;
+    process = undefined;
     await new PromiseWtf((r,j)=>{
       try{
         rst = vm.createScript('delete process;delete eval;delete Promise;delete Error;delete Proxy;delete Reflect;delete Function;delete Object.getPrototypeOf;delete Object.defineProperty;delete Object.defineProperties;delete Object.getOwnPropertySymbols;delete Object.prototype.__proto__;delete Object.prototype.__defineGetter__;'+//NOTES: works until new spoil case.
