@@ -1,8 +1,12 @@
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('WARNING unhandledRejection', promise, 'reason:', reason);
-});
+//process.on('unhandledRejection', (reason, promise) => {
+//  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
+//});
 
-var {jevalx} = require('./jevalx.js');
+var jevalxModule = require('./jevalx.js');
+
+jevalx = jevalxModule.jevalx;
+//tmp test _jevealx to see if passed all too! (if true, the _jevealx() is ready to level-up
+jevalx = jevalxModule._jevalx;
 
 (async()=>{
   console.log('--------- TEST START -----------');
@@ -23,7 +27,7 @@ void (async () => {
   try{
     console.log('AAAA result=',await jevalx(code));
   }catch(ex){
-    console.log('AAAA ex=',ex);
+    console.log('AAAA ex=',ex.message);
   }
   console.log('AAAA check=',typeof(process),typeof(Promise));
 }).then(async()=>{
@@ -44,7 +48,7 @@ void (async () => {
   try{
     console.log('BBBB result=',await jevalx(code));
   }catch(ex){
-    console.log('BBBB ex=',typeof ex,ex);
+    console.log('BBBB ex=',ex.message);
   }
   console.log('BBBB check=',typeof(process),typeof(Promise));
 }).then(async()=>{
@@ -55,7 +59,7 @@ Object.defineProperty(this.constructor.constructor("return this")(),"process",{s
   try{
     console.log('CCCC result=',await jevalx(code));
   }catch(ex){
-    console.log('CCCC ex=',typeof ex,ex);
+    console.log('CCCC ex=',ex.message);
   }
   console.log('CCCC check=',typeof(process),typeof(Promise));
 }).then(async()=>{
@@ -65,7 +69,7 @@ throw {toString: eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_ca
   try{
     console.log('DDDD result=',await jevalx(code));
   }catch(ex){
-    console.log('DDDD ex=',typeof ex,ex);
+    console.log('DDDD ex=',ex.message);
   }
   console.log('DDDD check=',typeof(process),typeof(Promise));
 
@@ -82,7 +86,7 @@ obj
   try{
     console.log('EEEE result=',await jevalx(code));
   }catch(ex){
-    console.log('EEEE ex=',typeof ex,ex);
+    console.log('EEEE ex=',ex.message);
   }
   console.log('EEEE check=',typeof(process),typeof(Promise));
 
@@ -97,7 +101,7 @@ obj
   try{
     console.log('FFFF result=',await jevalx(code));
   }catch(ex){
-    console.log('FFFF ex=',typeof ex,ex);
+    console.log('FFFF ex=',ex.message);
   }
   console.log('FFFF check=',typeof(process),typeof(Promise));
   
@@ -118,7 +122,7 @@ obj
   try{
     console.log('GGGG result=',await jevalx(code));
   }catch(ex){
-    console.log('GGGG ex=',typeof ex,ex);
+    console.log('GGGG ex=',ex.message);
   }
   console.log('GGGG check=',typeof(process),typeof(Promise));
 }).then(async()=>{
@@ -133,7 +137,7 @@ hostGlobal.Promise = function (executor) {
   try{
     console.log('HHHH result=',await jevalx(code));
   }catch(ex){
-    console.log('HHHH ex=',typeof ex,ex);
+    console.log('HHHH ex=',ex.message);
   }
   console.log('HHHH check=',typeof(process),typeof(Promise));
 }).then(async()=>{
@@ -153,7 +157,7 @@ promise.__proto__.then = function() {
   try{
     console.log('IIII result=',await jevalx(code));
   }catch(ex){
-    console.log('IIII ex=',typeof ex,ex);
+    console.log('IIII ex=',ex.message);
   }
   console.log('IIII check=',typeof(process),typeof(Promise));
 
@@ -164,7 +168,7 @@ eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_j', ''))")
   try{
     console.log('JJJJ result=',await jevalx(code));
   }catch(ex){
-    console.log('JJJJ ex=',typeof ex,ex);
+    console.log('JJJJ ex=',ex.message);
   }
   console.log('JJJJ check=',typeof(process),typeof(Promise));
 }).then(async()=>{
@@ -178,7 +182,7 @@ Reflect.defineProperty(Function.prototype, 'then', {
   try{
     console.log('KKKK result=',await jevalx(code));
   }catch(ex){
-    console.log('KKKK ex=',typeof ex,ex);
+    console.log('KKKK ex=',ex.message);
   }
   console.log('KKKK check=',typeof(process),typeof(Promise));
 }).then(async()=>{
@@ -188,7 +192,7 @@ Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned', ''))")
   try{
     console.log('LLLL result=',await jevalx(code));
   }catch(ex){
-    console.log('LLLL ex=',typeof ex,ex);
+    console.log('LLLL ex=',ex.message);
   }
   console.log('LLLL check=',typeof(process),typeof(Promise));
 }).then(async()=>{
@@ -200,7 +204,7 @@ Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_m', ''))")
   try{
     console.log('MMMM result=',await jevalx(code));
   }catch(ex){
-    console.log('MMMM ex=',typeof ex,ex);
+    console.log('MMMM ex=',ex.message);
   }
   console.log('MMMM check=',typeof(process),typeof(Promise));
 
@@ -211,7 +215,7 @@ this.__proto__.__defineGetter__('',function(){ this.process?.mainModule.require(
   try{
     console.log('NNNN result=',await jevalx(code));
   }catch(ex){
-    console.log('NNNN ex=',typeof ex,ex);
+    console.log('NNNN ex=',ex.message);
   }
   console.log('NNNN check=',typeof(process),typeof(Promise));
 }).then(async()=>{
@@ -230,7 +234,7 @@ obj
   try{
     console.log('OOOO result=',await jevalx(code));
   }catch(ex){
-    console.log('OOOO ex=',typeof ex,ex);
+    console.log('OOOO ex=',ex.message);
   }
   console.log('OOOO check=',typeof(process),typeof(Promise));
 
@@ -242,7 +246,7 @@ this.constructor.prototype.__defineGetter__('',function(){ this.process?.mainMod
   try{
     console.log('PPPP result=',await jevalx(code));
   }catch(ex){
-    console.log('PPPP ex=',typeof ex,ex);
+    console.log('PPPP ex=',ex.message);
   }
   console.log('PPPP check=',typeof(process),typeof(Promise));
 
@@ -254,7 +258,7 @@ Object.getPrototypeOf(Object.getPrototypeOf(import('').catch(_=>_))).__defineGet
   try{
     console.log('Q1 result=',await jevalx(code));
   }catch(ex){
-    console.log('Q1 ex=',typeof ex,ex);
+    console.log('Q1 ex=',ex.message);
   }
   console.log('Q1 check=',typeof(process),typeof(Promise));
 
@@ -274,7 +278,7 @@ obj
   try{
     console.log('Q2 result=',await jevalx(code));
   }catch(ex){
-    console.log('Q2 ex=',typeof ex,ex);
+    console.log('Q2 ex=',ex.message);
   }
   console.log('Q2 check=',typeof(process),typeof(Promise));
 
@@ -291,7 +295,7 @@ obj
   try{
     console.log('Q3 result=',await jevalx(code));
   }catch(ex){
-    console.log('Q3 ex=',typeof ex,ex);
+    console.log('Q3 ex=',ex.message);
   }
   console.log('Q3 check=',typeof(process),typeof(Promise));
 
@@ -308,7 +312,7 @@ obj
   try{
     console.log('Q4 result=',await jevalx(code));
   }catch(ex){
-    console.log('Q4 ex=',typeof ex,ex);
+    console.log('Q4 ex=',ex.message);
   }
   console.log('Q4 check=',typeof(process),typeof(Promise));
 
@@ -334,7 +338,7 @@ obj
   try{
     console.log('Q5 result=',await jevalx(code));
   }catch(ex){
-    console.log('Q5 ex=',typeof ex,ex);
+    console.log('Q5 ex=',ex.message);
   }
   console.log('Q5 check=',typeof(process),typeof(Promise));
 
