@@ -348,6 +348,8 @@ obj
   console.log('Promise',Promise);
   console.log('Proxy',Proxy);
   console.log('Error',Error);
+
+  console.log('tmp',await jevalx(` const hostGlobal = this.constructor.constructor("return this")(); hostGlobal.__proto__.__defineGetter__ `));
   console.log('--------- TEST END, to CHECK any pwned -----------');
 });
 

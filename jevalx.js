@@ -42,22 +42,9 @@ var jevalx = async(js,ctx,timeout=60000,More=['process','eval','require','Reflec
 
   delete Promise;delete Error;delete Proxy;delete process;delete Reflect;
   if (typeof Object!='undefined'){ // WILL BE CLEAN UP AFTER ALL CONCEPT PROVES
-    delete Object.prototype.__defineGetter__;//
-    //delete Object.prototype.__proto__;//
-    //Object.prototype.__proto__=undefined;
-    //delete Object.prototype.constructor;//
-    //delete Object.prototype.getPrototypeOf;
-    //delete Object.prototype.defineProperty;
-    delete Object.getOwnPropertySymbols;
-    delete Object.getPrototypeOf;
-    delete Object.defineProperty;
-    delete Object.defineProperties;
-    //delete Object;
+    delete Object.prototype.__defineGetter__;//important
   }
-  delete Array.prototype.__proto__;//
-  delete Array.prototype.constructor;//
-  delete Function;
-
+  delete Function;//important!
   let rst,err,evil=false,done=false;
   try{
     rst = await _jevalx(js,ctx,timeout);
