@@ -1,8 +1,8 @@
-
-
 # Replacement for discontinued vm2 (https://github.com/patriksimek/vm2/issues/533)
 
-I post the hide-and-seek solution here for your referece here.  Wish you a good day. Challenge still accepted.
+I post the hide-and-seek solution here for your referece here.  Wish you a good day. 
+
+Challenge still accepted!
 
 The plan is simple, hide before call and recover when done.  Might be dirty but it is useful when sandbox still needed for projects.
 
@@ -16,10 +16,10 @@ good to expected "process is not defined".  passed most vulnerable cases, while 
 
 https://github.com/wanjo-tech/vm2/blob/main/test_jevalx.js
 
-## key nodes
+## key notes
 
 * (DONE) process must be hidden before calling, and then restore after all set.
 * (DONE) import() must be banned. 
-* (DONE) Promise..then is vulnerable by being injected, must reset afterward.
+* (DONE) Promise..then is vulnerable by being injected, so must reset afterward.
 
 thanks @j4k0xb and @XmiliaH keep sending test case even annoyed ;)
