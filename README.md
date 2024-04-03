@@ -21,5 +21,6 @@ https://github.com/wanjo-tech/vm2/blob/main/test_jevalx.js
 * (DONE) process must be hidden before calling, and then restore after all set.
 * (DONE) import() must be banned. 
 * (DONE) Promise..then is vulnerable by being injected, so must reset afterward.
+* (?) __proto__ hacks must be defended.
 
-thanks @j4k0xb and @XmiliaH keep sending test case even annoyed ;)
+thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being annoyed by me ;)

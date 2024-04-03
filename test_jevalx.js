@@ -2,10 +2,11 @@
 //  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
 //});
 
-var jevalxModule = require('./jevalx.js');
+let jevalxModule = require('./jevalx.js');
+let assertWtf = require('assert');
 
-//jevalx = jevalxModule.jevalx_core;
-jevalx = jevalxModule.jevalx;
+jevalx = jevalxModule.jevalx_core;
+//let jevalx = jevalxModule.jevalx;
 
 (async()=>{
   console.log('--------- TEST START -----------');
@@ -137,7 +138,7 @@ obj
         .writeFileSync("pwned_case_g", "");
     },
   }),
-});`
+})`
   try{
     console.log('GGGG result=',await jevalx(code));
   }catch(ex){
@@ -216,9 +217,9 @@ Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned', ''))")
   console.log('LLLL check=',typeof(process),typeof(Promise));
 }).then(async()=>{
 var code=`
-const Function = (_=>_).constructor;
+const FunctionX = (_=>_).constructor;
 Object.defineProperty(Function.prototype, 'then', { get() { this(); } });
-Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_m', ''))")
+FunctionX.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_m', ''))")
 `
   try{
     console.log('MMMM result=',await jevalx(code));
@@ -239,11 +240,11 @@ this.__proto__.__defineGetter__('',function(){ this.process?.mainModule.require(
   console.log('NNNN check=',typeof(process),typeof(Promise));
 }).then(async()=>{
 var code=`
-const Function = (_=>_).constructor;
+const FunctionX = (_=>_).constructor;
 const obj = {
 	get then() {
 		Object.defineProperty(this, 'then', {
-			get: Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_N', ''))")
+			get: FunctionX.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_N', ''))")
 		});
 		Object.setPrototypeOf(this, import('').catch(_=>_).constructor);
 	}
@@ -283,10 +284,10 @@ Object.getPrototypeOf(Object.getPrototypeOf(import('').catch(_=>_))).__defineGet
 
 }).then(async()=>{
 var code=`
-const Function = (_=>_).constructor;
+const FunctionX = (_=>_).constructor;
 const proto = {};
 Object.defineProperty(proto, 'then', {
-	get: Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_q2', ''))")
+	get: FunctionX.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_q2', ''))")
 });
 const obj = {
 	__proto__: proto
@@ -303,9 +304,9 @@ obj
 
 }).then(async()=>{
 var code=`
-const Function = (_=>_).constructor;
+const FunctionX = (_=>_).constructor;
 const proto = {};
-proto.__defineGetter__('then', Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_q3', ''))"));
+proto.__defineGetter__('then', FunctionX.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_q3', ''))"));
 const obj = {
 	__proto__: proto
 };
@@ -320,9 +321,9 @@ obj
 
 }).then(async()=>{
 var code=`
-const Function = (_=>_).constructor;
+const FunctionX = (_=>_).constructor;
 const proto = {};
-Object.defineProperties(proto, {then: {get: Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_q4', ''))")}});
+Object.defineProperties(proto, {then: {get: FunctionX.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_q4', ''))")}});
 const obj = {
 	__proto__: proto
 };
@@ -362,9 +363,53 @@ obj
   console.log('Q5 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
-  //basic normal case:
+var code=`
+(()=>{
+let u = false;
+function t(o, e) {
+	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q6","");
+	u = true;
+	o(this);
+}
+const obj = {__proto__: { get then(){ if (u) { u = false; return undefined; } return t; } }};
+return obj
+})
+`
+
+  try{
+    console.log('Q6 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q6 ex=',ex.message);
+  }
+  console.log('Q6 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
+var code=`
+(async()=>{
+let u = false;
+function t(o, e) {
+	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q7","");
+	u = true;
+	o(this);
+}
+const obj = {__proto__: { get then(){ if (u) { u = false; return undefined; } return t; } }};
+return obj
+})
+`
+  try{
+    console.log('Q7 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q7 ex=',ex.message);
+  }
+  console.log('Q7 check=',typeof(process),typeof(Promise));
+
+
+}).then(async()=>{
+  //normal case:
   console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
+  //assertWtf.equal( 8 , await jevalx('x**y',{x:2,y:3}) );
   console.log('ASSERT 81 == x**y',await jevalx('(async()=>x**y)()',{x:3,y:4}));
+  //assertWtf.equal( 81 , await jevalx('x**y',{x:3,y:4}) );
 
   console.log('ASSERT undefined == process:',await jevalx('[].constructor.constructor("return typeof(process)")()'));
 
@@ -376,30 +421,8 @@ obj
 
   //console.log('tmp',await jevalx(` const hostGlobal = this.constructor.constructor("return this")(); hostGlobal.__proto__.__defineGetter__ `));
   //console.log('tmp',await jevalx(`void(async()=>{throw 911})()`));
-
-// testing return a function that hacks:
-try{
-console.log('tmp',await jevalx(`
-(()=>{
-let u = false;
-function t(o, e) {
-	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q5","");
-	u = true;
-	o(this);
-}
-const obj = {__proto__: {
-	get then(){
-		if (u) {
-			u = false;
-			return undefined;
-		}
-		return t;
-	}
-}};
-return obj
-})()
-`))
-}catch(ex){ console.log('tmp ex',ex); }
+  // quick testing return a function that hacks:
+  //try{ console.log('tmp',await jevalx(` `)) }catch(ex){ console.log('tmp ex',ex); }
 
   console.log('--------- TEST END, to CHECK any pwned -----------');
 });
