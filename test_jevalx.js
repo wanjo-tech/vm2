@@ -419,7 +419,7 @@ return obj
 var code=`
 let u = false;
 function t(o, e) {
-	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q7","");
+	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q8","");
 	u = true;
 	o(this);
 }
@@ -432,7 +432,7 @@ return obj
   try{
     console.log('Q8 result=',await jevalx(code));
   }catch(ex){
-    console.log('Q8 ex=',ex.message);
+    console.log('Q8 ex=',ex.message,JSON.stringify(ex.js));
   }
   console.log('Q8 check=',typeof(process),typeof(Promise));
 }).then(async()=>{

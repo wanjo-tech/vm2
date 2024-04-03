@@ -2,6 +2,10 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
 });
 
+//globalThis.VER=0;
+VER=0;
+//var VER=0;
+
 let assertWtf = require('assert');
 //console.log('assertWtf=',assertWtf);
 
@@ -45,5 +49,5 @@ try{
   console.log('ex',ex);
 }
   console.log('typeof setTimeout',typeof(setTimeout))
-  console.log('typeof global',typeof(global))
+  console.log('typeof global',typeof(global),Object.keys(global))
 })()
