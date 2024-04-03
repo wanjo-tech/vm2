@@ -23,8 +23,10 @@ var hostGlobalX = this.constructor.constructor('return(this.constructor.construc
 //void(async()=>{setTimeout(()=>{
 //  throw 911
 //},111)})();
-delete hostGlobalX.setTimeout;
-delete process;
+//delete hostGlobalX.setTimeout;
+//delete hostGlobalX.process;
+//delete hostGlobal.process;
+//var hostGlobalX = this.constructor.constructor('return(this.constructor.constructor("return this")())')();
 ({
 _:[
 Object_entries(hostGlobalX||{}),Object_entries(hostGlobal||{}),hostGlobal===hostGlobalX,
@@ -38,6 +40,7 @@ try{
   var rst = await jevalx(code,{Object_keys:Object.keys,Object_entries:Object.entries});
   var rst = await jevalx_core(code,{Object_keys:Object.keys,Object_entries:Object.entries});
   console.log('debug',rst);
+  console.log('debug',rst._);
 }catch(ex){
   console.log('ex',ex);
 }

@@ -1,6 +1,6 @@
-//process.on('unhandledRejection', (reason, promise) => {
-//  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
-//});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
+});
 
 let jevalxModule = require('./jevalx.js');
 let assertWtf = require('assert');
@@ -403,7 +403,47 @@ return obj
   }
   console.log('Q7 check=',typeof(process),typeof(Promise));
 
+}).then(async()=>{
+  //test end game, this one could kill process...
+  //await jevalx(`(async()=>{ return ({ then:()=>{} }) })() `)
+  //var code=`(async()=>{ return ({ then:()=>{} }) })() `
+  //var code=`(async()=>({ then:()=>{} }))() `//TOOD!!!!
+  var code=`(async()=>999)()`
+  try{
+    console.log('Q7x result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q7x ex=',ex);
+  }
+  console.log('Q7x check=',typeof(process),typeof(Promise));
 
+}).then(async()=>{
+return;//skip
+var code=`
+let u = false;
+function t(o, e) {
+	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q7","");
+	u = true;
+	o(this);
+}
+(async()=>{
+const obj = {
+then:()=>{},//what-the-fuck, the program suicided.
+//then:()=>{
+////throw {message:911};
+////return {__proto__:{ get then(){ if (u) { u = false; return undefined; } return t; } }};
+//return 0
+//},
+__proto__: { get then(){ if (u) { u = false; return undefined; } return t; } }};
+return obj
+})()
+
+`
+  try{
+    console.log('Q8 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q8 ex=',ex);
+  }
+  console.log('Q8 check=',typeof(process),typeof(Promise));
 }).then(async()=>{
   //normal case:
   console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
