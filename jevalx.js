@@ -5,20 +5,25 @@ const setTimeoutWtf=setTimeout,PromiseWtf=Promise;
 const PromiseWtf_prototype_then = PromiseWtf.prototype.then;//for dirty patch
 const Object_keys = Object.keys;
 const Object_defineProperty = Object.defineProperty;
+const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_defineProperties = Object.defineProperties;
-
 const Object_prototype___defineGetter__ = Object.prototype.__defineGetter__;
+const Object_prototype___proto__ = Object.prototype.__proto__;
+const delay = (t)=>new PromiseWtf(r=>setTimeoutWtf(r,t));
 
 //NOTES: level 0
 // jammed all vulnerable import() in the promise-hell:
 // in node:vm, something might be reset, so need to delete inside runInContext:
-const prejs1 = [
-  'eval','process','Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols'
+const prejs_delete = [
+  'eval','process','Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols',
+  'Promise','Proxy','Reflect','Function',
+  'Object.prototype.__proto__',
+  'Object.prototype.__defineGetter__'
 ].map(w=> `delete ${w};`).join('');
-const prejs2 = [ 'Object.prototype.__proto__','Object.prototype.__defineGetter__'].map(w=> `${w}=undefined;`).join('');
-var jevalx_core = async(js,ctx,timeout=60000,More=['process','eval','require','Reflect','Function','Proxy'],vm=require('node:vm'))=>{
+const prejs_undefined = [].map(w=> `${w}=undefined;`).join('');
+var jevalx_core = async(js,ctx,timeout=60000,timeout_race=666,More=['process','eval','require','Reflect','Function','Proxy',],vm=require('node:vm'))=>{
   let rst,err,evil=false,done=false;
-  let tmpHandler = (reason, promise)=>{ err = {message:''+reason,js};console.log(110)};
+  let tmpHandler = (reason, promise)=>{ err = {message:''+reason,js}};
   processWtf.addListener('unhandledRejection',tmpHandler);
 
   let Wtf={};
@@ -27,39 +32,49 @@ var jevalx_core = async(js,ctx,timeout=60000,More=['process','eval','require','R
       //globalThis[k] = undefined;//testing
       delete globalThis[k];
     }};
-    //process = undefined;//
-    Object.prototype.__defineGetter__=undefined;//very important
+    delete Object.prototype.__defineGetter__;//
+    //delete Object.prototype.__proto__;//
     await new PromiseWtf(async(r,j)=>{
       try{
-        rst = vm.createScript(prejs1+prejs2+'\n'+js,{importModuleDynamically(specifier, referrer, importAttributes){
-            evil=true; err = {message:'EvilImport',js}; globalThis['process'] = undefined;//very important! NOT 'delete process'
+        rst = vm.createScript(prejs_delete+prejs_undefined+'\n'+js,{importModuleDynamically(specifier, referrer, importAttributes){
+          evil=true; err = {message:'EvilImport',js}; globalThis['process'] = undefined;//very important! NOT 'delete process'
         }}).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout});
-        if (!!rst) {
-          if (!!(rst.__proto__) && Object_keys(rst.__proto__).length>0) {
-            //console.log('!!!! __proto__ attack?', [typeof rst, rst.constructor,rst, rst.__proto__],'<=',JSON.stringify(js));
-            throw {message:'EvilProto',js};
-          }
-          delete rst.then;//
-        }
-        Promise = PromiseWtf;
-        Promise.prototype.then = PromiseWtf_prototype_then;//dirty patch. find better way later.
         if(rst==globalThis) throw {message:'EvilGlobal',js};
-        if ('function'==typeof rst){
-          rst = await rst();
-          if (!!rst) {
-            if (!!(rst.__proto__) && Object_keys(rst.__proto__).length>0) {
-              throw {message:'EvilProtoX',js};
+        for (var i=0;i<7;i++) {
+          if (!rst) break;
+          let __proto__ = Object_getPrototypeOf(rst);
+          if (Object_keys(__proto__||[]).length>0) {
+            //console.log('!!! DEBUG __proto__',__proto__,rst,Object_keys(__proto__||[]));
+            throw {message:'EvilProto',js};
+          } else
+          if ('function'==typeof rst) {
+            rst = rst();
+          }else if (rst.then){
+            if (rst instanceof PromiseWtf){//outside Promise
+              rst = await rst;
+            }else if ((''+rst)=='[object Promise]'){//Sandbox Promise. dirty, will improve later.
+              rst = await PromiseWtf.race([
+                  (async()=>{try{return await rst;}catch(ex){console.log(ex)}})(),
+                  delay(timeout_race) ]);
+            }else{
+              throw {message:'EvilPromise',js}
             }
-            delete rst.then;//
+          } else {
+            break;
           }
         }
-        if (rst instanceof PromiseWtf){ throw {message:'EvilPromise'}}
-        if ('function'==typeof rst){ throw {message:'EvilFunction'} }
-        //console.log('debug rst',rst, (rst instanceof Promise),Object.getPrototypeOf(rst));
+        if (rst && rst.then){ throw {message:'EvilPromiseX',js} }
+        if ('function'==typeof rst){
+          throw {message:'EvilFunction',js}
+          //err = {message:'EvilFunction',js}
+          rst = undefined;
+        }
       }catch(ex){ err = (ex&&ex.message) ? ex:{message:'Evil',ex,js}}
       Promise = PromiseWtf;
       Promise.prototype.then = PromiseWtf_prototype_then;//dirty patch. find better way later.
-      setTimeoutWtf(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },0);
+      //Object.prototype.__proto__ = Object_prototype___proto__;
+      Object.prototype.__defineGetter__ = Object_prototype___defineGetter__;
+      setTimeoutWtf(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
     });
   }catch(ex){ err = (ex&&ex.message) ? ex:{message:'EvilX',ex,js} }
 
@@ -95,7 +110,7 @@ var jevalx = jevalx_core;
 //    //Promise.prototype.then = PromiseWtf_prototype_then;//dirty patch. find better way later.
 //    //process = processWtf;
 //    if (err) j(err); else r(rst);
-//  },0));
+//  },1));
 //};
 
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core}

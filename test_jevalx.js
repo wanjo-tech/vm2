@@ -1,6 +1,6 @@
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
-});
+//process.on('unhandledRejection', (reason, promise) => {
+//  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
+//});
 
 let jevalxModule = require('./jevalx.js');
 let assertWtf = require('assert');
@@ -150,7 +150,7 @@ obj
   const hostGlobal = this.constructor.constructor("return this")();
 hostGlobal.Promise = function (executor) {
   return new Promise(executor).then(() => {
-    hostGlobal.process.mainModule.require("fs").writeFileSync("pwned", "");
+    hostGlobal.process.mainModule.require("fs").writeFileSync("pwned_case_h", "");
   });
 }
 `
@@ -207,7 +207,7 @@ Reflect.defineProperty(Function.prototype, 'then', {
   console.log('KKKK check=',typeof(process),typeof(Promise));
 }).then(async()=>{
 var code=`
-Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned', ''))")
+Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_L', ''))")
 `
   try{
     console.log('LLLL result=',await jevalx(code));
@@ -404,11 +404,10 @@ return obj
   console.log('Q7 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
-  //test end game, this one could kill process...
   //await jevalx(`(async()=>{ return ({ then:()=>{} }) })() `)
   //var code=`(async()=>{ return ({ then:()=>{} }) })() `
-  //var code=`(async()=>({ then:()=>{} }))() `//TOOD!!!!
-  var code=`(async()=>999)()`
+  var code=`(async()=>({ then:()=>{} }))() `
+  //var code=`(async()=>999)()`
   try{
     console.log('Q7x result=',await jevalx(code));
   }catch(ex){
@@ -417,7 +416,6 @@ return obj
   console.log('Q7x check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
-return;//skip
 var code=`
 let u = false;
 function t(o, e) {
@@ -425,23 +423,16 @@ function t(o, e) {
 	u = true;
 	o(this);
 }
+delete Object.prototype.__proto__;
 (async()=>{
-const obj = {
-then:()=>{},//what-the-fuck, the program suicided.
-//then:()=>{
-////throw {message:911};
-////return {__proto__:{ get then(){ if (u) { u = false; return undefined; } return t; } }};
-//return 0
-//},
-__proto__: { get then(){ if (u) { u = false; return undefined; } return t; } }};
+const obj = { __proto__: { get then(){ if (u) { u = false; return undefined; } return t; } }};
 return obj
-})()
-
+})
 `
   try{
     console.log('Q8 result=',await jevalx(code));
   }catch(ex){
-    console.log('Q8 ex=',ex);
+    console.log('Q8 ex=',ex.message);
   }
   console.log('Q8 check=',typeof(process),typeof(Promise));
 }).then(async()=>{
