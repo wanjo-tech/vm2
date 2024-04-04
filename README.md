@@ -24,6 +24,7 @@ https://github.com/wanjo-tech/vm2/blob/main/test_jevalx.js
 * (DONE) import() must be banned. 
 * (DONE) Evil Fake Promise should be detected.
 * (DONE) hacks (\_\_proto\_\_ -chain, ) must be defended.
+* (DONE) ddos attach by codes like: (async()=>{while(1)0})
 
 thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being annoyed by me ;)
 
