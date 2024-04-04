@@ -439,15 +439,16 @@ return obj
 var code=`
 let delay = 3;
 function t(o, e) {
-	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q9","");
+	//import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q9","");
+import('').then(_=>_,_=>_).then.constructor("return 999")();
 	o(this);
 }
-const obj = {__proto__: { __proto__: {
+const obj = {__proto__: { __proto__: { __proto__: {
 	get then(){
 		if (delay-->0) return undefined;
 		return t;
 	}
-}}};
+}}}};
 obj
 `
   try{

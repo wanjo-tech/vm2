@@ -3,6 +3,20 @@ const setTimeoutWtf=setTimeout;
 const PromiseWtf=Promise;
 const Object_keys = Object.keys;
 const Object_getPrototypeOf = Object.getPrototypeOf;
+function findThenGetter(obj,deep=3) {
+  let currentObj = obj;
+  let i=0;
+  while (currentObj !== null) {
+    if (i>3) return true;//break if too deep.
+    //console.log(i++);
+    const descriptor = Object.getOwnPropertyDescriptor(currentObj, 'then');
+    if (descriptor && typeof descriptor.get === 'function') {
+      return descriptor.get; // Stop if the 'then' getter is found
+    }
+    currentObj = Object.getPrototypeOf(currentObj); // Move up the prototype chain
+  }
+  return false;
+}
 const prejs_delete = [
   'eval','process',
   'Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols',
@@ -16,6 +30,7 @@ var jevalx_core = async(js,ctx,timeout=60000,timeout_race=666,vm=require('node:v
   try{
     for(let k of[...Object_keys(globalThis),...['process','require']]){if(globalThis[k]){Wtf[k]=globalThis[k]};delete globalThis[k]};
     delete Object.prototype.__defineGetter__;//important!!
+    //delete Object.prototype.__proto__;//
     await new PromiseWtf(async(r,j)=>{
       try{
         rst = vm.createScript(prejs_delete+'\n'
@@ -23,13 +38,11 @@ var jevalx_core = async(js,ctx,timeout=60000,timeout_race=666,vm=require('node:v
             evil=true; err = {message:'EvilImport',js};
             globalThis['process'] = undefined;//very important! NOT delete..
         }}).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout});
-        if(rst==globalThis) throw {message:'EvilGlobal',js};
         for (var i=0;i<9;i++) {
-          if (!rst) break;
-          let __proto__ = Object_getPrototypeOf(rst);
-          if (Object_keys(__proto__||[]).length>0) {
-            throw {message:'EvilProto',js};
-          } else if ('function'==typeof rst) {
+          if (evil || !rst || err) break;
+          let getter = findThenGetter(rst);
+          if (getter) { throw {message:'EvilProto',js} }
+          if ('function'==typeof rst) {
             rst = rst();
           }else if (rst.then){
             if (rst instanceof PromiseWtf){//host Promise
@@ -44,6 +57,7 @@ var jevalx_core = async(js,ctx,timeout=60000,timeout_race=666,vm=require('node:v
         }
         if (rst && rst.then) throw {message:'EvilPromiseX',js};
         if ('function'==typeof rst) throw {message:'EvilFunction',js};
+        if(rst==globalThis) throw {message:'EvilGlobal',js};
       }catch(ex){ err = (ex&&ex.message) ? ex:{message:'EvilUnknown',ex,js}}
       setTimeoutWtf(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
     });
