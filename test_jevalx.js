@@ -436,6 +436,28 @@ return obj
   }
   console.log('Q8 check=',typeof(process),typeof(Promise));
 }).then(async()=>{
+var code=`
+let delay = 3;
+function t(o, e) {
+	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q9","");
+	o(this);
+}
+const obj = {__proto__: { __proto__: {
+	get then(){
+		if (delay-->0) return undefined;
+		return t;
+	}
+}}};
+obj
+`
+  try{
+    console.log('Q9 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q9 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q9 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
   //normal case:
   console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
   //assertWtf.equal( 8 , await jevalx('x**y',{x:2,y:3}) );
