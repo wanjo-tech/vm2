@@ -77,7 +77,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
             rst = vm.createScript('rst()'
                 ,{importModuleDynamically(specifier, referrer, importAttributes){
               evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
-            }}).runInContext(ctx,{breakOnSigint:true,timeout});
+            }}).runInContext(ctxx,{breakOnSigint:true,timeout});
           }else if (rst.then){
             if ( rst instanceof PromiseWtf || (''+rst)=='[object Promise]'){//sandbox Promise. dirty, will improve later...
               rst = await new PromiseWtf(async(r,j)=>{
@@ -111,16 +111,5 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   if (evil || err) throw err;
   return rst;
 }
-//var jevalxx = (js,ctx={},timeout=666)=>jevalx_core(`evalx(${JSON.stringify(js)},ctx)`,{evalx:jevalx_core,ctx},timeout);
-var jevalxx = async(js,ctx={},timeout=666)=>await vm.createScript(`evalx(${JSON.stringify(js)},ctx)`).runInContext(vm.createContext({evalx:jevalx_core,ctx}),{breakOnSigint:true,timeout});
-//var jevalxx = async(js,ctx={},timeout=666)=>{
-//  let rst,err;
-//  let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
-//  processWtf.addListener('unhandledRejection',tmpHandler);
-//  rst = await vm.createScript(`evalx(${JSON.stringify(js)},ctx)`).runInContext(vm.createContext({evalx:jevalx_core,ctx}),{breakOnSigint:true,timeout});
-//  processWtf.removeListener('unhandledRejection',tmpHandler);
-//  if (err) throw err
-//  return rst;
-//};
-var jevalx = jevalxx;
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalxx}
+var jevalx = jevalx_core;
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core}
