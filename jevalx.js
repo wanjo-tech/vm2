@@ -22,7 +22,7 @@ function findEvilGetter(obj,deep=3) {
 const prejs_delete = [
   'eval','process',
   'Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols',
-  'Promise','Proxy','Reflect','Function',
+  'Promise','Proxy','Reflect','Function','Symbol',
 ].map(w=> `delete ${w};`).join('');
 var jevalx_core = async(js,ctx,timeout=666)=>{
   let rst,err,evil=false,done=false;
