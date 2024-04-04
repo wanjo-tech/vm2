@@ -459,6 +459,29 @@ obj
   console.log('Q9 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+var code=`
+let delay = 2;
+function t(o, e) {
+	import('').then(_=>_, _=>_).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q10","");
+	o(this);
+}
+let obj = {__proto__: {
+	get then(){
+		if (delay-->0) return undefined;
+		return t;
+	}
+}};
+for(let i=0; i<9; i++) {const ret=obj;obj=()=>ret;}
+obj
+`
+  try{
+    console.log('Q10 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q10 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q10 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
   //normal case:
   console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
   //assertWtf.equal( 8 , await jevalx('x**y',{x:2,y:3}) );

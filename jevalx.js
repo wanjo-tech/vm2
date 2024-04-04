@@ -55,6 +55,7 @@ var jevalx_core = async(js,ctx,timeout=60000,timeout_race=666,vm=require('node:v
             }else throw {message:'EvilPromise',js}
           } else break;
         }
+        if (findEvilGetter(rst)) { throw {message:'EvilProto',js} }
         if (rst && rst.then) throw {message:'EvilPromiseX',js};
         if ('function'==typeof rst) throw {message:'EvilFunction',js};
         if(rst==globalThis) throw {message:'EvilGlobal',js};
