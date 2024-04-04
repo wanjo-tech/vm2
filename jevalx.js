@@ -1,6 +1,7 @@
 const processWtf = require('process');
 const setTimeoutWtf=setTimeout;
 const PromiseWtf=Promise;
+//const FunctionWtf = Function;
 const Object_keys = Object.keys;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -34,20 +35,30 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
     for(let k of[...Object_keys(globalThis),...['process','require']]){if(globalThis[k]){Wtf[k]=globalThis[k]};delete globalThis[k]};
     delete Object.prototype.__defineGetter__;//important!!
     process = undefined;
+    //Promise = undefined;
+    //Function = undefined;
     await new PromiseWtf(async(r,j)=>{
       try{
         rst = vm.createScript(prejs_delete+`\n`+js
             ,{importModuleDynamically(specifier, referrer, importAttributes){
-          console.log('EvilImport',{specifier,referrer});
+          //console.log('EvilImport',{specifier,referrer});
           evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
         }}).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout});
+
         for (var i=0;i<9;i++) {
           if (evil || !rst || err) break;
           PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
-          //if (findEvilGetter(rst)) throw {message:'EvilProto',js};
-          if ('function'==typeof rst) { rst = rst();
+          if (findEvilGetter(rst)) throw {message:'EvilProto',js};
+          if ('function'==typeof rst) {
+            //rst = rst();//security breach if run in this context
+            //tmp solution, improve later!
+            rst = vm.createScript(prejs_delete+`\n`+'rst()'
+                ,{importModuleDynamically(specifier, referrer, importAttributes){
+              //console.log('EvilImport',{specifier,referrer});
+              evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
+            }}).runInContext(vm.createContext({...ctx||{},...{rst}}),{breakOnSigint:true,timeout});
           }else if (rst.then){
-            if ( rst instanceof Promise || (''+rst)=='[object Promise]'){//sandbox Promise. dirty, will improve later...
+            if ( rst instanceof PromiseWtf || (''+rst)=='[object Promise]'){//sandbox Promise. dirty, will improve later...
               rst = await new PromiseWtf(async(r,j)=>{
                 setTimeoutWtf(()=>j({message:'Timeout',timeout}),timeout);
                 try{ r(await rst) } catch(ex) { j(ex) };
@@ -55,6 +66,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
             }else throw {message:'EvilPromise',js}
           } else break;
         }
+        PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
         if (findEvilGetter(rst)) { throw {message:'EvilProto',js} }
         if (rst && rst.then) throw {message:'EvilPromiseX',js};
         if ('function'==typeof rst) throw {message:'EvilFunction',js};
@@ -66,6 +78,9 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
 
   processWtf.removeListener('unhandledRejection',tmpHandler);
   for(var k in Wtf){globalThis[k]=Wtf[k]};
+  //Promise = PromiseWtf;
+  //Function = FunctionWtf;
+  //PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
   if (evil || err) throw err;
   return rst;
 }

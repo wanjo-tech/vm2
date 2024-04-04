@@ -183,6 +183,27 @@ promise.__proto__.then = function() {
   console.log('IIII check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+var code=`
+const promise = import('').catch(_=>_);
+const oldThen = promise.__proto__.then;
+const global = oldThen.constructor('return this')();
+promise.__proto__.then = function() {
+	if (global.process) {
+		global.process.mainModule.require("fs").writeFileSync("pwned_i2", "");
+		promise.__proto__.then = oldThen;
+	}
+	return oldThen.apply(this, arguments);
+};
+false
+`
+  try{
+    console.log('I2 result=',await jevalx(code));
+  }catch(ex){
+    console.log('I2 ex=',ex.message);
+  }
+  console.log('I2 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
 var code=` eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_j', ''))") `
   try{
     console.log('JJJJ result=',await jevalx(code));
@@ -190,6 +211,15 @@ var code=` eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_j',
     console.log('JJJJ ex=',ex.message);
   }
   console.log('JJJJ check=',typeof(process),typeof(Promise));
+}).then(async()=>{
+var code=`(_=>_).constructor.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_j2', ''))")`;
+  try{
+    console.log('J2 result=',await jevalx(code));
+  }catch(ex){
+    console.log('J2 ex=',ex.message);
+  }
+  console.log('J2 check=',typeof(process),typeof(Promise));
+
 }).then(async()=>{
 var code=`
 Reflect.defineProperty(Function.prototype, 'then', {
