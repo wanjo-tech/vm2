@@ -68,6 +68,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   if (evil || err) throw err;
   return rst;
 }
-var jevalxx = (js,ctx={},timeout=666)=>jevalx_core(`evalx(${JSON.stringify(js)},ctx)`,{evalx:jevalx_core,ctx},timeout);
+//var jevalxx = (js,ctx={},timeout=666)=>jevalx_core(`evalx(${JSON.stringify(js)},ctx)`,{evalx:jevalx_core,ctx},timeout);
+var jevalxx = async(js,ctx={},timeout=666)=>await vm.createScript(`evalx(${JSON.stringify(js)},ctx)`).runInContext(vm.createContext({evalx:jevalx_core,ctx}),{breakOnSigint:true,timeout});
 var jevalx = jevalxx;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalxx}
