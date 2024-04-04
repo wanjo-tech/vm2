@@ -20,9 +20,10 @@ https://github.com/wanjo-tech/vm2/blob/main/test_jevalx.js
 
 * (DONE) process(and few others) must be hidden before calling, and then restore after all set.
 * (DONE) using setTimeout to wait for the vm done.
+* (DONE) \_\_defineGetter\_\_ must be banned.
 * (DONE) import() must be banned. 
-* (DONE) Evil Fake Promise must be banned.
-* (DONE) hacks (\_\_proto\_\_ , __defineGetter__) must be defended.
+* (DONE) Evil Fake Promise should be detected.
+* (DONE) hacks (\_\_proto\_\_ -chain, ) must be defended.
 
 thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being annoyed by me ;)
 
