@@ -85,15 +85,15 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   return rst;
 }
 //var jevalxx = (js,ctx={},timeout=666)=>jevalx_core(`evalx(${JSON.stringify(js)},ctx)`,{evalx:jevalx_core,ctx},timeout);
-var jevalxx = async(js,ctx={},timeout=666)=>await vm.createScript(`evalx(${JSON.stringify(js)},ctx)`).runInContext(vm.createContext({evalx:jevalx_core,ctx}),{breakOnSigint:true,timeout});
-//var jevalxx = async(js,ctx={},timeout=666)=>{
-//  let rst,err;
-//  let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
-//  processWtf.addListener('unhandledRejection',tmpHandler);
-//  rst = await vm.createScript(`evalx(${JSON.stringify(js)},ctx)`).runInContext(vm.createContext({evalx:jevalx_core,ctx}),{breakOnSigint:true,timeout});
-//  processWtf.removeListener('unhandledRejection',tmpHandler);
-//  if (err) throw err
-//  return rst;
-//};
+//var jevalxx = async(js,ctx={},timeout=666)=>await vm.createScript(`evalx(${JSON.stringify(js)},ctx)`).runInContext(vm.createContext({evalx:jevalx_core,ctx}),{breakOnSigint:true,timeout});
+var jevalxx = async(js,ctx={},timeout=666)=>{
+  let rst,err;
+  let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
+  processWtf.addListener('unhandledRejection',tmpHandler);
+  rst = await vm.createScript(`evalx(${JSON.stringify(js)},ctx)`).runInContext(vm.createContext({evalx:jevalx_core,ctx}),{breakOnSigint:true,timeout});
+  processWtf.removeListener('unhandledRejection',tmpHandler);
+  if (err) throw err
+  return rst;
+};
 var jevalx = jevalxx;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalxx}
