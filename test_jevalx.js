@@ -511,6 +511,60 @@ obj
   console.log('Q10 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+var code=`
+const O = constructor;
+
+O.defineProperty(O.prototype, 'XXX', {get(){
+
+	this.process.mainModule.require("fs").writeFileSync("pwned_case_q11", "");
+
+}, enumerable: true});
+
+false
+`
+  try{
+    console.log('Q11 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q11 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q11 check=',typeof(process),typeof(Promise));
+
+
+}).then(async()=>{
+var code=`
+
+const promise = import('').catch(_=>_);
+
+const oldThen = promise.__proto__.then;
+
+const global = oldThen.constructor('return this')();
+
+promise.__proto__.then = function() {
+
+	if (global.process) {
+
+		global.process.mainModule.require("fs").writeFileSync("pwned_case_q12", "");
+
+	}
+
+	return oldThen.apply(this, arguments);
+
+};
+
+Object.freeze(promise.__proto__);
+
+false
+
+`
+  try{
+    console.log('Q12 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q12 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q12 check=',typeof(process),typeof(Promise));
+
+
+}).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
 ////Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
