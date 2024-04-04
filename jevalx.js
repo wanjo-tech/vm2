@@ -10,6 +10,7 @@ const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_getOwnPropertySymbols = Object.getOwnPropertySymbols;
 const Object_defineProperty = Object.defineProperty;
 const Object_defineProperties = Object.defineProperties;
+const Object_freeze = Object.freeze;
 
 const Promise_prototype_then = Promise.prototype.then;
 const vm = require('node:vm');
@@ -29,8 +30,7 @@ function findEvilGetter(obj,deep=3) {
 //we are sandbox(run js inside ctx) instead of vm(full function), remove everything vulnerable!!
 const prejs_delete = [
   'eval','process',
-  'Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols',
-  //'Object.prototype.getPrototypeOf','Object.prototype.defineProperties','Object.prototype.defineProperty','Object.prototype.getOwnPropertySymbols',
+  'Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols','Object.freeze',
   'Promise','Proxy','Reflect','Function','Symbol','Error',
 ].map(w=> `delete ${w};`).join('');
 var jevalx_core = async(js,ctx,timeout=666)=>{
@@ -46,6 +46,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
     delete Object.defineProperty;//important
     delete Object.getPrototypeOf;//
     delete Object.getOwnPropertySymbols;//
+    delete Object.freeze;//
 
     process = undefined;
     Promise = undefined;
@@ -102,6 +103,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   Object.defineProperty = Object_defineProperty;
   Object.defineProperties = Object_defineProperties;
   Object.getPrototypeOf = Object_getPrototypeOf;
+  Object.freeze = Object_freeze;
 
   //Function = FunctionWtf;
   Promise = PromiseWtf;
