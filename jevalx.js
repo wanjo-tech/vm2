@@ -44,7 +44,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
         for (var i=0;i<9;i++) {
           if (evil || !rst || err) break;
           PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
-          if (findEvilGetter(rst)) throw {message:'EvilProto',js};
+          //if (findEvilGetter(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) { rst = rst();
           }else if (rst.then){
             if ( rst instanceof Promise || (''+rst)=='[object Promise]'){//sandbox Promise. dirty, will improve later...
@@ -71,5 +71,14 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
 }
 //var jevalxx = (js,ctx={},timeout=666)=>jevalx_core(`evalx(${JSON.stringify(js)},ctx)`,{evalx:jevalx_core,ctx},timeout);
 var jevalxx = async(js,ctx={},timeout=666)=>await vm.createScript(`evalx(${JSON.stringify(js)},ctx)`).runInContext(vm.createContext({evalx:jevalx_core,ctx}),{breakOnSigint:true,timeout});
+//var jevalxx = async(js,ctx={},timeout=666)=>{
+//  let rst,err;
+//  let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
+//  processWtf.addListener('unhandledRejection',tmpHandler);
+//  rst = await vm.createScript(`evalx(${JSON.stringify(js)},ctx)`).runInContext(vm.createContext({evalx:jevalx_core,ctx}),{breakOnSigint:true,timeout});
+//  processWtf.removeListener('unhandledRejection',tmpHandler);
+//  if (err) throw err
+//  return rst;
+//};
 var jevalx = jevalxx;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalxx}

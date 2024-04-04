@@ -1,13 +1,12 @@
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
-  //process.exit();
-});
+//process.on('unhandledRejection', (reason, promise) => {
+//  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
+//});
 
 let jevalxModule = require('./jevalx.js');
 let assertWtf = require('assert');
 
-let jevalx = jevalxModule.jevalx_core;
-//let jevalx = jevalxModule.jevalx;
+//let jevalx = jevalxModule.jevalx_core;
+let jevalx = jevalxModule.jevalx;
 
 (async()=>{
   console.log('--------- TEST START -----------');
@@ -532,7 +531,7 @@ p.then();
   // quick testing return a function that hacks:
 
   // core doesn't pass the ddos-alike codes:
-  //try{ console.log('tmp',await jevalx(`(async()=>{while(1)0})`)) }catch(ex){ console.log('tmp ex',ex); }
+  try{ console.log('tmp',await jevalx(`(async()=>{while(1)0})`)) }catch(ex){ console.log('tmp ex',ex); }
 
   console.log('--------- TEST END, to CHECK any pwned -----------');
 });
