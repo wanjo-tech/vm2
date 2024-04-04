@@ -5,8 +5,8 @@
 let jevalxModule = require('./jevalx.js');
 let assertWtf = require('assert');
 
-jevalx = jevalxModule.jevalx_core;
-//let jevalx = jevalxModule.jevalx;
+//jevalx = jevalxModule.jevalx_core;
+let jevalx = jevalxModule.jevalx;
 
 (async()=>{
   console.log('--------- TEST START -----------');
@@ -182,9 +182,7 @@ promise.__proto__.then = function() {
   console.log('IIII check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
-var code=`
-eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_j', ''))")
-`
+var code=` eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_j', ''))") `
   try{
     console.log('JJJJ result=',await jevalx(code));
   }catch(ex){
@@ -482,6 +480,7 @@ obj
   console.log('Q10 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+  //console.log('--------- TEST END, to CHECK any pwned -----------');
   //normal case:
   console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
   //assertWtf.equal( 8 , await jevalx('x**y',{x:2,y:3}) );
@@ -499,7 +498,9 @@ obj
   //console.log('tmp',await jevalx(` const hostGlobal = this.constructor.constructor("return this")(); hostGlobal.__proto__.__defineGetter__ `));
   //console.log('tmp',await jevalx(`void(async()=>{throw 911})()`));
   // quick testing return a function that hacks:
-  //try{ console.log('tmp',await jevalx(` `)) }catch(ex){ console.log('tmp ex',ex); }
+
+  // core doesn't pass the ddos-alike codes:
+  try{ console.log('tmp',await jevalx(`(async()=>{while(1)0})`)) }catch(ex){ console.log('tmp ex',ex); }
 
   console.log('--------- TEST END, to CHECK any pwned -----------');
 });

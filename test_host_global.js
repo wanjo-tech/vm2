@@ -10,11 +10,11 @@ let assertWtf = require('assert');
 //console.log('assertWtf=',assertWtf);
 
 (async()=>{
-  var {jevalx_core,jevalx} = require('./jevalx');
+  var {jevalx} = require('./jevalx');
 
   //vm.createScript('Object.defineProperty').runInNewContext()
   //try{
-  //  console.log( 'testing Object.defineProperty:', await jevalx_core('Object.defineProperty') );
+  //  console.log( 'testing Object.defineProperty:', await jevalx('Object.defineProperty') );
   //}catch(ex){
   //  console.log('Object.defineProperty ex',ex)
   //}
@@ -42,7 +42,7 @@ typeof Object,typeof setTimeout,typeof hostGlobalX.process,
 `;
 try{
   var rst = await jevalx(code,{Object_keys:Object.keys,Object_entries:Object.entries});
-  var rst = await jevalx_core(code,{Object_keys:Object.keys,Object_entries:Object.entries});
+  var rst = await jevalx(code,{Object_keys:Object.keys,Object_entries:Object.entries});
   console.log('debug',rst);
   console.log('debug',rst._);
 }catch(ex){
