@@ -1,6 +1,6 @@
 process.on('unhandledRejection', (reason, promise) => {
   console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
-  process.exit();
+  //process.exit();
 });
 
 let jevalxModule = require('./jevalx.js');
