@@ -3,12 +3,12 @@ const setTimeoutWtf=setTimeout;
 const PromiseWtf=Promise;
 const Object_keys = Object.keys;
 const Object_getPrototypeOf = Object.getPrototypeOf;
-function findThenGetter(obj,deep=3) {
+function findEvilGetter(obj,deep=3) {
   let currentObj = obj;
   let i=0;
   while (currentObj !== null) {
-    if (i>3) return true;//break if too deep.
-    //console.log(i++);
+    if (i>2) return true;//assure found if too deep
+    //console.log(i++, currentObj);
     const descriptor = Object.getOwnPropertyDescriptor(currentObj, 'then');
     if (descriptor && typeof descriptor.get === 'function') {
       return descriptor.get; // Stop if the 'then' getter is found
@@ -40,8 +40,8 @@ var jevalx_core = async(js,ctx,timeout=60000,timeout_race=666,vm=require('node:v
         }}).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout});
         for (var i=0;i<9;i++) {
           if (evil || !rst || err) break;
-          let getter = findThenGetter(rst);
-          if (getter) { throw {message:'EvilProto',js} }
+          let found = findEvilGetter(rst);
+          if (found) { throw {message:'EvilProto',js} }
           if ('function'==typeof rst) {
             rst = rst();
           }else if (rst.then){
