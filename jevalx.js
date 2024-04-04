@@ -4,7 +4,7 @@ const PromiseWtf=Promise;
 const Object_keys = Object.keys;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-//const Promise_prototype_then = Promise.prototype.then;
+const Promise_prototype_then = Promise.prototype.then;
 const vm = require('node:vm');
 function findEvilGetter(obj,deep=3) {
   let currentObj = obj;
@@ -42,8 +42,8 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
         }}).runInContext(vm.createContext(ctx||{}),{breakOnSigint:true,timeout});
         for (var i=0;i<9;i++) {
           if (evil || !rst || err) break;
-          //PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
-          //if (findEvilGetter(rst)) throw {message:'EvilProto',js};
+          PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
+          if (findEvilGetter(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) { rst = rst();
           }else if (rst.then){
             if ( rst instanceof Promise || (''+rst)=='[object Promise]'){//sandbox Promise. dirty, will improve later...

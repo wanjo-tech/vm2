@@ -1,12 +1,13 @@
-//process.on('unhandledRejection', (reason, promise) => {
-//  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
-//});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
+  process.exit();
+});
 
 let jevalxModule = require('./jevalx.js');
 let assertWtf = require('assert');
 
-//jevalx = jevalxModule.jevalx_core;
-let jevalx = jevalxModule.jevalx;
+let jevalx = jevalxModule.jevalx_core;
+//let jevalx = jevalxModule.jevalx;
 
 (async()=>{
   console.log('--------- TEST START -----------');
@@ -480,6 +481,36 @@ obj
   console.log('Q10 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+return;//TODO
+//https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
+var code=`
+async function fn() {
+    (function stack() {
+        new Error().stack;
+        stack();
+    })();
+}
+p = fn();
+p.constructor = {
+    [Symbol.species]: class FakePromise {
+        constructor(executor) {
+            executor(
+                (x) => x,
+                (err) => { return err.constructor.constructor('return process')().mainModule.require('child_process').execSync('touch pwned'); }
+            )
+        }
+    }
+};
+p.then();
+`;
+  try{
+    console.log('R1 result=',await jevalx(code));
+  }catch(ex){
+    console.log('R1 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('R1 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
   //console.log('--------- TEST END, to CHECK any pwned -----------');
   //normal case:
   console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
@@ -500,7 +531,7 @@ obj
   // quick testing return a function that hacks:
 
   // core doesn't pass the ddos-alike codes:
-  try{ console.log('tmp',await jevalx(`(async()=>{while(1)0})`)) }catch(ex){ console.log('tmp ex',ex); }
+  //try{ console.log('tmp',await jevalx(`(async()=>{while(1)0})`)) }catch(ex){ console.log('tmp ex',ex); }
 
   console.log('--------- TEST END, to CHECK any pwned -----------');
 });
