@@ -56,9 +56,8 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
       try{
         let sandbox_level = 9;//
         let ctxx = vm.createContext(ctx||{});//
-        //vm.createScript(prejs_delete).runInContext(ctxx);//some cleanup
-        rst = vm.createScript(prejs_delete+`\n`
-            +js,{importModuleDynamically(specifier, referrer, importAttributes){
+        vm.createScript(prejs_delete).runInContext(ctxx);//prepare
+        rst = vm.createScript(js,{importModuleDynamically(specifier, referrer, importAttributes){
           evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
         }}).runInContext(ctxx,{breakOnSigint:true,timeout});
         for (var i=0;i<sandbox_level;i++) {
@@ -67,13 +66,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
           if (findEvilGetter(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) {
             //rst = rst();//security breach if run in this context
-            //tmp solution, improve later!
             ctxx['rst']=rst;
-            //rst = vm.createScript(prejs_delete+`\n`+'rst()'
-            //    ,{importModuleDynamically(specifier, referrer, importAttributes){
-            //  //console.log('EvilImport',{specifier,referrer});
-            //  evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
-            //}}).runInContext(vm.createContext({...ctx||{},...{rst}}),{breakOnSigint:true,timeout});
             rst = vm.createScript('rst()'
                 ,{importModuleDynamically(specifier, referrer, importAttributes){
               evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
@@ -82,6 +75,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
             if ( rst instanceof PromiseWtf || (''+rst)=='[object Promise]'){//sandbox Promise. dirty, will improve later...
               rst = await new PromiseWtf(async(r,j)=>{
                 setTimeoutWtf(()=>j({message:'Timeout',timeout}),timeout);
+//TODO will .then() still has problem?
                 try{ r(await rst) } catch(ex) { j(ex) };
               });
             }else throw {message:'EvilPromise',js}
