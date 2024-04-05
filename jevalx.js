@@ -11,6 +11,8 @@ const Object_getOwnPropertySymbols = Object.getOwnPropertySymbols;
 const Object_defineProperty = Object.defineProperty;
 const Object_defineProperties = Object.defineProperties;
 const Object_freeze = Object.freeze;
+const Object_assign = Object.assign;
+
 
 const Promise_prototype_then = Promise.prototype.then;
 const vm = require('node:vm');
@@ -18,7 +20,7 @@ function findEvilGetter(obj,deep=3) {
   let currentObj = obj;
   let i=0;
   while (currentObj !== null) {
-    if (i>2) return true;//assure found if too deep
+    if (i>2) return true;//found if too deep
     const descriptor = Object_getOwnPropertyDescriptor(currentObj, 'then');
     if (descriptor && typeof descriptor.get === 'function') {
       return descriptor.get; // Stop if the 'then' getter is found
@@ -32,6 +34,7 @@ const prejs_delete = [
   'process',//L0
   'Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols','Object.freeze',//L0
   'Proxy','Reflect',//L0
+  'Object.assign',//L0
   //'eval',
   //'require',
   'Object.prototype.__defineGetter__',//L2
@@ -56,6 +59,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
     delete Object.defineProperty;
     delete Object.getPrototypeOf;
     delete Object.getOwnPropertySymbols;
+    delete Object.assign;
 
     process = undefined;//L0
     //Promise = undefined;//to check...
@@ -79,18 +83,19 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
               evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
             }}).runInContext(ctxx,{breakOnSigint:true,timeout});
           }else if (rst.then){
-            if ( rst instanceof PromiseWtf || (''+rst)=='[object Promise]'){//sandbox Promise. dirty, will improve later...
-              rst = await new PromiseWtf(async(r,j)=>{
-                setTimeoutWtf(()=>j({message:'Timeout',js}),timeout);
-                try{ r(await rst) } catch(ex) { j(ex) };
-              });
-            }else throw {message:'EvilPromise',js}
+            rst = await new PromiseWtf(async(r,j)=>{
+              setTimeoutWtf(()=>j({message:'Timeout',js}),timeout);
+              try{ r(await rst) } catch(ex) { j(ex) };
+            });
           } else break;
         }
-        if (findEvilGetter(rst)) { throw {message:'EvilProto',js} }
-        if (rst && rst.then) throw {message:'EvilPromiseX',js};//!!!
-        if ('function'==typeof rst) throw {message:'EvilFunction',js};
-        if(rst==globalThis) throw {message:'EvilGlobal',js};
+        if (rst){
+          if (rst.hasOwnProperty('toString')) { throw {message:'EvilToString',js} }//not allow output have own .toString.
+          if (findEvilGetter(rst)) { throw {message:'EvilProto',js} }
+          if (rst.then) throw {message:'EvilPromiseX',js};//!!!
+          if ('function'==typeof rst) throw {message:'EvilFunction',js};
+          if(rst==globalThis) throw {message:'EvilGlobal',js};
+        }
       }catch(ex){ err = {message:ex?.message||'EvilUnknown',js}}
       setTimeoutWtf(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
     });
@@ -104,6 +109,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   Object.defineProperties = Object_defineProperties;
   Object.getPrototypeOf = Object_getPrototypeOf;
   Object.freeze = Object_freeze;
+  Object.assign = Object_assign;
 
   Promise = PromiseWtf;
   PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.

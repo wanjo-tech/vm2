@@ -235,6 +235,7 @@ Reflect.defineProperty(Function.prototype, 'then', {
   }
   console.log('KKKK check=',typeof(process),typeof(Promise));
 }).then(async()=>{
+//
 var code=`
 Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_L', ''))")
 `
@@ -575,6 +576,57 @@ false
     console.log('Q13 ex=',ex.message,JSON.stringify(ex.js));
   }
   console.log('Q13 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
+var code=`
+const global = constructor.constructor('return this')()
+global.Object = Object.assign({set freeze(f){f.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_q14", "")}}, global.Object);
+false
+`
+  try{
+    console.log('Q14 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q14 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q14 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
+var code=`
+({then: 1, toString: eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_q15', ''))")})
+`
+  try{
+    console.log('Q15 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q15 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q15 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
+
+// { toString: [Function: bound evil] }
+var code=`
+({then:(r,j)=>r({toString:eval.bind(null,"import('fs').then(m=>m.writeFileSync('pwned_q16', ''))")})})
+`
+  try{
+    //console.log('Q16 result=',''+await jevalx(code));//trigger pwn !!!
+    console.log('Q16 result=',String(await jevalx(code)));//trigger pwn !!!
+    //console.log('Q16 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q16 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q16 check=',typeof(process),typeof(Promise));
+}).then(async()=>{
+var code=`
+//const Function = (_=>_).constructor;
+({then:(r,j)=>r({toString:Function.bind(null,"import('fs').then(m=>m.writeFileSync('pwned_q17', ''))")})})
+`
+  try{
+    //console.log('Q17 result=',await jevalx(code));
+    console.log('Q17 result=',String(await jevalx(code)));
+  }catch(ex){
+    console.log('Q17 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q17 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
