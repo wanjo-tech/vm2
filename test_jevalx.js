@@ -611,6 +611,7 @@ p.then();
   console.log('Promise',Promise);
   console.log('Proxy',Proxy);
   console.log('Error',Error);
+  console.log('require',typeof require);
 
   //console.log('tmp',await jevalx(` const hostGlobal = this.constructor.constructor("return this")(); hostGlobal.__proto__.__defineGetter__ `));
   //console.log('tmp',await jevalx(`void(async()=>{throw 911})()`));

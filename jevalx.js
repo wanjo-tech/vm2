@@ -29,11 +29,15 @@ function findEvilGetter(obj,deep=3) {
 }
 //we are sandbox(run js inside ctx) instead of vm(full function), remove everything vulnerable!!
 const prejs_delete = [
-  'eval','process',
+  'eval',
+  //'process',
+  //'require',
   'Object.prototype.__defineGetter__',
   'Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols','Object.freeze',
   //'Promise',
-  'Proxy','Reflect','Function','Symbol','Error',
+  'Proxy','Reflect',
+  //'Function',
+  'Symbol','Error',
 ].map(w=> `delete ${w};`).join('');
 var jevalx_core = async(js,ctx,timeout=666)=>{
   let rst,err,evil=false,done=false;
