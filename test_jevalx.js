@@ -608,8 +608,8 @@ var code=`
 ({then:(r,j)=>r({toString:eval.bind(null,"import('fs').then(m=>m.writeFileSync('pwned_q16', ''))")})})
 `
   try{
-    //console.log('Q16 result=',''+await jevalx(code));//trigger pwn !!!
-    console.log('Q16 result=',String(await jevalx(code)));//trigger pwn !!!
+    console.log('Q16 result=',await jevalx(code));//trigger pwn !!!
+    //console.log('Q16 result=',String(await jevalx(code)));//trigger pwn !!!
     //console.log('Q16 result=',await jevalx(code));
   }catch(ex){
     console.log('Q16 ex=',ex.message,JSON.stringify(ex.js));
@@ -664,6 +664,18 @@ global.Array = {set freeze(f){f.constructor('return process')().mainModule.requi
     console.log('Q20 ex=',ex.message,JSON.stringify(ex.js));
   }
   console.log('Q20 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
+var code=`
+hasOwnProperty.bind = eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_q21', ''))");
+true
+`;
+  try{
+    console.log('Q21 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q21 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q21 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9

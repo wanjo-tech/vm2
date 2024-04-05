@@ -1,7 +1,6 @@
 const processWtf = require('process');
 const setTimeoutWtf=setTimeout;
 const PromiseWtf=Promise;
-//const FunctionWtf = Function;
 
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 
@@ -46,13 +45,14 @@ const prejs_delete = [
   //'Function',
   'Symbol','Error',
 ].map(w=> `delete ${w};`).join('');
+let throwx=e=>{throw(e)}
 var jevalx_core = async(js,ctx,timeout=666)=>{
-  let rst,err,evil=false,done=false;
+  let rst,err,evil=0,done=false,warnings=[];
   let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
   processWtf.addListener('unhandledRejection',tmpHandler);
   let Wtf={};
   try{
-    for(let k of[...Object_keys(globalThis),...['process','require']]){if(globalThis[k]){Wtf[k]=globalThis[k]};delete globalThis[k]};
+    for(let k of[...Object_keys(globalThis),...['process','require']]){if(globalThis[k]){Wtf[k]=globalThis[k];delete globalThis[k]}};
 
     //should not allow sandbox have these://L0
     delete Object.prototype.__defineGetter__;
@@ -65,7 +65,6 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
     delete Object.assign;
 
     process = undefined;//L0
-    //Promise = undefined;//to check...
 
     await new PromiseWtf(async(r,j)=>{
       try{
@@ -75,7 +74,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
         let ctxx = vm.createContext(ctx);//
         vm.createScript(prejs_delete).runInContext(ctxx);//prepare
         rst = vm.createScript(js,{importModuleDynamically(specifier, referrer, importAttributes){
-          evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
+          evil++; err = {message:'EvilImport',js};globalThis['process'] = undefined;
         }}).runInContext(ctxx,{breakOnSigint:true,timeout});
         for (var i=0;i<sandbox_level;i++) {
           if (evil || !rst || err) break;
@@ -85,7 +84,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
             ctxx['rst_tmp']=rst;
             rst = vm.createScript('rst_tmp()'
                 ,{importModuleDynamically(specifier, referrer, importAttributes){
-              evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
+              evil++; err = {message:'EvilImport',js};globalThis['process'] = undefined;
             }}).runInContext(ctxx,{breakOnSigint:true,timeout});
           }else if (rst.then){
             rst = await new PromiseWtf(async(r,j)=>{
@@ -95,13 +94,21 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
           } else break;
         }
         if (rst){
-          //TODO use Object_getOwnPropertyNames to enumerate and only allow primitive object? (planning)
-          //if (Object_hasOwnProperty.bind(rst)('hasOwnProperty')) { throw {message:'EvilHasOwnProperty',js} };
-          if (Object_hasOwnProperty.bind(rst)('toString')) { throw {message:'EvilToString',js} };
-          if (findEvilGetter(rst)) { throw {message:'EvilProto',js} }
-          if (rst.then) throw {message:'EvilPromiseX',js};//!!!
-          if ('function'==typeof rst) throw {message:'EvilFunction',js};
-          if(rst==globalThis) throw {message:'EvilGlobal',js};
+          (rst==globalThis)&&throwx({message:'EvilGlobal',js});
+
+          //quick concept prove, will clean up later...
+          for (let k of Object_getOwnPropertyNames(rst)){
+            if (k=='toString' || k =='then'){
+              warnings.push({[k]:rst[k]})
+              //console.log('!!! DEBUG TODO evil.',k,rst[k]);
+              delete rst[k];
+            }
+          }
+          //console.log('DEBUG Object_getOwnPropertyNames',Object_getOwnPropertyNames(rst));
+
+          findEvilGetter(rst)&&throwx({message:'EvilProto',js});
+          (rst.then)&&throwx({message:'EvilPromiseX',js});
+          ('function'==typeof(rst))&&throwx({message:'EvilFunction',js});
         }
       }catch(ex){ err = {message:ex?.message||'EvilUnknown',js}}
       setTimeoutWtf(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
@@ -122,12 +129,21 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   Promise = PromiseWtf;
   PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
 
-  if (evil || err) throw err;
+  //change design, now caller to jevalx_core() have own decision:
+  return [(evil||err)?undefined:rst,(evil||err)?err:undefined,warnings.length>0?warnings:undefined];
+
+  //if (evil || err) throw err;
+  //return rst;
+}
+
+var jevalx = async(js,ctx,timeout)=>{
+  var [rst,err,warnings] = await jevalx_core(js,ctx,timeout);
+  if (warnings) { console.log('warnings',warnings); }
+  if (err) throw err;
   return rst;
 }
-var jevalx = jevalx_core;
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core}
 
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core}
 
 //let tmpObject = undefined;
 //try{Object_defineProperty(globalThis,'Object',{get(k){ return undefined},set(o){ throw 'EvilObject' }})}catch(ex){console.log('Object_defineProperty',ex)}
