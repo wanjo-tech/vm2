@@ -2,6 +2,9 @@ const processWtf = require('process');
 const setTimeoutWtf=setTimeout;
 const PromiseWtf=Promise;
 
+const ArrayWtf = Array;
+const Array_prototype_push = ArrayWtf.prototype.push;
+
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 
 const ObjectWtf = Object;
@@ -95,11 +98,15 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
         }
         if (rst){
           (rst==globalThis)&&throwx({message:'EvilGlobal',js});
+          if (warnings.push!=Array_prototype_push) {//tmp solution, will improve later.
+            Array.prototype.push = Array_prototype_push;//
+            throwx({message:'EvilArray',js});
+          }
 
           //quick concept prove, will clean up later...
           for (let k of Object_getOwnPropertyNames(rst)){
             if (k=='toString' || k =='then'){
-              warnings.push({[k]:rst[k]})
+              //warnings.push({[k]:rst[k]})
               //console.log('!!! DEBUG TODO evil.',k,rst[k]);
               delete rst[k];
             }
@@ -118,6 +125,9 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   processWtf.removeListener('unhandledRejection',tmpHandler);
   for(var k in Wtf){globalThis[k]=Wtf[k]};
 
+  Array = ArrayWtf;//L0
+  Array.prototype.push = Array_prototype_push;//
+
   Object = ObjectWtf;//L0
   Object.getOwnPropertySymbols = Object_getOwnPropertySymbols;
   Object.defineProperty = Object_defineProperty;
@@ -128,9 +138,10 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
 
   Promise = PromiseWtf;
   PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
+  console.log('debug .push',Array.prototype?.push,warnings.push);
 
   //change design, now caller to jevalx_core() have own decision:
-  return [(evil||err)?undefined:rst,(evil||err)?err:undefined,warnings.length>0?warnings:undefined];
+  return [(evil||err)?undefined:rst,(evil||err)?err:undefined,warnings];
 
   //if (evil || err) throw err;
   //return rst;
