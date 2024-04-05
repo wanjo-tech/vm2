@@ -29,13 +29,14 @@ function findEvilGetter(obj,deep=3) {
 }
 //we are sandbox(run js inside ctx) instead of vm(full function), remove everything vulnerable!!
 const prejs_delete = [
+  'process',//L0
+  'Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols','Object.freeze',//L0
+  'Proxy','Reflect',//L0
   //'eval',
-  'process',
   //'require',
-  'Object.prototype.__defineGetter__',
-  'Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols','Object.freeze',
+  'Object.prototype.__defineGetter__',//L2
+  'Object.prototype.__defineSetter__',//L2
   //'Promise',
-  'Proxy','Reflect',
   //'Function',
   'Symbol','Error',
 ].map(w=> `delete ${w};`).join('');
@@ -47,16 +48,17 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   try{
     for(let k of[...Object_keys(globalThis),...['process','require']]){if(globalThis[k]){Wtf[k]=globalThis[k]};delete globalThis[k]};
 
-    //should not allow sandbox have these:
+    //should not allow sandbox have these://L0
     delete Object.prototype.__defineGetter__;
+    delete Object.prototype.__defineSetter__;
+    delete Object.freeze;
     delete Object.defineProperties;
     delete Object.defineProperty;
     delete Object.getPrototypeOf;
     delete Object.getOwnPropertySymbols;
-    delete Object.freeze;
 
-    process = undefined;//important
-    //Promise = undefined;//to confirm...
+    process = undefined;//L0
+    //Promise = undefined;//to check...
 
     await new PromiseWtf(async(r,j)=>{
       try{

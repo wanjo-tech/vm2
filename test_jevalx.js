@@ -565,6 +565,18 @@ false
 
 
 }).then(async()=>{
+var code=`
+this.constructor.__defineSetter__('freeze', f=>f.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_q13", ""));
+false
+`
+  try{
+    console.log('Q13 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q13 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q13 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
 ////Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
