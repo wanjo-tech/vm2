@@ -629,6 +629,43 @@ var code=`
   console.log('Q17 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+var code=`
+const global = constructor.constructor('return this')()
+global.Object = {set freeze(f){f.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_q18", "")}};
+false
+`
+  try{
+    console.log('Q18 result=',String(await jevalx(code)));
+  }catch(ex){
+    console.log('Q18 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q18 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
+var code=`
+({hasOwnProperty: eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_q19', ''))")})
+`
+  try{
+    console.log('Q19 result=',String(await jevalx(code)));
+  }catch(ex){
+    console.log('Q19 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q19 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
+var code=`
+const global = constructor.constructor('return this')()
+global.Array = {set freeze(f){f.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_q20", "")}};
+[1,2,3,]
+`
+  try{
+    console.log('Q20 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q20 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q20 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
 ////Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;

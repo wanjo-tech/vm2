@@ -5,6 +5,7 @@ const PromiseWtf=Promise;
 
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 
+const ObjectWtf = Object;
 const Object_keys = Object.keys;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_getOwnPropertySymbols = Object.getOwnPropertySymbols;
@@ -13,6 +14,7 @@ const Object_defineProperties = Object.defineProperties;
 const Object_freeze = Object.freeze;
 const Object_assign = Object.assign;
 
+const Object_hasOwnProperty = Object.hasOwnProperty;
 
 const Promise_prototype_then = Promise.prototype.then;
 const vm = require('node:vm');
@@ -66,8 +68,10 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
 
     await new PromiseWtf(async(r,j)=>{
       try{
-        let sandbox_level = 9;//
-        let ctxx = vm.createContext(ctx||{});//
+        let sandbox_level=9;//
+        ctx = ctx || {};//no empty
+        //ctx.console_log = console.log;//for dev-tmp
+        let ctxx = vm.createContext(ctx);//
         vm.createScript(prejs_delete).runInContext(ctxx);//prepare
         rst = vm.createScript(js,{importModuleDynamically(specifier, referrer, importAttributes){
           evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
@@ -90,7 +94,8 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
           } else break;
         }
         if (rst){
-          if (rst.hasOwnProperty('toString')) { throw {message:'EvilToString',js} }//not allow output have own .toString.
+          if (Object_hasOwnProperty.bind(rst)('hasOwnProperty')) { throw {message:'EvilHasOwnProperty',js} };
+          if (Object_hasOwnProperty.bind(rst)('toString')) { throw {message:'EvilToString',js} };
           if (findEvilGetter(rst)) { throw {message:'EvilProto',js} }
           if (rst.then) throw {message:'EvilPromiseX',js};//!!!
           if ('function'==typeof rst) throw {message:'EvilFunction',js};
@@ -104,6 +109,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   processWtf.removeListener('unhandledRejection',tmpHandler);
   for(var k in Wtf){globalThis[k]=Wtf[k]};
 
+  Object = ObjectWtf;//L0
   Object.getOwnPropertySymbols = Object_getOwnPropertySymbols;
   Object.defineProperty = Object_defineProperty;
   Object.defineProperties = Object_defineProperties;
@@ -119,3 +125,9 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
 }
 var jevalx = jevalx_core;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core}
+
+
+//let tmpObject = undefined;
+//try{Object_defineProperty(globalThis,'Object',{get(k){ return undefined},set(o){ throw 'EvilObject' }})}catch(ex){console.log('Object_defineProperty',ex)}
+
+
