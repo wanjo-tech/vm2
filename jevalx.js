@@ -127,6 +127,7 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
 
   Array = ArrayWtf;//L0
   Array.prototype.push = Array_prototype_push;//
+  //console.log('debug .push',Array.prototype?.push,warnings.push);
 
   Object = ObjectWtf;//L0
   Object.getOwnPropertySymbols = Object_getOwnPropertySymbols;
@@ -138,7 +139,6 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
 
   Promise = PromiseWtf;
   PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
-  console.log('debug .push',Array.prototype?.push,warnings.push);
 
   //change design, now caller to jevalx_core() have own decision:
   return [(evil||err)?undefined:rst,(evil||err)?err:undefined,warnings];
