@@ -646,7 +646,7 @@ var code=`
 ({hasOwnProperty: eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_q19', ''))")})
 `
   try{
-    console.log('Q19 result=',String(await jevalx(code)));
+    console.log('Q19 result=',await jevalx(code));
   }catch(ex){
     console.log('Q19 ex=',ex.message,JSON.stringify(ex.js));
   }

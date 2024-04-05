@@ -15,6 +15,7 @@ const Object_freeze = Object.freeze;
 const Object_assign = Object.assign;
 
 const Object_hasOwnProperty = Object.hasOwnProperty;
+const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
 
 const Promise_prototype_then = Promise.prototype.then;
 const vm = require('node:vm');
@@ -94,7 +95,8 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
           } else break;
         }
         if (rst){
-          if (Object_hasOwnProperty.bind(rst)('hasOwnProperty')) { throw {message:'EvilHasOwnProperty',js} };
+          //TODO use Object_getOwnPropertyNames to enumerate and only allow primitive object? (planning)
+          //if (Object_hasOwnProperty.bind(rst)('hasOwnProperty')) { throw {message:'EvilHasOwnProperty',js} };
           if (Object_hasOwnProperty.bind(rst)('toString')) { throw {message:'EvilToString',js} };
           if (findEvilGetter(rst)) { throw {message:'EvilProto',js} }
           if (rst.then) throw {message:'EvilPromiseX',js};//!!!
