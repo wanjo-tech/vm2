@@ -30,8 +30,10 @@ function findEvilGetter(obj,deep=3) {
 //we are sandbox(run js inside ctx) instead of vm(full function), remove everything vulnerable!!
 const prejs_delete = [
   'eval','process',
+  'Object.prototype.__defineGetter__',
   'Object.getPrototypeOf','Object.defineProperties','Object.defineProperty','Object.getOwnPropertySymbols','Object.freeze',
-  'Promise','Proxy','Reflect','Function','Symbol','Error',
+  //'Promise',
+  'Proxy','Reflect','Function','Symbol','Error',
 ].map(w=> `delete ${w};`).join('');
 var jevalx_core = async(js,ctx,timeout=666)=>{
   let rst,err,evil=false,done=false;
@@ -41,16 +43,16 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
   try{
     for(let k of[...Object_keys(globalThis),...['process','require']]){if(globalThis[k]){Wtf[k]=globalThis[k]};delete globalThis[k]};
 
-    delete Object.prototype.__defineGetter__;//important!!
-    delete Object.defineProperties;//important
-    delete Object.defineProperty;//important
-    delete Object.getPrototypeOf;//
-    delete Object.getOwnPropertySymbols;//
-    delete Object.freeze;//
+    //should not allow sandbox have these:
+    delete Object.prototype.__defineGetter__;
+    delete Object.defineProperties;
+    delete Object.defineProperty;
+    delete Object.getPrototypeOf;
+    delete Object.getOwnPropertySymbols;
+    delete Object.freeze;
 
-    process = undefined;
-    Promise = undefined;
-    //Function = undefined;
+    process = undefined;//important
+    //Promise = undefined;//to confirm...
 
     await new PromiseWtf(async(r,j)=>{
       try{
@@ -62,28 +64,25 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
         }}).runInContext(ctxx,{breakOnSigint:true,timeout});
         for (var i=0;i<sandbox_level;i++) {
           if (evil || !rst || err) break;
-          PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
+          ////PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
           if (findEvilGetter(rst)) throw {message:'EvilProto',js};
-          if ('function'==typeof rst) {
-            //rst = rst();//security breach if run in this context
-            ctxx['rst']=rst;
-            rst = vm.createScript('rst()'
+          if ('function'==typeof rst) {//run in the sandbox !
+            ctxx['rst_tmp']=rst;
+            rst = vm.createScript('rst_tmp()'
                 ,{importModuleDynamically(specifier, referrer, importAttributes){
               evil=true; err = {message:'EvilImport',js};globalThis['process'] = undefined;
             }}).runInContext(ctxx,{breakOnSigint:true,timeout});
           }else if (rst.then){
             if ( rst instanceof PromiseWtf || (''+rst)=='[object Promise]'){//sandbox Promise. dirty, will improve later...
               rst = await new PromiseWtf(async(r,j)=>{
-                setTimeoutWtf(()=>j({message:'Timeout',timeout}),timeout);
-//TODO will .then() still has problem?
+                setTimeoutWtf(()=>j({message:'Timeout',js}),timeout);
                 try{ r(await rst) } catch(ex) { j(ex) };
               });
             }else throw {message:'EvilPromise',js}
           } else break;
         }
-        PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
         if (findEvilGetter(rst)) { throw {message:'EvilProto',js} }
-        if (rst && rst.then) throw {message:'EvilPromiseX',js};
+        if (rst && rst.then) throw {message:'EvilPromiseX',js};//!!!
         if ('function'==typeof rst) throw {message:'EvilFunction',js};
         if(rst==globalThis) throw {message:'EvilGlobal',js};
       }catch(ex){ err = {message:ex?.message||'EvilUnknown',js}}
@@ -93,15 +92,16 @@ var jevalx_core = async(js,ctx,timeout=666)=>{
 
   processWtf.removeListener('unhandledRejection',tmpHandler);
   for(var k in Wtf){globalThis[k]=Wtf[k]};
+
   Object.getOwnPropertySymbols = Object_getOwnPropertySymbols;
   Object.defineProperty = Object_defineProperty;
   Object.defineProperties = Object_defineProperties;
   Object.getPrototypeOf = Object_getPrototypeOf;
   Object.freeze = Object_freeze;
 
-  //Function = FunctionWtf;
   Promise = PromiseWtf;
   PromiseWtf.prototype.then = Promise_prototype_then;//important for Promise hack.
+
   if (evil || err) throw err;
   return rst;
 }

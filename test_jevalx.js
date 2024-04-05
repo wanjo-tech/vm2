@@ -602,6 +602,8 @@ p.then();
   console.log('ASSERT 81 == x**y',await jevalx('(async()=>x**y)()',{x:3,y:4}));
   //assertWtf.equal( 81 , await jevalx('x**y',{x:3,y:4}) );
 
+  console.log('ASSERT 27 == new Promise(r=>r(x**y))',await jevalx('new Promise(r=>r(x**y))',{x:3,y:3}));
+
   console.log('ASSERT undefined == process:',await jevalx('[].constructor.constructor("return typeof(process)")()'));
 
   //console.log('check "this"',await jevalx('[this,2**3]'));
