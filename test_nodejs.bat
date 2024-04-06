@@ -1,1 +1,3 @@
-node test_jevalx.js && git status
+node test_jevalx.js 2>&1 > test.log
+type test.log
+git status

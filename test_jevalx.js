@@ -73,7 +73,6 @@ void (async () => {
   }
   console.log('BBB2 check=',typeof(process),typeof(Promise));
 }).then(async()=>{
-//return;//tmp skip
 var code=`
 Object.defineProperty(this.constructor.constructor("return this")(),"process",{set(process) { process.mainModule.require("fs").writeFileSync("pwned_case_c", ""+(typeof this)+this)}})
 `
@@ -737,13 +736,14 @@ p.then();
   console.log('Proxy',Proxy);
   console.log('Error',Error);
   console.log('require',typeof require);
+  console.log('Array.prototype.push',Array.prototype.push);
 
   //console.log('tmp',await jevalx(` const hostGlobal = this.constructor.constructor("return this")(); hostGlobal.__proto__.__defineGetter__ `));
   //console.log('tmp',await jevalx(`void(async()=>{throw 911})()`));
   // quick testing return a function that hacks:
 
   // core doesn't pass the ddos-alike codes:
-  try{ console.log('tmp',await jevalx(`(async()=>{while(1)0})`)) }catch(ex){ console.log('tmp ex',ex); }
+  try{ console.log('deadloop',await jevalx(`(async()=>{while(1)0})`)) }catch(ex){ console.log('deadloop.ex',ex); }
 
   console.log('--------- TEST END, to CHECK any pwned -----------');
 });
