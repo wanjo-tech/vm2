@@ -25,34 +25,11 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
 
 const throwx=e=>{throw(e)}
 let jevalx_core = async(js,ctx,timeout=666)=>{
-  let [ctxx,_] = jevalx_raw(`
-(()=>{
-//const host_then = import('').then(_=>_,_=>_).then;
-const disabledConstructor=()=>(()=>{throw 'EvilConstructor'});
-const host_then = (async()=>1)().then(_=>_,_=>_).then;
-//host_then.constructor=undefined;
-host_then.constructor=disabledConstructor;
-Object.freeze(host_then);
-//constructor.constructor=undefined;
-constructor.constructor=disabledConstructor;
-//constructor.keys=undefined;
-constructor.keys=disabledConstructor;
-//constructor.__proto__.constructor=undefined;//
-constructor.__proto__.constructor=disabledConstructor;//
-Object.freeze(constructor);//
-delete Object.defineProperty;
-delete Object.defineProperties;
-delete Object.getPrototypeOf;
-delete Object.getOwnPropertySymbols;
-delete Object.prototype.__defineGetter__;
-delete Object.prototype.__defineSetter__;
-delete Object.constructor;
-delete Object.freeze;
-delete Symbol;//replaced
-delete Error;//replaced.
-})();
-`,ctx);
-  //ctxx.console_log = console_log;//for quick-dev-tmp
+  let [ctxx,_] = jevalx_raw(`((Constructor=()=>(()=>{throw 'EvilConstructor'}))=>{
+    constructor.__proto__.constructor=Constructor;//L0
+    Object.freeze(constructor);//L0
+  })();`,ctx);
+  //ctxx.console_log = console_log;//for quick-dev
   let rst,err,evil=0,done=false,warnings=[];
   let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
   process.addListener('unhandledRejection',tmpHandler);
@@ -64,7 +41,7 @@ delete Error;//replaced.
       //return import('./fake.mjs');//TEMP TEST
     }});
     ctxx.eval = (js)=>jevalx_raw(js,ctxx,timeout)[1];
-    ctxx.Error = function(message,code){return{message,code,stack:[]}};
+    //ctxx.Error = function(message,code){return{message,code,stack:[]}};
     ctxx.Symbol = function(...args){throw {message:'EvilSymbol'}};
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV ONLY...
@@ -85,7 +62,7 @@ delete Error;//replaced.
             });
           } else break;
         }
-      }catch(ex){ err = {message:ex?.message||'EvilUnknown',js}}
+      }catch(ex){err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}}
       setTimeout(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilX',js};/* console_log('EvilX',ex)*/ }
@@ -261,4 +238,22 @@ await jevalx_dev(`constructor.keys(0).__proto__.push=undefined;`);Array.prototyp
 await jevalx_dev(`delete constructor;delete constructor.constructor;constructor.constructor("return process")()`)
 await jevalx_dev(`constructor.__proto__.constructor("return process")()`)
 await jevalx('delete (async()=>{})().then(_=>_,_=>_).then.constructor;(async()=>{})().then(_=>_,_=>_).then.constructor("return process")
+
+
 */
+    //constructor.constructor=Constructor;
+    //constructor.keys=Constructor;
+    //const host_then = (async()=>1)().then(_=>_,_=>_).then;
+    //host_then.constructor=Constructor;
+    //Object.freeze(host_then);
+
+    //delete Object.defineProperty;
+    //delete Object.defineProperties;
+    //delete Object.getPrototypeOf;
+    //delete Object.getOwnPropertySymbols;
+    //delete Object.prototype.__defineGetter__;
+    //delete Object.prototype.__defineSetter__;
+    //delete Object.constructor;
+    //delete Object.freeze;
+    //delete Symbol;//replaced
+    //delete Error;//replaced.
