@@ -73,7 +73,7 @@ delete Object.freeze;
   })()`,ctxx);
 
   let rst,err,evil=0,done=false,warnings=[];
-  let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
+  let tmpHandler = (reason, promise)=>{ err={message:'Evil',js} };
   process.addListener('unhandledRejection',tmpHandler);
   try{
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
@@ -101,10 +101,10 @@ delete Object.freeze;
             });
           } else break;
         }
-      }catch(ex){err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}}
+      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
       setTimeout(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
     });
-  }catch(ex){ err = {message:ex?.message||'EvilX',js};/* console_log('EvilX',ex)*/ }
+  }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
   process.removeListener('unhandledRejection',tmpHandler);
   if (evil || err) throw err;
   return rst;
