@@ -25,7 +25,7 @@ const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   if (!vm.isContext(ctx||{})) {
-    ctxx = vm.createContext( (()=>{function ObjectX(){};let rt = new ObjectX();rt.__proto__=ObjectX;return rt})());
+    ctxx = vm.createContext(new(function Object(){}));
     [ctxx,rst] = jevalx_raw(`delete Object;delete eval;delete Function;delete Reflect;delete Proxy;delete Symbol;`,ctxx);
     if (ctx) Object_assign(ctxx,ctx);
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout)[1];//NOTES no need use js_opts for eval()
