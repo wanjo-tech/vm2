@@ -93,7 +93,7 @@ delete Object.freeze;
           if (findEvilGetter(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) {//run in the sandbox !
             ctxx['rst_tmp']=rst;
-            [ctxx,rst] = jevalx_raw('()=>{let rt=rst_tmp;delete rst_tmp;return rst_tmp()}',ctxx,timeout,js_opts);
+            [ctxx,rst] = jevalx_raw('rst_tmp()',ctxx,timeout,js_opts);
           }else if (rst.then){
             rst = await new Promise(async(r,j)=>{
               setTimeout(()=>j({message:'Timeout',js}),timeout);
