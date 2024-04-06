@@ -1,7 +1,16 @@
 const vm = require('node:vm');
 const console_log = console.log;
+const Object_keys = Object.keys;
+
+const Object_getOwnPropertySymbols = Object.getOwnPropertySymbols;
+
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
+const Object_defineProperty = Object.defineProperty;
+const Object_defineProperties = Object.defineProperties;
+const Object_freeze = Object.freeze;
+const Object_assign = Object.assign;
+
 function findEvilGetter(obj,deep=3) {
   let currentObj = obj;
   let i=0;
@@ -23,11 +32,25 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
 const throwx=e=>{throw(e)}
 let jevalx_core = async(js,ctx,timeout=666)=>{
 
-  //init with house-sweeping:
-  let [ctxx,_] = jevalx_raw(`((Constructor=()=>(()=>{throw'EvilConstructor'}))=>{
+  let ctxx,_;
+  [ctxx,_] = jevalx_raw(`(()=>{delete eval;delete Function; delete Reflect; delete Proxy; delete Symbol; })();`,ctx);
+
+  //attach tools:
+  Object_assign(ctxx,{
+eval:(js)=>jevalx_raw(js,ctxx,timeout)[1],console_log,
+Symbol:(...args)=>{throw {message:'TodoSymbol'}},
+Reflect:(...args)=>{throw {message:'TodoReflect'}},
+Proxy:(...args)=>{throw {message:'TodoProxy'}},
+});
+
+  //house-sweeping
+  let sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
+  [ctxx,_] = jevalx_raw(`(()=>{
+Function=${sFunction};
+constructor.__proto__.constructor=Function;
 delete constructor.prototype.__defineSetter__;
 delete constructor.prototype.__defineGetter__;
-constructor.__proto__.constructor=Constructor;
+constructor.__proto__.constructor=Function;
 Object.freeze(constructor.__proto__.constructor);
 
 delete constructor.defineProperties;
@@ -39,7 +62,6 @@ delete constructor.assign;
 if (constructor.freeze!==Object.freeze){ delete constructor.freeze; }
 Object.freeze(constructor);
 
-//Object.prototype.constructor=Constructor;
 delete Object.prototype.__defineGetter__;
 delete Object.prototype.__defineSetter__;
 delete Object.defineProperties;
@@ -47,17 +69,8 @@ delete Object.defineProperty;
 delete Object.getPrototypeOf;
 delete Object.getOwnPropertySymbols;
 delete Object.assign;
-
-//still danger:
-delete Reflect;
-delete Proxy;
-
 delete Object.freeze;
-delete Symbol;//TODO
-delete Function;//TODO
-})();
-`,ctx);
-  //ctxx.console_log = console_log;//for quick-dev
+  })()`,ctxx);
 
   let rst,err,evil=0,done=false,warnings=[];
   let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
@@ -69,10 +82,6 @@ delete Function;//TODO
       evil++; err = {message:'EvilImport',js};
       throw('EvilImport');
     }});
-    ctxx.eval = (js)=>jevalx_raw(js,ctxx,timeout)[1];
-    //ctxx.Error = function(message,code){return{message,code,stack:[]}};
-    ctxx.Symbol = function(...args){throw {message:'EvilSymbol'}};
-    ctxx.Function = function(...args){console_log('TodoFunctoin',args);return function(){console_log('TodoFunctoinX',arguments[0],arguments[1])}};
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV ONLY...
       try{
@@ -84,7 +93,7 @@ delete Function;//TODO
           if (findEvilGetter(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) {//run in the sandbox !
             ctxx['rst_tmp']=rst;
-            [ctxx,rst] = jevalx_raw('rst_tmp()',ctxx,timeout,js_opts);
+            [ctxx,rst] = jevalx_raw('()=>{let rt=rst_tmp;delete rst_tmp;return rst_tmp()}',ctxx,timeout,js_opts);
           }else if (rst.then){
             rst = await new Promise(async(r,j)=>{
               setTimeout(()=>j({message:'Timeout',js}),timeout);
