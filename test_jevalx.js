@@ -595,7 +595,9 @@ var code=`
 ({then: 1, toString: eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_q15', ''))")})
 `
   try{
-    console.log('Q15 result=',await jevalx(code));
+    var rst = await jevalx(code);
+    console.log('Q15 result=',rst);
+    console.log('Q15 result=',await rst.toString());//will trigger evil?
   }catch(ex){
     console.log('Q15 ex=',ex.message,JSON.stringify(ex.js));
   }

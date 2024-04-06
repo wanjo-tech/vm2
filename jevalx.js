@@ -18,7 +18,8 @@ function findEvilGetter(obj,deep=3) {
 }
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
-  if (!vm.isContext(ctxx||{})) ctxx = vm.createContext(ctxx||{});
+  //console.log('jevalx_raw',js);
+  if (!vm.isContext(ctxx||{})) { ctxx = vm.createContext(ctxx||{}); }
   return [ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})]
 }
 
@@ -62,7 +63,7 @@ delete Error;//replaced.
       throw('EvilImport');
       //return import('./fake.mjs');//TEMP TEST
     }});
-    //ctxx.eval = (js)=>jevalx_raw(js,ctxx,timeout)[1];
+    ctxx.eval = (js)=>jevalx_raw(js,ctxx,timeout)[1];
     ctxx.Error = function(message,code){return{message,code,stack:[]}};
     ctxx.Symbol = function(...args){throw {message:'EvilSymbol'}};
     await new Promise(async(r,j)=>{
