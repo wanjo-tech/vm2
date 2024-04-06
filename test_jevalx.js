@@ -25,9 +25,10 @@ void (async () => {
 })();
 `;
   try{
-    console.log('AAAA result=',await jevalx(code));
+    var rst = await jevalx(code);
+    console.log('AAAA result=',rst);
   }catch(ex){
-    console.log('AAAA ex=',ex.message);
+    console.log('AAAA ex=',ex);
   }
   console.log('AAAA check=',typeof(process),typeof(Promise));
 }).then(async()=>{

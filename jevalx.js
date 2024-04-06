@@ -25,13 +25,19 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
 const throwx=e=>{throw(e)}
 let jevalx_core = async(js,ctx,timeout=666)=>{
   let [ctxx,_] = jevalx_raw(`
+(()=>{
 //const host_then = import('').then(_=>_,_=>_).then;
+const disabledConstructor=()=>(()=>{throw 'EvilConstructor'});
 const host_then = (async()=>1)().then(_=>_,_=>_).then;
-host_then.constructor=undefined;
+//host_then.constructor=undefined;
+host_then.constructor=disabledConstructor;
 Object.freeze(host_then);
-constructor.constructor=undefined;
-constructor.keys=undefined;
-constructor.__proto__.constructor=undefined;//
+//constructor.constructor=undefined;
+constructor.constructor=disabledConstructor;
+//constructor.keys=undefined;
+constructor.keys=disabledConstructor;
+//constructor.__proto__.constructor=undefined;//
+constructor.__proto__.constructor=disabledConstructor;//
 Object.freeze(constructor);//
 delete Object.defineProperty;
 delete Object.defineProperties;
@@ -43,25 +49,21 @@ delete Object.constructor;
 delete Object.freeze;
 delete Symbol;//replaced
 delete Error;//replaced.
+})();
 `,ctx);
-  //ctxx.import=()=>throwx('EvilImportX');//to break the evil
-  //ctxx.console_log = console_log;//for dev-tmp
-
+  //ctxx.console_log = console_log;//for quick-dev-tmp
   let rst,err,evil=0,done=false,warnings=[];
-
   let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
   process.addListener('unhandledRejection',tmpHandler);
   try{
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       console_log('EvilImport',{importAttributes});
       evil++; err = {message:'EvilImport',js};
-      //const m = new vm.SyntheticModule(['bar'], () => { });
-      //await m.link(() => { });
-      //m.setExport('bar', { hello: 'world' });
-      //return m;
+      throw('EvilImport');
+      //return import('./fake.mjs');//TEMP TEST
     }});
     //ctxx.eval = (js)=>jevalx_raw(js,ctxx,timeout)[1];
-    ctxx.Error = function(message,code){return{message,code,stack}};
+    ctxx.Error = function(message,code){return{message,code,stack:[]}};
     ctxx.Symbol = function(...args){throw {message:'EvilSymbol'}};
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV ONLY...
