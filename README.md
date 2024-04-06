@@ -19,7 +19,9 @@ https://github.com/wanjo-tech/vm2/blob/main/test_jevalx.js
 ## key notes
 * (DONE) freeze the \_\_proto\_\_.constructor inside the sandbox
 * (DONE) using setTimeout to delay waiting for the vm done.
-* (DONE) import() can be intercepted. (TODO) hand over to caller in future
+* (DONE) Promise/function now auto handled (in max 9 level)
+* (DONE) eval is routed to sandbox again.
+* (DONE) import() can be intercepted. (TODO) handover to caller in future
 * (DONE) timeout handling to defence ddos attach by codes like: (async()=>{while(1)0})
 * (DONE) dont in bun (another js runtime)
 
@@ -28,3 +30,7 @@ thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being annoyed b
 ## application
 
 I use it in my kk project.
+
+## contribution
+
+@j4k0xb, @XmiliaH, and Wanjo (@mgttt)
