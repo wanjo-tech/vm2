@@ -27,7 +27,8 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
 const throwx=e=>{throw(e)}
 let jevalx_core = async(js,ctx,timeout=666)=>{
   let [ctxx,_] = jevalx_raw(`
-const host_then = import('').then(_=>_,_=>_).then;
+//const host_then = import('').then(_=>_,_=>_).then;
+const host_then = (async()=>1)().then(_=>_,_=>_).then;
 host_then.constructor=undefined;
 Object.freeze(host_then);
 constructor.constructor=undefined;
@@ -62,10 +63,7 @@ delete Error;
       m.setExport('bar', { hello: 'world' });
       return m;
     }});
-    ctxx.eval = (js)=>{
-      console_log('fwd_eval',js);
-      return jevalx_raw(js,ctxx,timeout)[1];//TODO?
-    }
+    //ctxx.eval = (js)=>jevalx_raw(js,ctxx,timeout)[1];
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV ONLY...
       try{
