@@ -53,6 +53,8 @@ delete Reflect;
 delete Proxy;
 
 delete Object.freeze;
+delete Symbol;//TODO
+delete Function;//TODO
 })();
 `,ctx);
   //ctxx.console_log = console_log;//for quick-dev
@@ -70,6 +72,7 @@ delete Object.freeze;
     ctxx.eval = (js)=>jevalx_raw(js,ctxx,timeout)[1];
     //ctxx.Error = function(message,code){return{message,code,stack:[]}};
     ctxx.Symbol = function(...args){throw {message:'EvilSymbol'}};
+    ctxx.Function = function(...args){console_log('TodoFunctoin',args);return function(){console_log('TodoFunctoinX',arguments[0],arguments[1])}};
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV ONLY...
       try{
