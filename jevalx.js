@@ -25,8 +25,9 @@ const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   if (!vm.isContext(ctx||{})) {
-    ctxx = vm.createContext(new(function Object(){}));
-    ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout)[1];//NOTES no need use js_opts for eval()
+    ctxx = vm.createContext(new(function Object(){})/*,{microtaskMode:'afterEvaluate'}*/);
+    //very important: replace dangerous
+    ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//NOTES no need use js_opts for eval()
     ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
     ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
     ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
@@ -45,6 +46,9 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
       //TODO make some fake import in future...or put it in the args by caller...
       //console_log('TODO EvilImport',{specifier,referrer});
       evil++; err = {message:'EvilImport',js};
+      if (specifier=='fs'){
+        return import(`./fake${specifier||""}.mjs`)
+      }
       throw('EvilImport');
     }});
     await new Promise(async(r,j)=>{
