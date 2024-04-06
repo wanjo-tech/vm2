@@ -4,7 +4,7 @@ I post the hide-and-seek solution here for your referece here.  Wish you a good 
 
 Challenge still accepted!
 
-The plan is simple, --hide before call and recover when done-- just freeze the danger part!.  Might be dirty but it is useful when sandbox still needed for projects.
+The plan is simple, just freeze the danger part!.  Might be dirty but it is useful when sandbox still needed for projects.
 
 ## code
 
