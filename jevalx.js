@@ -26,13 +26,12 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   if (!vm.isContext(ctx||{})) {
     ctxx = vm.createContext(new(function Object(){}));
-    [ctxx,rst] = jevalx_raw(`delete Object;delete eval;delete Function;delete Reflect;delete Proxy;delete Symbol;Object=constructor.__proto__`,ctxx);
-    if (ctx) Object_assign(ctxx,ctx);
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout)[1];//NOTES no need use js_opts for eval()
     ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
     ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
     ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
-    [ctxx,rst] = jevalx_raw(`Function=${sFunction};constructor.__proto__.constructor=Function;`,ctxx);
+    [ctxx,rst] = jevalx_raw(`Function=${sFunction};constructor.__proto__.constructor=Function;Object=constructor.__proto__`,ctxx);
+    if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
 }
