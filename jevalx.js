@@ -1,14 +1,13 @@
 const vm = require('node:vm');
 const console_log = console.log;
-const Object_keys = Object.keys;
 
-const Object_getOwnPropertySymbols = Object.getOwnPropertySymbols;
+//const Object_keys = Object.keys;
+//const Object_getOwnPropertySymbols = Object.getOwnPropertySymbols;
+//const Object_defineProperty = Object.defineProperty;
+//const Object_defineProperties = Object.defineProperties;
 
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
-const Object_defineProperty = Object.defineProperty;
-const Object_defineProperties = Object.defineProperties;
-const Object_freeze = Object.freeze;
 const Object_assign = Object.assign;
 
 function findEvilGetter(obj,deep=3) {
@@ -24,55 +23,27 @@ function findEvilGetter(obj,deep=3) {
   }
   return false;
 }
-let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
-  //console.log('jevalx_raw',js);
-  if (!vm.isContext(ctxx||{})) { ctxx = vm.createContext(ctxx||{}); }
-  return [ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})]
+let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
+
+const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
+
+const jevalx_setup = (js,ctx,timeout=666,js_opts)=>{
+  let rst,ctxx;
+  if (!vm.isContext(ctx||{})) {
+    ctxx = vm.createContext( (()=>{ return new(function Object(){}); })());
+    [ctxx,rst] = jevalx_raw(`delete eval;delete Function;delete Reflect;delete Proxy;delete Symbol;`,ctxx);
+    if (ctx) Object_assign(ctxx,ctx);
+    ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout)[1];
+    ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
+    ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
+    ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
+    [ctxx,rst] = jevalx_raw(`(()=>{ Function=${sFunction}; constructor.__proto__.constructor=Function; })()`,ctxx);
+  }
+  return jevalx_raw(js,ctxx,timeout)
 }
-const throwx=e=>{throw(e)}
+
 let jevalx_core = async(js,ctx,timeout=666)=>{
-
-  let ctxx,_;
-  [ctxx,_] = jevalx_raw(`(()=>{delete eval;delete Function; delete Reflect; delete Proxy; delete Symbol; })();`,ctx);
-
-  //attach tools:
-  Object_assign(ctxx,{
-eval:(js)=>jevalx_raw(js,ctxx,timeout)[1],console_log,
-Symbol:(...args)=>{throw {message:'TodoSymbol'}},
-Reflect:(...args)=>{throw {message:'TodoReflect'}},
-Proxy:(...args)=>{throw {message:'TodoProxy'}},
-});
-
-  //house-sweeping
-  let sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
-  [ctxx,_] = jevalx_raw(`(()=>{
-Function=${sFunction};
-constructor.__proto__.constructor=Function;
-delete constructor.prototype.__defineSetter__;
-delete constructor.prototype.__defineGetter__;
-constructor.__proto__.constructor=Function;
-//Object.freeze(constructor.__proto__.constructor);
-
-delete constructor.defineProperties;
-delete constructor.defineProperty;
-delete constructor.getPrototypeOf;
-delete constructor.getOwnPropertySymbols;
-delete constructor.assign;
-
-if (constructor.freeze!==Object.freeze){ delete constructor.freeze; }
-//Object.freeze(constructor);
-
-delete Object.prototype.__defineGetter__;
-delete Object.prototype.__defineSetter__;
-delete Object.defineProperties;
-delete Object.defineProperty;
-delete Object.getPrototypeOf;
-delete Object.getOwnPropertySymbols;
-delete Object.assign;
-delete Object.freeze;
-  })()`,ctxx);
-
-  let rst,err,evil=0,done=false,warnings=[];
+  let ctxx,rst,err,evil=0;
   let tmpHandler = (reason, promise)=>{ err={message:'Evil',js} };
   process.addListener('unhandledRejection',tmpHandler);
   try{
@@ -85,10 +56,10 @@ delete Object.freeze;
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV ONLY...
       try{
-        [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
+        [ctxx,rst] = jevalx_setup(js,ctx,timeout,js_opts);
         let sandbox_level = 9;
         for (var i=0;i<sandbox_level;i++) {
-          //console_log('debug',i,rst);
+          console_log('debug',i,rst);
           if (evil || !rst || err) break;
           if (findEvilGetter(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) {//run in the sandbox !
@@ -102,7 +73,7 @@ delete Object.freeze;
           } else break;
         }
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
-      setTimeout(()=>{ if (!done){ done = true; if (evil||err) j(err); else r(rst); } },1);
+      setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
   process.removeListener('unhandledRejection',tmpHandler);
@@ -110,6 +81,5 @@ delete Object.freeze;
   return rst;
 }
 var jevalx = jevalx_core;
-var jevalx_dev = jevalx_core;
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_dev}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_setup}
 

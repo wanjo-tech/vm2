@@ -15,6 +15,8 @@ https://github.com/wanjo-tech/vm2/blob/main/jevalx.js
 https://github.com/wanjo-tech/vm2/blob/main/test_jevalx.js
 
 ## key notes
+* constructor[at]sandbox == Object[at]host != Object[at]sandbox
+* sth throw from sandbox will trigger toString if use (''+) op
 * (DONE) freeze the \_\_proto\_\_.constructor inside the sandbox (somehow cloudflare design)
 * (DONE) using setTimeout to delay waiting for the sandbox done.
 * (DONE) Promise/function now auto handled (in max 9 level)
