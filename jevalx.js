@@ -51,7 +51,7 @@ constructor.__proto__.constructor=Function;
 delete constructor.prototype.__defineSetter__;
 delete constructor.prototype.__defineGetter__;
 constructor.__proto__.constructor=Function;
-Object.freeze(constructor.__proto__.constructor);
+//Object.freeze(constructor.__proto__.constructor);
 
 delete constructor.defineProperties;
 delete constructor.defineProperty;
@@ -60,7 +60,7 @@ delete constructor.getOwnPropertySymbols;
 delete constructor.assign;
 
 if (constructor.freeze!==Object.freeze){ delete constructor.freeze; }
-Object.freeze(constructor);
+//Object.freeze(constructor);
 
 delete Object.prototype.__defineGetter__;
 delete Object.prototype.__defineSetter__;
