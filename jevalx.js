@@ -47,7 +47,9 @@ delete Object.getPrototypeOf;
 delete Object.getOwnPropertySymbols;
 delete Object.assign;
 
+//still danger:
 delete Reflect;
+delete Proxy;
 
 delete Object.freeze;
 })();
