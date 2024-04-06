@@ -1,11 +1,6 @@
 const vm = require('node:vm');
 const console_log = console.log;
 
-//const Object_keys = Object.keys;
-//const Object_getOwnPropertySymbols = Object.getOwnPropertySymbols;
-//const Object_defineProperty = Object.defineProperty;
-//const Object_defineProperties = Object.defineProperties;
-
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_assign = Object.assign;
@@ -33,11 +28,11 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
     ctxx = vm.createContext( (()=>{ return new(function Object(){}); })());
     [ctxx,rst] = jevalx_raw(`delete eval;delete Function;delete Reflect;delete Proxy;delete Symbol;`,ctxx);
     if (ctx) Object_assign(ctxx,ctx);
-    ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout)[1];
+    ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout)[1];//NOTES no need use js_opts for eval()
     ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
     ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
     ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
-    [ctxx,rst] = jevalx_raw(`(()=>{ Function=${sFunction}; constructor.__proto__.constructor=Function; })()`,ctxx);
+    [ctxx,rst] = jevalx_raw(`(()=>{Function=${sFunction};constructor.__proto__.constructor=Function})()`,ctxx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
 }
@@ -49,7 +44,7 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
   try{
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       //TODO make some fake import in future...or put it in the args by caller...
-      console_log('TODO EvilImport',{importAttributes});
+      //console_log('TODO EvilImport',{specifier,referrer});
       evil++; err = {message:'EvilImport',js};
       throw('EvilImport');
     }});
