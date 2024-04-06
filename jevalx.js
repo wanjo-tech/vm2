@@ -22,7 +22,7 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
 }
 const throwx=e=>{throw(e)}
 let jevalx_core = async(js,ctx,timeout=666)=>{
-  let [ctxx,_] = jevalx_raw(`((Constructor=()=>(()=>{throw'EvilConstructor'}))=>{constructor.__proto__.constructor=Constructor;Object.freeze(constructor)})();`,ctx);
+  let [ctxx,_] = jevalx_raw(`((Constructor=()=>(()=>{throw'EvilConstructor'}))=>{delete constructor.prototype.__defineSetter__;delete constructor.prototype.__defineGetter__;constructor.__proto__.constructor=Constructor;Object.freeze(constructor)})();`,ctx);
   //ctxx.console_log = console_log;//for quick-dev
   let rst,err,evil=0,done=false,warnings=[];
   let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
