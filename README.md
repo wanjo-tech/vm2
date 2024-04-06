@@ -21,7 +21,7 @@ https://github.com/wanjo-tech/vm2/blob/main/test_jevalx.js
 * (DONE) eval() is routed to sandbox too.
 * (DONE) import() can be intercepted. (TODO) handover to caller in future
 * (DONE) timeout handling to defence ddos attach by codes like: (async()=>{while(1)0})
-* (DONE) works in bun (another js runtime) too
+* (FAIL) works in bun (another js runtime) not yet
 
 thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being annoyed by me ;)
 
