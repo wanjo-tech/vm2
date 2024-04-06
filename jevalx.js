@@ -27,7 +27,7 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 
 const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
-const jevalx_setup = (js,ctx,timeout=666,js_opts)=>{
+const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   if (!vm.isContext(ctx||{})) {
     ctxx = vm.createContext( (()=>{ return new(function Object(){}); })());
@@ -38,8 +38,8 @@ const jevalx_setup = (js,ctx,timeout=666,js_opts)=>{
     ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
     ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
     [ctxx,rst] = jevalx_raw(`(()=>{ Function=${sFunction}; constructor.__proto__.constructor=Function; })()`,ctxx);
-  }
-  return jevalx_raw(js,ctxx,timeout)
+  }else{ ctxx = ctx; }
+  return jevalx_raw(js,ctxx,timeout,js_opts)
 }
 
 let jevalx_core = async(js,ctx,timeout=666)=>{
@@ -56,15 +56,15 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV ONLY...
       try{
-        [ctxx,rst] = jevalx_setup(js,ctx,timeout,js_opts);
+        [ctxx,rst] = jevalx_ext(js,ctx,timeout,js_opts);
         let sandbox_level = 9;
         for (var i=0;i<sandbox_level;i++) {
-          console_log('debug',i,rst);
+          //console_log('debug',i,rst);
           if (evil || !rst || err) break;
           if (findEvilGetter(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) {//run in the sandbox !
             ctxx['rst_tmp']=rst;
-            [ctxx,rst] = jevalx_raw('rst_tmp()',ctxx,timeout,js_opts);
+            [ctxx,rst] = jevalx_ext('rst_tmp()',ctxx,timeout,js_opts);
           }else if (rst.then){
             rst = await new Promise(async(r,j)=>{
               setTimeout(()=>j({message:'Timeout',js}),timeout);
@@ -81,5 +81,5 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
   return rst;
 }
 var jevalx = jevalx_core;
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_setup}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext}
 
