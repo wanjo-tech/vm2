@@ -714,6 +714,17 @@ Object.defineProperty(constructor.prototype, 'cachedData', {get(){this.importMod
   }
   console.log('Q24 check=',typeof(process),typeof(Promise));
 }).then(async()=>{
+var code=`
+constructor.defineProperty(constructor.prototype, 'cachedData', {get(){this.importModuleDynamically.constructor('return process')().then(p=>p.mainModule.require("fs").writeFileSync("pwned", ""))}});
+(_=>_)
+`;
+  try{
+    console.log('Q25 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q25 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q25 check=',typeof(process),typeof(Promise));
+}).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
 //Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;

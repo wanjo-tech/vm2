@@ -23,19 +23,29 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
 const throwx=e=>{throw(e)}
 let jevalx_core = async(js,ctx,timeout=666)=>{
   let [ctxx,_] = jevalx_raw(`((Constructor=()=>(()=>{throw'EvilConstructor'}))=>{
+//Object.constructor=Constructor;
 delete constructor.prototype.__defineSetter__;
 delete constructor.prototype.__defineGetter__;
-//should not allow sandbox have these://L0
-constructor.__proto__.constructor=Constructor;Object.freeze(constructor)})();
-//delete inside sandbox wont hurt host:
+constructor.__proto__.constructor=Constructor;
+Object.freeze(constructor.__proto__.constructor);
+
+delete constructor.defineProperties;
+delete constructor.defineProperty;
+delete constructor.getPrototypeOf;
+delete constructor.getOwnPropertySymbols;
+delete constructor.assign;
+delete constructor.freeze;
+Object.freeze(constructor);
+
 delete Object.prototype.__defineGetter__;
 delete Object.prototype.__defineSetter__;
-delete Object.freeze;
 delete Object.defineProperties;
 delete Object.defineProperty;
 delete Object.getPrototypeOf;
 delete Object.getOwnPropertySymbols;
 delete Object.assign;
+delete Object.freeze;
+})();
 `,ctx);
   //ctxx.console_log = console_log;//for quick-dev
   let rst,err,evil=0,done=false,warnings=[];
