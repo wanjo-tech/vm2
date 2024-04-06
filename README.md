@@ -1,6 +1,6 @@
 # Replacement for discontinued vm2 (https://github.com/patriksimek/vm2/issues/533)
 
-I post the hide-and-seek solution here for your referece here.  Wish you a good day. 
+We post the solution here for your referece here.  Wish you a good day. 
 
 Challenge still accepted!
 
