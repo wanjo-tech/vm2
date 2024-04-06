@@ -30,13 +30,14 @@ delete constructor.prototype.__defineGetter__;
 constructor.__proto__.constructor=Constructor;
 Object.freeze(constructor.__proto__.constructor);
 
-Object.freeze(constructor);
 delete constructor.defineProperties;
 delete constructor.defineProperty;
 delete constructor.getPrototypeOf;
 delete constructor.getOwnPropertySymbols;
 delete constructor.assign;
-delete constructor.freeze;
+
+if (constructor.freeze!==Object.freeze){ delete constructor.freeze; }
+Object.freeze(constructor);
 
 //Object.prototype.constructor=Constructor;
 delete Object.prototype.__defineGetter__;

