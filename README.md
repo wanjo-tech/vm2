@@ -4,7 +4,7 @@ I post the hide-and-seek solution here for your referece here.  Wish you a good 
 
 Challenge still accepted!
 
-The plan is simple, hide before call and recover when done.  Might be dirty but it is useful when sandbox still needed for projects.
+The plan is simple, --hide before call and recover when done-- just freeze the danger part!.  Might be dirty but it is useful when sandbox still needed for projects.
 
 ## code
 
@@ -17,15 +17,11 @@ good to expected "process is not defined".  passed most vulnerable cases, while 
 https://github.com/wanjo-tech/vm2/blob/main/test_jevalx.js
 
 ## key notes
-
-* (DONE) process(and few others) must be hidden before calling, and then restore after all set.
-* (DONE) using setTimeout to wait for the vm done.
-* (DONE) \_\_defineGetter\_\_, \_\_defineSetter\_\_ and some Object methods must be banned.
-* (DONE) import() must be banned. 
-* (DONE) Evil Fake Promise should be detected.
-* (DONE) hacks (\_\_proto\_\_ -chain, ) must be defended.
-* (DONE) ddos attach by codes like: (async()=>{while(1)0})
-* (WAIT) dont in bun.sh (another js runtime): still not pass the while(1)0;
+* (DONE) freeze the \_\_proto\_\_.constructor inside the sandbox
+* (DONE) using setTimeout to delay waiting for the vm done.
+* (DONE) import() can be intercepted. (TODO) hand over to caller in future
+* (DONE) timeout handling to defence ddos attach by codes like: (async()=>{while(1)0})
+* (DONE) dont in bun (another js runtime)
 
 thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being annoyed by me ;)
 
