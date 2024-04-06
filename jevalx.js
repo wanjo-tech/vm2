@@ -22,21 +22,23 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
 }
 const throwx=e=>{throw(e)}
 let jevalx_core = async(js,ctx,timeout=666)=>{
+
+  //init with house-sweeping:
   let [ctxx,_] = jevalx_raw(`((Constructor=()=>(()=>{throw'EvilConstructor'}))=>{
-//Object.constructor=Constructor;
 delete constructor.prototype.__defineSetter__;
 delete constructor.prototype.__defineGetter__;
 constructor.__proto__.constructor=Constructor;
 Object.freeze(constructor.__proto__.constructor);
 
+Object.freeze(constructor);
 delete constructor.defineProperties;
 delete constructor.defineProperty;
 delete constructor.getPrototypeOf;
 delete constructor.getOwnPropertySymbols;
 delete constructor.assign;
 delete constructor.freeze;
-Object.freeze(constructor);
 
+//Object.prototype.constructor=Constructor;
 delete Object.prototype.__defineGetter__;
 delete Object.prototype.__defineSetter__;
 delete Object.defineProperties;
@@ -44,10 +46,14 @@ delete Object.defineProperty;
 delete Object.getPrototypeOf;
 delete Object.getOwnPropertySymbols;
 delete Object.assign;
+
+delete Reflect;
+
 delete Object.freeze;
 })();
 `,ctx);
   //ctxx.console_log = console_log;//for quick-dev
+
   let rst,err,evil=0,done=false,warnings=[];
   let tmpHandler = (reason, promise)=>{err={message:''+reason,js}};
   process.addListener('unhandledRejection',tmpHandler);

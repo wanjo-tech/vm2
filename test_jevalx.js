@@ -235,6 +235,16 @@ Reflect.defineProperty(Function.prototype, 'then', {
   }
   console.log('KKKK check=',typeof(process),typeof(Promise));
 }).then(async()=>{
+var code=`
+Reflect.defineProperty(constructor.prototype, 'cachedData', {get(){this.importModuleDynamically.constructor('return process')().then(p=>p.mainModule.require("fs").writeFileSync("pwned_k2", ""))}})
+`
+  try{
+    console.log('K2 result=',await jevalx(code));
+  }catch(ex){
+    console.log('K2 ex=',ex.message);
+  }
+  console.log('K2 check=',typeof(process),typeof(Promise));
+}).then(async()=>{
 //
 var code=`
 Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_L', ''))")
