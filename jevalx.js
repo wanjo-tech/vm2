@@ -28,14 +28,11 @@ const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   if (!vm.isContext(ctx||{})) {
-    [ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Object.__proto__.constructor=Function=${sFunction};Object.freeze(constructor,__proto__.constructor);for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;`);
-    //very important: replace dangerous
+    [ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Object.__proto__.constructor=Function=${sFunction};Object.freeze(constructor,__proto__.constructor);delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`);
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//NOTES no need use js_opts for eval()
     ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
     ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
     ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
-    ////[ctxx,rst] = jevalx_raw(`Function=${sFunction};constructor.__proto__.constructor=Function;Object=constructor.__proto__`,ctxx);
-    //[ctxx,rst] = jevalx_raw(`constructor.__proto__.constructor=Object.__proto__.constructor=Function=${sFunction};`,ctxx);
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
