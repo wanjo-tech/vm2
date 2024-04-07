@@ -35,40 +35,41 @@
 /* 
 /////////////////// HOST:
 
-typeof                                                  // inspect                    // toString()
+typeof                                        // inspect                    // toString()
             ////////////////////////////////
-'undefined' undefined                                   //  undefined                 // 'undefined'
-            ////////////////////////////////
-'object'    null                                        //null                // 'null'
+'undefined' undefined                         //  undefined                 // 'undefined'
+            ////////////////////////////////  i.e. Object.getPrototypeOf(Object.create(null))
+'object'    null                              //null                // 'null'
             Object.prototype.__proto__
-            Object.getPrototypeOf(Object.create(null))
-            ////////////////////////////////
-'object'    Object.prototype                            //[Object: null prototype] {}// [object Object]
+            ////////////////////////////////  TO REMOVE: __defineGetter__, __defineGetter__
+'object'    Object.prototype                  //[Object: null prototype] {}// [object Object]
             Object.__proto__.__proto__ 
-            (new Object()).__proto__                    
-            ({}).__proto__                              
-            Function.prototype.__proto__                
+            (new Object()).__proto__          
+            ({}).__proto__                    
+            Function.prototype.__proto__      
             ////////////////////////////////
-'function'  Function.prototype                          // {}                        // [object Object]
+            {}                                // {}                        // [object Object]
+            ////////////////////////////////
+'function'  Function.prototype                // {}                        // 'function () { [native code] }'
             Object.__proto__
             Function.__proto__
             Array.__proto__
             ////////////////////////////////
-'object'    ([]).__proto__                              // Object(0)[]               // ''
+'object'    ([]).__proto__                    // Object(0)[]               // ''
             Array.prototype
             ////////////////////////////////
-'function'  Object.__proto__.constructor                // [Function: Function]      // 'function Function() { [native code] }'
+'function'  Object.__proto__.constructor      // [Function: Function]      // 'function Function() { [native code] }'
             Function
             ////////////////////////////////
-'function'  ([]).constructor                            // [Function: Array]         //'function Array() { [native code] }'
+'function'  ([]).constructor                  // [Function: Array]         //'function Array() { [native code] }'
             Array
-            ////////////////////////////////
-'function'  ({}).constructor                            // inspect [Function Object] //'function Object() { [native code] }'
+            ////////////////////////////////  defineProperties,defineProperty,getPrototypeOf,getOwnPropertySymbols,assign,freeze,keys;
+'function'  ({}).constructor                  // [Function Object]         //'function Object() { [native code] }'
             Object
-            constructor                                 /* When
-            this.constructor                             * Host
-            globalThis.constructor                       * Global
-            global.constructor                           */
+            constructor                       /* When
+            this.constructor                   * Host
+            globalThis.constructor             * Global
+            global.constructor                 */
             ////////////////////////////////
 //Object.create(null)
 Object.getPrototypeOf(Object.create(null)) === null; // true
@@ -103,18 +104,6 @@ console.log(obj1 == obj2);  // false
 ]
 
 /////////////////// SANDBOX 
-
-__defineSetter__
-__defineSetter__
-Object.
-  defineProperties;
-  defineProperty;
-  getPrototypeOf;
-  getOwnPropertySymbols;
-  assign;
-  freeze;
-  keys(0)
-Function
 
 
 */
