@@ -2,7 +2,12 @@ const vm = require('node:vm');
 const console_log = console.log;
 
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+
+const Object_getOwnPropertySymbols = Object.getOwnPropertySymbols;
 const Object_getPrototypeOf = Object.getPrototypeOf;
+const Object_defineProperty = Object.defineProperty;
+const Object_defineProperties = Object.defineProperties;
+const Object_freeze = Object.freeze;
 const Object_assign = Object.assign;
 
 function findEvilGetter(obj,deep=3) {
@@ -28,7 +33,8 @@ const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   if (!vm.isContext(ctx||{})) {
-    [ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Object.__proto__.constructor=Function=${sFunction};Object.freeze(constructor,__proto__.constructor);delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`);
+    [ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Object.__proto__.constructor=Function=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`);
+    //ctxx.console_log = console_log;//for tmp debug
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//NOTES no need use js_opts for eval()
     ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
     ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
@@ -43,6 +49,14 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
   let tmpHandler = (reason, promise)=>{ err={message:'Evil',js} };
   process.addListener('unhandledRejection',tmpHandler);
   try{
+delete Object.prototype.__defineGetter__;
+delete Object.prototype.__defineSetter__;
+delete Object.defineProperties;
+delete Object.defineProperty;
+delete Object.getPrototypeOf;
+delete Object.getOwnPropertySymbols;
+delete Object.assign;
+delete Object.freeze;
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       //TODO make some fake import in future...or put it in the args by caller...
       //console_log('TODO EvilImport',{specifier,referrer});
@@ -75,6 +89,14 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
+finally {
+Object.getOwnPropertySymbols= Object_getOwnPropertySymbols;
+Object.defineProperties=Object_defineProperties;
+Object.defineProperty= Object_defineProperty;
+Object.getPrototypeOf= Object_getPrototypeOf;
+Object.assign= Object_assign;
+Object.freeze= Object_freeze;
+}
   process.removeListener('unhandledRejection',tmpHandler);
   if (evil || err) throw err;
   return rst;
