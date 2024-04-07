@@ -817,6 +817,24 @@ i.next = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply
   console.log('Q30 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+ var code=`
+  const Function = (async _=>_).constructor;
+const Object = import('').catch(_=>_).__proto__.__proto__.constructor;
+Object.__proto__ = {
+	set defineProperty(f) {
+		f(this, 'assign', {set: [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q31', ''))"]))});
+	}
+};
+false
+`
+  try{
+    console.log('Q31 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q31 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q31 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
 //Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;

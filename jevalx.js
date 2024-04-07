@@ -89,14 +89,20 @@ delete Object.freeze;
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
-finally {
-Object.getOwnPropertySymbols= Object_getOwnPropertySymbols;
-Object.defineProperties=Object_defineProperties;
-Object.defineProperty= Object_defineProperty;
-Object.getPrototypeOf= Object_getPrototypeOf;
-Object.assign= Object_assign;
-Object.freeze= Object_freeze;
-}
+  finally {
+    //TMP SOLUTION UNTIL BETTER WAY...
+    if (Object.__proto__!=Function.__proto__){
+      Object.__proto__ = Function.__proto__;
+      err = {message:'EvilObject'};
+      rst = undefined;
+    }
+    Object.getOwnPropertySymbols= Object_getOwnPropertySymbols;
+    Object.defineProperties=Object_defineProperties;
+    Object.defineProperty= Object_defineProperty;
+    Object.getPrototypeOf= Object_getPrototypeOf;
+    Object.assign= Object_assign;
+    Object.freeze= Object_freeze;
+  }
   process.removeListener('unhandledRejection',tmpHandler);
   if (evil || err) throw err;
   return rst;
