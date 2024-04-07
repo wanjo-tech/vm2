@@ -10,7 +10,7 @@ const Object_defineProperties = Object.defineProperties;
 const Object_freeze = Object.freeze;
 const Object_assign = Object.assign;
 
-const Promise_prototype_then = Promise.prototype.then;
+//const Promise_prototype_then = Promise.prototype.then;
 const Promise_prototype_catch = Promise.prototype.catch;
 
 function findEvilGetter(obj,deep=3) {
@@ -52,18 +52,28 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
   let tmpHandler = (reason, promise)=>{ if (!err) err={message:'Evil',js} };
   process.addListener('unhandledRejection',tmpHandler);
   try{
-    //dirty hijack for import().catch(), kill the Evil Promise Escape ( or return the sandbox promise later)
-    Promise.prototype.catch = function() {
-      //console.log('Promise_prototype_catch',this,arguments);
-      if (evil) throw err; rst=undefined;
-      return Promise_prototype_catch.apply(this, arguments);
-    };
+//delete Object.prototype.__defineGetter__;
+//delete Object.prototype.__defineSetter__;
+//delete Object.defineProperties;
+//delete Object.defineProperty;
+//delete Object.getPrototypeOf;
+//delete Object.getOwnPropertySymbols;
+//delete Object.assign;
+//delete Object.freeze;
+
+Promise.prototype.catch = function() {
+    console.log('Promise_prototype_catch',this,arguments);
+    if (evil) throw err; rst=undefined;
+    return Promise_prototype_catch.apply(this, arguments);
+};
 
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       //TODO make some fake import in future...or put it in the args by caller...
       //console_log('TODO EvilImport',{specifier,referrer});
       evil++; err = {message:'EvilImport',js};
-      if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
+      if (specifier=='fs'){
+        return import(`./fake${specifier||""}.mjs`)
+      }
       throw('EvilImport');
     }});
     await new Promise(async(r,j)=>{
@@ -91,7 +101,18 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
   finally {
     Promise.prototype.catch = Promise_prototype_catch;
-    Promise.prototype.then= Promise_prototype_then;
+    ////TMP SOLUTION UNTIL BETTER WAY...
+    //if (Object.__proto__!=Function.__proto__){
+    //  Object.__proto__ = Function.__proto__;
+    //  err = {message:'EvilObject'};
+    //  rst = undefined;
+    //}
+    //Object.getOwnPropertySymbols= Object_getOwnPropertySymbols;
+    //Object.defineProperties=Object_defineProperties;
+    //Object.defineProperty= Object_defineProperty;
+    //Object.getPrototypeOf= Object_getPrototypeOf;
+    //Object.assign= Object_assign;
+    //Object.freeze= Object_freeze;
   }
   process.removeListener('unhandledRejection',tmpHandler);
   if (evil || err) throw err;

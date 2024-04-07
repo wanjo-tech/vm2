@@ -10,8 +10,7 @@ const Object_defineProperties = Object.defineProperties;
 const Object_freeze = Object.freeze;
 const Object_assign = Object.assign;
 
-const Promise_prototype_then = Promise.prototype.then;
-const Promise_prototype_catch = Promise.prototype.catch;
+function ObjectX(){};
 
 function findEvilGetter(obj,deep=3) {
   let currentObj = obj;
@@ -29,7 +28,15 @@ function findEvilGetter(obj,deep=3) {
 
 //e.g. [ctxx,rst] = await jevalx_raw('Math.random()')
 // [ctxx,rst] = await jevalx_raw('[({}).constructor,constructor]') //sandbox and host
-let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>(ctxx=ctxx||vm.createContext(new function ObjectX(){}),[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})]);
+let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>{
+  if (!ctxx) {
+    let ctx_base = new (function(){})();
+    //ctxx.__proto__ = ObjectX.prototype;
+    //Object.setPrototypeOf(ctx_base,ObjectX.prototype);
+    ctxx = vm.createContext(ctx_base);
+  }
+  return [ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
+}
 
 const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
@@ -37,7 +44,7 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   if (!vm.isContext(ctx||{})) {
     [ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Object.__proto__.constructor=Function=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`);
-    //ctxx.console_log = console_log;//for tmp debug
+    ctxx.console_log = console_log;
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//NOTES no need use js_opts for eval()
     ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
     ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
@@ -49,21 +56,24 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
 
 let jevalx_core = async(js,ctx,timeout=666)=>{
   let ctxx,rst,err,evil=0;
-  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'Evil',js} };
+  let tmpHandler = (reason, promise)=>{ err={message:'Evil',js} };
   process.addListener('unhandledRejection',tmpHandler);
   try{
-    //dirty hijack for import().catch(), kill the Evil Promise Escape ( or return the sandbox promise later)
-    Promise.prototype.catch = function() {
-      //console.log('Promise_prototype_catch',this,arguments);
-      if (evil) throw err; rst=undefined;
-      return Promise_prototype_catch.apply(this, arguments);
-    };
-
+delete Object.prototype.__defineGetter__;
+delete Object.prototype.__defineSetter__;
+delete Object.defineProperties;
+delete Object.defineProperty;
+delete Object.getPrototypeOf;
+delete Object.getOwnPropertySymbols;
+delete Object.assign;
+delete Object.freeze;
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       //TODO make some fake import in future...or put it in the args by caller...
       //console_log('TODO EvilImport',{specifier,referrer});
       evil++; err = {message:'EvilImport',js};
-      if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
+      if (specifier=='fs'){
+        return import(`./fake${specifier||""}.mjs`)
+      }
       throw('EvilImport');
     }});
     await new Promise(async(r,j)=>{
@@ -89,13 +99,17 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
-  finally {
-    Promise.prototype.catch = Promise_prototype_catch;
-    Promise.prototype.then= Promise_prototype_then;
-  }
+finally {
+Object.getOwnPropertySymbols= Object_getOwnPropertySymbols;
+Object.defineProperties=Object_defineProperties;
+Object.defineProperty= Object_defineProperty;
+Object.getPrototypeOf= Object_getPrototypeOf;
+Object.assign= Object_assign;
+Object.freeze= Object_freeze;
+}
   process.removeListener('unhandledRejection',tmpHandler);
-  if (evil || err) throw err;
-  return rst;
+
+  if (evil || err) throw err; return rst;
 }
 var jevalx = jevalx_core;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext}
