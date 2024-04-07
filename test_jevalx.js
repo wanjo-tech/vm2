@@ -783,6 +783,23 @@ i.next = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply
   console.log('Q28 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+var code=`
+const Function = (_=>_).constructor;
+const Object = {}.constructor;
+const a = constructor.prototype.__proto__.constructor.keys(0);
+const s = Object.getOwnPropertySymbols(a.__proto__)[0];
+const i = a[s]().__proto__;
+const n = i.next;
+i.next = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q29', '')); return n.call(a[s]());"]));
+`;
+  try{
+    console.log('Q29 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q29 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q29 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
 //Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
