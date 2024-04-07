@@ -37,13 +37,13 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
   if (!ctx || !vm.isContext(ctx)){
-    function ObjectX(){};
+    function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
     let ctx_base = new ObjectX;
     ctx_base.constructor.constructor = (...args)=>fwd_eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`);
     ctxx = vm.createContext(ctx_base);
     //[ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Object.__proto__.constructor=Function=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`,ctxx);
     [ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Function=constructor.constructor;delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`,ctxx);
-    ctxx.console= console;//for tmp debug only...to see if danger...
+    ctxx.console= console;//for tmp debug only...to see if danger?
     ctxx.eval=fwd_eval;
     ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
     ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
