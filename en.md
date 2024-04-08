@@ -1,23 +1,23 @@
 # Building a Secure Sandbox Environment with `node:vm`
 
-**Abstract**: As JavaScript sees widespread use, ensuring the security of code execution has become a crucial challenge in software development. The `node:vm` module in Node.js offers a way to create isolated execution environments, albeit with security limitations. This paper explores the extension of the `node:vm` module to develop a new, more secure sandbox environment, aiming to fill the gap left by the discontinued maintenance of the `vm2` library. By detailing design strategies and core implementations, this paper aims to provide developers with a secure and flexible solution for executing third-party or untrusted code safely. Additionally, it discusses the sandbox's application fields and limitations, emphasizing its suitability and limitations in specific scenarios.
+**Abstract**: The widespread application of JavaScript introduces a crucial challenge in software development: ensuring secure code execution. The `node:vm` module in Node.js offers a method for creating isolated execution environments, though it comes with security limitations. This paper explores extending the `node:vm` module to develop a new, more secure sandbox environment, aiming to address the discontinuation of the `vm2` library. By detailing design strategies and core implementations, we aim to provide developers with a secure and flexible solution for safely executing third-party or untrusted code. Additionally, the paper discusses the sandbox's application fields and limitations, emphasizing its suitability and limitations in specific scenarios.
 
 **Authors**:
 - Wanjo Chan (@mgttt), main author, responsible for sandbox design and implementation, wanjochan@gmail.com
-- @XmiliaH, provided a significant number of sandbox escape test cases
-- @j4k0xb, contributed some sandbox escape cases
+- @XmiliaH, contributed numerous sandbox escape test cases
+- @j4k0xb, contributed sandbox escape cases
 
-The importance of securely executing third-party or untrusted code in modern software development cannot be overstated. While JavaScript's dynamic and flexible nature significantly boosts development efficiency, it also introduces numerous security challenges. Node.js's `node:vm` module offers a way to create isolated execution environments, effectively segregating code execution, yet historically reported security vulnerabilities have raised widespread concern. Despite attempts like the `vm2` library to build safer sandboxes atop `node:vm`, fundamental issues led to `vm2`'s eventual discontinuation [1].
+The critical importance of securely executing third-party or untrusted code in modern software development is undeniable. While JavaScript's dynamic and flexible nature boosts development efficiency, it also poses numerous security challenges. Node.js's `node:vm` module facilitates the creation of isolated execution environments, providing effective code segregation. However, security vulnerabilities reported historically have attracted significant community attention. Despite efforts like the `vm2` library to construct safer sandboxes over `node:vm`, foundational issues led to the eventual discontinuation of `vm2` [1].
 
-This paper aims to explore the extension of the `node:vm` module to create a new, secure sandbox environment, intending to fill the void left by the `vm2` library. The code is publicly available on GitHub [2].
+This paper aims to delve into extending the `node:vm` module to forge a new, secure sandbox environment, striving to fill the void left by the `vm2` library. The developed code is publicly accessible on GitHub [2].
 
 ## Overview of Node.js `node:vm` Module
 
-The `node:vm` module allows the creation of an isolated JavaScript execution environment, equipped with custom global variables, isolated from the main Node.js environment. This feature enables developers to safely execute third-party code, effectively preventing potential malicious operations from affecting the main environment.
+The `node:vm` module enables the creation of an isolated JavaScript execution environment, equipped with custom global variables, thereby isolated from the primary Node.js environment. This capability allows developers to execute third-party code safely, effectively mitigating potential malicious impacts on the main environment.
 
 ## Strategy for Designing an Extended Sandbox Environment
 
-With the discontinuation of the `vm2` library, the need for extending a new sandbox environment based on `node:vm` has grown. Our aim is to build a sandbox capable of defending against security threats such as:
+The cessation of the `vm2` library has increased the demand for a new sandbox environment based on `node:vm`. Our goal is to construct a sandbox that can safeguard against threats like:
 
 - Prototype pollution
 - Global variable leakage
@@ -25,46 +25,46 @@ With the discontinuation of the `vm2` library, the need for extending a new sand
 
 ### Core Implementation Strategies
 
-1. **Blocking Global Variables**: By creating a pristine execution context with `vm.createContext`, potentially dangerous global variables and functions like `eval` and `Function` are deleted or overridden.
+1. **Blocking Global Variables**: Employing `vm.createContext` to create a clean execution context, where potentially dangerous global variables and functions, such as `eval` and `Function`, are deleted or overridden.
 
-2. **Overwriting Prototype Methods**: By intercepting and modifying key methods on the prototype chain like `Promise`, we prevent malicious code from escaping the sandbox environment.
+2. **Overwriting Prototype Methods**: Preventing malicious code from escaping the sandbox environment by intercepting and modifying key methods on the prototype chain, such as `Promise`.
 
-3. **Execution Depth Control**: Through recursive depth detection, we avoid Denial of Service (DoS) attacks caused by infinite recursion.
+3. **Execution Depth Control**: Averting Denial of Service (DoS) attacks due to infinite recursion through recursive depth detection.
 
-4. **Asynchronous Operation Management**: By customizing the `importModuleDynamically` handler function, dynamic module imports are strictly controlled, preventing the loading of unauthorized modules.
+4. **Asynchronous Operation Management**: Strict control over dynamic module imports is achieved by customizing the `importModuleDynamically` handling function, preventing unauthorized module loading.
 
 ### Detailed Code Practices
 
-Key functions reflecting the core expansion implementation of the sandbox environment include:
+The sandbox environment's core expansion implementation is demonstrated through key functions such as:
 
-- `jevalx_raw`: Serves as the basic execution function, responsible for executing code using `vm.createScript`.
-- `findEvilGetter`: Searches for malicious getter functions on the prototype chain.
-- `jevalx_ext`: Acts as the extended execution function, responsible for creating and initializing the sandbox environment, managing global variables meticulously.
-- `jevalx_core`: The core asynchronous execution function, enhancing control over asynchronous operations by capturing unhandled Promise rejections, avoiding security vulnerabilities from asynchronous operations.
+- `jevalx_raw`: The basic execution function, responsible for code execution using `vm.createScript`.
+- `findEvilGetter`: Identifies malicious getter functions on the prototype chain.
+- `jevalx_ext`: The extended execution function, tasked with creating and initializing the sandbox environment, meticulously managing global variables.
+- `jevalx_core`: The core asynchronous execution function, enhancing control over asynchronous operations by capturing unhandled Promise rejections and avoiding security vulnerabilities from asynchronous operations.
 
 ## Applications and Limitations of the Sandbox
 
-The sandbox based on the `node:vm` module is not intended to offer a full-fledged virtual machine. Instead, it is designed as a tool allowing JavaScript code to run in a predefined secure context. This design means that while the sandbox can provide a level of code isolation and execution control, it does not include all features of traditional virtual machines, such as complete operating system emulation or hardware virtualization.
+Designed not as a full-fledged virtual machine but as a tool for running JavaScript code within a predefined secure context, the sandbox provides a level of code isolation and execution control without the full features of traditional virtual machines, such as complete OS emulation or hardware virtualization.
 
 ### Main Applications
 
-1. **Implementing JS Syntax APIs**: The sandbox environment can be used to build and test APIs implementing JavaScript syntax, particularly useful for developing scalable web applications and services. By running user or third-party code in a secure sandbox environment, developers can ensure the main application's security is uncompromised.  It's applied in our KK project [3]
+1. **Implementing JS Syntax APIs**: Useful for developing scalable web applications and services, the sandbox can build and test APIs that implement JavaScript syntax. Running user or third-party code in a secure environment ensures the main application's security remains uncompromised, as applied in our KK project [3].
 
-2. **Strategy Files in Quantitative Systems**: Similar to popular quantitative trading script languages like Pine Script[4], this sandbox environment enables users to write custom strategies for quantitative trading systems. The strategy files executed within the sandbox can leverage JavaScript's powerful features while ensuring the execution environment's security and isolation.
+2. **Strategy Files in Quantitative Systems**: Similar to popular quantitative trading script languages like Pine Script [4], the sandbox enables users to write custom strategies for quantitative trading systems, ensuring security and isolation while leveraging JavaScript's capabilities.
 
 ### Limitations
 
-While this sandbox offers a relatively secure environment for executing complex JavaScript code, it is not suitable for scenarios requiring full virtual machine features. The sandbox is designed with a focus on security and lightweight, hence its performance and functionality limitations should be considered when in use.
+Although the sandbox offers a secure environment for executing complex JavaScript code, it's unsuitable for scenarios requiring the full features of a virtual machine. Focused on security and lightweight, its performance and functionality limits should be acknowledged.
 
 ## Security Considerations and Future Outlook
 
-Despite the strong code isolation provided by the `node:vm`-based sandbox environment, vigilance is required regarding Node.js updates and newly discovered security vulnerabilities. Continuous security reviews and timely updates of the sandbox environment are crucial for maintaining its security.
+The `node:vm`-based sandbox's strong code isolation necessitates vigilance regarding Node.js updates and newly discovered security vulnerabilities. Ongoing security reviews and sandbox updates are vital for maintaining security.
 
-As the ECMAScript standard evolves and new features are introduced, future sandbox environments are expected to accommodate more complex applications and implement finer control mechanisms.
+With the evolving ECMAScript standard and new feature introductions, future sandbox environments are anticipated to accommodate more complex applications and implement more refined control mechanisms.
 
 ## Conclusion
 
-By extending a new sandbox environment atop `node:vm`, we not only effectively filled the gap left by the discontinuation of the `vm2` library but also provided a more flexible and secure solution for executing third-party or untrusted code. With continuous technological advancement and deeper security practices, we believe this approach will provide solid security assurances for Node.js applications.
+Extending a new sandbox environment on top of `node:vm` not only effectively bridges the gap left by the `vm2` library's discontinuation but also provides a more secure and flexible solution for executing third-party or untrusted code. As technology progresses and security practices deepen, we are optimistic about this approach's potential to offer robust security assurances for Node.js applications.
 
 ## References
 
