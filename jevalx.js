@@ -31,8 +31,6 @@ function findEvilGetter(obj,deep=3) {
   return false;
 }
 
-//e.g. [ctxx,rst] = await jevalx_raw('Math.random()')
-// [ctxx,rst] = await jevalx_raw('[({}).constructor,constructor]') //sandbox and host
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
 function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
@@ -46,10 +44,6 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
     ctxx = vm.createContext(new ObjectX);
     [ctxx,rst] = jevalx_raw(`delete eval;delete Function;delete Symbol;delete Reflect;delete Proxy;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))if(['keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k];`,ctxx);
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//important.
-    //ctxx.console_log = console_log;//for tmp debug only...
-    //ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
-    //ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
-    //ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
@@ -106,20 +100,7 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
-/*
-      if (Promise___proto___apply!=Promise.__proto__.apply){
-        err = {message:'EvilPromiseXApply',js};
-        Promise.__proto__.apply = Promise___proto___apply
-      }
-      if (Promise___proto___catch!=Promise.__proto__.catch){
-        err = {message:'EvilPromiseXCatch',js};
-        Promise.__proto__.catch = Promise___proto___catch
-      }
-      if (Promise___proto___then!=Promise.__proto__.then){
-        err = {message:'EvilPromiseXThen',js};
-        Promise.__proto__.then = Promise___proto___then
-      }
-*/
+
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
   finally {
     Promise.prototype.catch = Promise_prototype_catch;
