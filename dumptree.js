@@ -1,4 +1,4 @@
-delete process;
+delete process
 function buildObjectTree(obj, depth = 0, path = []) {
     const MAX_DEPTH = 7;
     if (depth > MAX_DEPTH) {
@@ -12,17 +12,33 @@ function buildObjectTree(obj, depth = 0, path = []) {
     Object.getOwnPropertyNames(obj).forEach(prop => {
         try {
             const property = obj[prop];
+            // 尝试转换属性值为字符串
+            let propertyStr;
+            try {
+                propertyStr = JSON.stringify(property);
+                if (propertyStr === undefined) {
+                    // 对于某些类型，如函数，JSON.stringify 返回 undefined
+                    propertyStr = property.toString();
+                }
+            } catch (error) {
+                propertyStr = 'Cannot convert to string';
+            }
+
             if (typeof property === 'object' && property !== null && !(property instanceof Array)) {
                 if (prop === 'global' && depth > 0) {
-                    tree[prop] = 'Global Object';
+                    tree[prop] = { type: 'object', value: 'Global Object', str: 'Global Object' };
                 } else {
                     tree[prop] = buildObjectTree(property, depth + 1, [...path, obj]);
                 }
             } else {
-                tree[prop] = { type: typeof property, value: typeof property === 'function' ? 'Function' : property };
+                tree[prop] = { 
+                    type: typeof property, 
+                    value: typeof property === 'function' ? 'Function' : property, 
+                    str: propertyStr 
+                };
             }
         } catch (error) {
-            tree[prop] = { error: error.message };
+            tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }
     });
 

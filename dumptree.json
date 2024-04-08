@@ -2,501 +2,621 @@
   "Constructor": {
     "length": {
       "type": "number",
-      "value": 1
+      "value": 1,
+      "str": "1"
     },
     "name": {
       "type": "string",
-      "value": "Object"
+      "value": "Object",
+      "str": "\"Object\""
     },
     "prototype": {
       "constructor": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function Object() { [native code] }"
       },
       "__defineGetter__": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function __defineGetter__() { [native code] }"
       },
       "__defineSetter__": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function __defineSetter__() { [native code] }"
       },
       "hasOwnProperty": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function hasOwnProperty() { [native code] }"
       },
       "__lookupGetter__": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function __lookupGetter__() { [native code] }"
       },
       "__lookupSetter__": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function __lookupSetter__() { [native code] }"
       },
       "isPrototypeOf": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function isPrototypeOf() { [native code] }"
       },
       "propertyIsEnumerable": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function propertyIsEnumerable() { [native code] }"
       },
       "toString": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function toString() { [native code] }"
       },
       "valueOf": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function valueOf() { [native code] }"
       },
       "toLocaleString": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function toLocaleString() { [native code] }"
       }
     },
     "assign": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function assign() { [native code] }"
     },
     "getOwnPropertyDescriptor": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getOwnPropertyDescriptor() { [native code] }"
     },
     "getOwnPropertyDescriptors": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getOwnPropertyDescriptors() { [native code] }"
     },
     "getOwnPropertyNames": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getOwnPropertyNames() { [native code] }"
     },
     "getOwnPropertySymbols": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getOwnPropertySymbols() { [native code] }"
     },
     "is": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function is() { [native code] }"
     },
     "preventExtensions": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function preventExtensions() { [native code] }"
     },
     "seal": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function seal() { [native code] }"
     },
     "create": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function create() { [native code] }"
     },
     "defineProperties": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function defineProperties() { [native code] }"
     },
     "defineProperty": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function defineProperty() { [native code] }"
     },
     "freeze": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function freeze() { [native code] }"
     },
     "getPrototypeOf": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getPrototypeOf() { [native code] }"
     },
     "setPrototypeOf": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function setPrototypeOf() { [native code] }"
     },
     "isExtensible": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function isExtensible() { [native code] }"
     },
     "isFrozen": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function isFrozen() { [native code] }"
     },
     "isSealed": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function isSealed() { [native code] }"
     },
     "keys": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function keys() { [native code] }"
     },
     "entries": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function entries() { [native code] }"
     },
     "fromEntries": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function fromEntries() { [native code] }"
     },
     "values": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function values() { [native code] }"
     },
     "hasOwn": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function hasOwn() { [native code] }"
     }
   },
   "Object": {
     "length": {
       "type": "number",
-      "value": 1
+      "value": 1,
+      "str": "1"
     },
     "name": {
       "type": "string",
-      "value": "Object"
+      "value": "Object",
+      "str": "\"Object\""
     },
     "prototype": {
       "constructor": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function Object() { [native code] }"
       },
       "__defineGetter__": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function __defineGetter__() { [native code] }"
       },
       "__defineSetter__": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function __defineSetter__() { [native code] }"
       },
       "hasOwnProperty": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function hasOwnProperty() { [native code] }"
       },
       "__lookupGetter__": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function __lookupGetter__() { [native code] }"
       },
       "__lookupSetter__": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function __lookupSetter__() { [native code] }"
       },
       "isPrototypeOf": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function isPrototypeOf() { [native code] }"
       },
       "propertyIsEnumerable": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function propertyIsEnumerable() { [native code] }"
       },
       "toString": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function toString() { [native code] }"
       },
       "valueOf": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function valueOf() { [native code] }"
       },
       "toLocaleString": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function toLocaleString() { [native code] }"
       }
     },
     "assign": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function assign() { [native code] }"
     },
     "getOwnPropertyDescriptor": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getOwnPropertyDescriptor() { [native code] }"
     },
     "getOwnPropertyDescriptors": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getOwnPropertyDescriptors() { [native code] }"
     },
     "getOwnPropertyNames": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getOwnPropertyNames() { [native code] }"
     },
     "getOwnPropertySymbols": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getOwnPropertySymbols() { [native code] }"
     },
     "is": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function is() { [native code] }"
     },
     "preventExtensions": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function preventExtensions() { [native code] }"
     },
     "seal": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function seal() { [native code] }"
     },
     "create": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function create() { [native code] }"
     },
     "defineProperties": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function defineProperties() { [native code] }"
     },
     "defineProperty": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function defineProperty() { [native code] }"
     },
     "freeze": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function freeze() { [native code] }"
     },
     "getPrototypeOf": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function getPrototypeOf() { [native code] }"
     },
     "setPrototypeOf": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function setPrototypeOf() { [native code] }"
     },
     "isExtensible": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function isExtensible() { [native code] }"
     },
     "isFrozen": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function isFrozen() { [native code] }"
     },
     "isSealed": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function isSealed() { [native code] }"
     },
     "keys": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function keys() { [native code] }"
     },
     "entries": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function entries() { [native code] }"
     },
     "fromEntries": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function fromEntries() { [native code] }"
     },
     "values": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function values() { [native code] }"
     },
     "hasOwn": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function hasOwn() { [native code] }"
     }
   },
   "Array": {
     "length": {
       "type": "number",
-      "value": 1
+      "value": 1,
+      "str": "1"
     },
     "name": {
       "type": "string",
-      "value": "Array"
+      "value": "Array",
+      "str": "\"Array\""
     },
     "prototype": {
       "length": {
         "type": "number",
-        "value": 0
+        "value": 0,
+        "str": "0"
       },
       "constructor": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function Array() { [native code] }"
       },
       "concat": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function concat() { [native code] }"
       },
       "copyWithin": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function copyWithin() { [native code] }"
       },
       "fill": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function fill() { [native code] }"
       },
       "find": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function find() { [native code] }"
       },
       "findIndex": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function findIndex() { [native code] }"
       },
       "lastIndexOf": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function lastIndexOf() { [native code] }"
       },
       "pop": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function pop() { [native code] }"
       },
       "push": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function push() { [native code] }"
       },
       "reverse": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function reverse() { [native code] }"
       },
       "shift": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function shift() { [native code] }"
       },
       "unshift": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function unshift() { [native code] }"
       },
       "slice": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function slice() { [native code] }"
       },
       "sort": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function sort() { [native code] }"
       },
       "splice": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function splice() { [native code] }"
       },
       "includes": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function includes() { [native code] }"
       },
       "indexOf": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function indexOf() { [native code] }"
       },
       "join": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function join() { [native code] }"
       },
       "keys": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function keys() { [native code] }"
       },
       "entries": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function entries() { [native code] }"
       },
       "values": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function values() { [native code] }"
       },
       "forEach": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function forEach() { [native code] }"
       },
       "filter": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function filter() { [native code] }"
       },
       "flat": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function flat() { [native code] }"
       },
       "flatMap": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function flatMap() { [native code] }"
       },
       "map": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function map() { [native code] }"
       },
       "every": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function every() { [native code] }"
       },
       "some": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function some() { [native code] }"
       },
       "reduce": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function reduce() { [native code] }"
       },
       "reduceRight": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function reduceRight() { [native code] }"
       },
       "toLocaleString": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function toLocaleString() { [native code] }"
       },
       "toString": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function toString() { [native code] }"
       },
       "at": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function at() { [native code] }"
       },
       "findLast": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function findLast() { [native code] }"
       },
       "findLastIndex": {
         "type": "function",
-        "value": "Function"
+        "value": "Function",
+        "str": "function findLastIndex() { [native code] }"
       }
     },
     "isArray": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function isArray() { [native code] }"
     },
     "from": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function from() { [native code] }"
     },
     "of": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function of() { [native code] }"
     }
   },
   "Function": {
     "length": {
       "type": "number",
-      "value": 1
+      "value": 1,
+      "str": "1"
     },
     "name": {
       "type": "string",
-      "value": "Function"
+      "value": "Function",
+      "str": "\"Function\""
     },
     "prototype": {
       "type": "function",
-      "value": "Function"
+      "value": "Function",
+      "str": "function () { [native code] }"
     }
   },
   "ArrowFunction": {
     "length": {
       "type": "number",
-      "value": 0
+      "value": 0,
+      "str": "0"
     },
     "name": {
       "type": "string",
-      "value": "ArrowFunction"
+      "value": "ArrowFunction",
+      "str": "\"ArrowFunction\""
     }
   },
   "AsyncFunction": {
     "length": {
       "type": "number",
-      "value": 0
+      "value": 0,
+      "str": "0"
     },
     "name": {
       "type": "string",
-      "value": "AsyncFunction"
+      "value": "AsyncFunction",
+      "str": "\"AsyncFunction\""
     }
   },
   "AsyncArrowFunction": {
     "length": {
       "type": "number",
-      "value": 0
+      "value": 0,
+      "str": "0"
     },
     "name": {
       "type": "string",
-      "value": "AsyncArrowFunction"
+      "value": "AsyncArrowFunction",
+      "str": "\"AsyncArrowFunction\""
     }
   }
 }
