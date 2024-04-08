@@ -837,6 +837,21 @@ false
 }).then(async()=>{
 var code=`
 const Function = (async _=>_).constructor;
+const promise = import('');
+constructor.__proto__.apply = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q32', ''))"]));
+promise.catch();
+console_log('promise_catch');
+`
+  try{
+    console.log('Q32 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q32 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q32 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
+var code=`
+const Function = (async _=>_).constructor;
 constructor.__proto__.apply = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q32', ''))"]));
 import('').catch();
 `;
