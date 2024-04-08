@@ -1,32 +1,28 @@
 const vm = require('node:vm');
 const console_log = console.log;
 
-const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-
-const Object_getOwnPropertySymbols = Object.getOwnPropertySymbols;
-const Object_getPrototypeOf = Object.getPrototypeOf;
-const Object_defineProperty = Object.defineProperty;
-const Object_defineProperties = Object.defineProperties;
-const Object_freeze = Object.freeze;
-const Object_assign = Object.assign;
-
-const Promise_prototype_then = Promise.prototype.then;
-const Promise_prototype_catch = Promise.prototype.catch;
-
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___catch = Promise.__proto__.catch;
 const Promise___proto___then = Promise.__proto__.then;
 
-function findEvilGetter(obj,deep=3) {
+const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const Object_getPrototypeOf = Object.getPrototypeOf;
+const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
+const Object_assign = Object.assign;
+
+function findEvilGetter(obj,maxdepth=3) {
   let currentObj = obj;
-  let i=0;
-  while (currentObj !== null) {
-    if (i>2) return true;//found if too deep
-    const descriptor = Object_getOwnPropertyDescriptor(currentObj, 'then');
-    if (descriptor && typeof descriptor.get === 'function') {
-      return descriptor.get; // Stop if the 'then' getter is found
+  let depth = 0;
+  while (currentObj !== null && depth < maxdepth) {
+    const properties = ['then'];//Object_getOwnPropertyNames(currentObj);
+    for (let i = 0; i < properties.length; i++) {
+      const descriptor = Object_getOwnPropertyDescriptor(currentObj, properties[i]);
+      if (descriptor && typeof descriptor.get === 'function') {
+        return true;
+      }
     }
-    currentObj = Object_getPrototypeOf(currentObj); // Move up the prototype chain
+    currentObj = Object_getPrototypeOf(currentObj);
+    depth++;
   }
   return false;
 }
@@ -35,33 +31,32 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 
 function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
 
-const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
+const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
+const S_SETUP = ['eval','Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') + `Function=constructor.__proto__.constructor=${S_FUNCTION};for(let k of Object.getOwnPropertyNames(Object))if(['keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k];`;
 
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
   if (!ctx || !vm.isContext(ctx)){
     ctxx = vm.createContext(new ObjectX);
-    [ctxx,rst] = jevalx_raw(`delete eval;delete Function;delete Symbol;delete Reflect;delete Proxy;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))if(['keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k];`,ctxx);
+    [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//important.
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
 }
 
-let jevalx_core = async(js,ctx,timeout=666)=>{
+let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0;
   let tmpHandler = (reason, promise)=>{ if (!err) err={message:'Evil',js} };
   process.addListener('unhandledRejection',tmpHandler);
   try{
-    //dirty hijack for import().catch(), kill the Evil Promise Escape ( or return the sandbox promise later)
     Promise.prototype.catch = function() {
-      if (evil) throw err; rst=undefined;
+      if (evil || err) throw err; rst=undefined;
       return Promise_prototype_catch.apply(this, arguments);
     };
 
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
-      //TODO make some fake import in future...or put it in the args by caller...
       evil++; err = {message:'EvilImport',js};
       if (Promise___proto___apply!=Promise.__proto__.apply){
         err = {message:'EvilPromiseApply',js};
@@ -75,7 +70,9 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
         err = {message:'EvilPromiseThen',js};
         Promise.__proto__.then = Promise___proto___then
       }
-      if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
+      if (user_import_handler) {
+        return user_import_handler({specifier, referrer, importAttributes})
+      }
       throw('EvilImport');
     }});
     await new Promise(async(r,j)=>{
@@ -100,12 +97,7 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
-
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
-  finally {
-    Promise.prototype.catch = Promise_prototype_catch;
-    Promise.prototype.then= Promise_prototype_then;
-  }
   process.removeListener('unhandledRejection',tmpHandler);
   if (evil || err) throw err;
   return rst;
