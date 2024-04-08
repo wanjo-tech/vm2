@@ -32,7 +32,7 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
 
 const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
-const S_SETUP = ['eval','Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') + `Function=constructor.__proto__.constructor=${S_FUNCTION};for(let k of Object.getOwnPropertyNames(Object))if(['keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k];`;
+const S_SETUP = 'Object.setPrototypeOf(constructor.prototype,Object.create(null));'+['eval','Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') + `Function=constructor.__proto__.constructor=${S_FUNCTION};for(let k of Object.getOwnPropertyNames(Object))if(['create','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k];`;
 
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
@@ -40,7 +40,7 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   if (!ctx || !vm.isContext(ctx)){
     ctxx = vm.createContext(new ObjectX);
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
-    //ctxx.console_log = console_log;
+    ctxx.console_log = console_log;
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//essential.
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
