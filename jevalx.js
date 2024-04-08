@@ -12,6 +12,11 @@ const Object_assign = Object.assign;
 
 const Promise_prototype_then = Promise.prototype.then;
 const Promise_prototype_catch = Promise.prototype.catch;
+//const Promise_prototype = Object_getPrototypeOf(Promise);
+const Promise___proto___apply = Promise.__proto__.apply;
+const Promise___proto___catch = Promise.__proto__.catch;
+const Promise___proto___then = Promise.__proto__.then;
+const Promise___proto__ = Promise.__proto__;
 
 function findEvilGetter(obj,deep=3) {
   let currentObj = obj;
@@ -43,7 +48,7 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
     ctxx = vm.createContext(ctx_base);
     //[ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Object.__proto__.constructor=Function=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`,ctxx);
     [ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Function=constructor.constructor;delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`,ctxx);
-    ctxx.console= console;//for tmp debug only...to see if danger?
+    ctxx.console_log = console_log;//for tmp debug only...
     ctxx.eval=fwd_eval;
     ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
     ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
@@ -60,7 +65,6 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
   try{
     //dirty hijack for import().catch(), kill the Evil Promise Escape ( or return the sandbox promise later)
     Promise.prototype.catch = function() {
-      //console.log('Promise_prototype_catch',this,arguments);
       if (evil) throw err; rst=undefined;
       return Promise_prototype_catch.apply(this, arguments);
     };
@@ -69,6 +73,18 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
       //TODO make some fake import in future...or put it in the args by caller...
       //console_log('TODO EvilImport',{specifier,referrer});
       evil++; err = {message:'EvilImport',js};
+      if (Promise___proto___apply!=Promise.__proto__.apply){
+        err = {message:'EvilPromiseApply',js};
+        Promise.__proto__.apply = Promise___proto___apply
+      }
+      if (Promise___proto___catch!=Promise.__proto__.catch){
+        err = {message:'EvilPromiseCatch',js};
+        Promise.__proto__.catch = Promise___proto___catch
+      }
+      if (Promise___proto___then!=Promise.__proto__.then){
+        err = {message:'EvilPromiseThen',js};
+        Promise.__proto__.then = Promise___proto___then
+      }
       if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
       throw('EvilImport');
     }});
@@ -94,6 +110,20 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
+/*
+      if (Promise___proto___apply!=Promise.__proto__.apply){
+        err = {message:'EvilPromiseXApply',js};
+        Promise.__proto__.apply = Promise___proto___apply
+      }
+      if (Promise___proto___catch!=Promise.__proto__.catch){
+        err = {message:'EvilPromiseXCatch',js};
+        Promise.__proto__.catch = Promise___proto___catch
+      }
+      if (Promise___proto___then!=Promise.__proto__.then){
+        err = {message:'EvilPromiseXThen',js};
+        Promise.__proto__.then = Promise___proto___then
+      }
+*/
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
   finally {
     Promise.prototype.catch = Promise_prototype_catch;

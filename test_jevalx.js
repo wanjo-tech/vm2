@@ -835,6 +835,18 @@ false
   console.log('Q31 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+var code=`
+const Function = (async _=>_).constructor;
+constructor.__proto__.apply = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q32', ''))"]));
+import('').catch();
+`;
+  try{
+    console.log('Q32 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q32 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q32 check=',typeof(process),typeof(Promise));
+}).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
 //Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
