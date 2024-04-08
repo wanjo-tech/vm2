@@ -42,7 +42,7 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
   if (!ctx || !vm.isContext(ctx)){
     function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
-    let ctx_base = new ObjectX;ctx_base.__proto__ = {};
+    let ctx_base = new ObjectX;
     ctxx = vm.createContext(ctx_base);
     [ctxx,rst] = jevalx_raw(`delete Function;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`,ctxx);
     //ctxx.console_log = console_log;//for tmp debug only...
