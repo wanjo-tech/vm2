@@ -40,8 +40,8 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   if (!ctx || !vm.isContext(ctx)){
     ctxx = vm.createContext(new ObjectX);
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
-    ctxx.console_log = console_log;
-    ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//important.
+    //ctxx.console_log = console_log;
+    ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//essential.
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
@@ -67,7 +67,6 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   };
   try{
     Promise.prototype.apply = function() {
-      console.log('888 apply')
       if (evil || err) { return undefined; }
       return Promise_prototype_apply.apply(this, arguments);
     };
