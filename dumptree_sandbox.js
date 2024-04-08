@@ -32,7 +32,7 @@ function buildObjectTree(obj, depth = 0, path = []) {
 
 const rootObjects = {
     //global: global,
-    this: this,
+    //this: this,
     //ObjectConstructor: Object.constructor,
     Constructor: constructor,
     Object: Object,

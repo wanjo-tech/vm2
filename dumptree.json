@@ -1,0 +1,502 @@
+{
+  "Constructor": {
+    "length": {
+      "type": "number",
+      "value": 1
+    },
+    "name": {
+      "type": "string",
+      "value": "Object"
+    },
+    "prototype": {
+      "constructor": {
+        "type": "function",
+        "value": "Function"
+      },
+      "__defineGetter__": {
+        "type": "function",
+        "value": "Function"
+      },
+      "__defineSetter__": {
+        "type": "function",
+        "value": "Function"
+      },
+      "hasOwnProperty": {
+        "type": "function",
+        "value": "Function"
+      },
+      "__lookupGetter__": {
+        "type": "function",
+        "value": "Function"
+      },
+      "__lookupSetter__": {
+        "type": "function",
+        "value": "Function"
+      },
+      "isPrototypeOf": {
+        "type": "function",
+        "value": "Function"
+      },
+      "propertyIsEnumerable": {
+        "type": "function",
+        "value": "Function"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function"
+      },
+      "valueOf": {
+        "type": "function",
+        "value": "Function"
+      },
+      "toLocaleString": {
+        "type": "function",
+        "value": "Function"
+      }
+    },
+    "assign": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getOwnPropertyDescriptor": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getOwnPropertyDescriptors": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getOwnPropertyNames": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getOwnPropertySymbols": {
+      "type": "function",
+      "value": "Function"
+    },
+    "is": {
+      "type": "function",
+      "value": "Function"
+    },
+    "preventExtensions": {
+      "type": "function",
+      "value": "Function"
+    },
+    "seal": {
+      "type": "function",
+      "value": "Function"
+    },
+    "create": {
+      "type": "function",
+      "value": "Function"
+    },
+    "defineProperties": {
+      "type": "function",
+      "value": "Function"
+    },
+    "defineProperty": {
+      "type": "function",
+      "value": "Function"
+    },
+    "freeze": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getPrototypeOf": {
+      "type": "function",
+      "value": "Function"
+    },
+    "setPrototypeOf": {
+      "type": "function",
+      "value": "Function"
+    },
+    "isExtensible": {
+      "type": "function",
+      "value": "Function"
+    },
+    "isFrozen": {
+      "type": "function",
+      "value": "Function"
+    },
+    "isSealed": {
+      "type": "function",
+      "value": "Function"
+    },
+    "keys": {
+      "type": "function",
+      "value": "Function"
+    },
+    "entries": {
+      "type": "function",
+      "value": "Function"
+    },
+    "fromEntries": {
+      "type": "function",
+      "value": "Function"
+    },
+    "values": {
+      "type": "function",
+      "value": "Function"
+    },
+    "hasOwn": {
+      "type": "function",
+      "value": "Function"
+    }
+  },
+  "Object": {
+    "length": {
+      "type": "number",
+      "value": 1
+    },
+    "name": {
+      "type": "string",
+      "value": "Object"
+    },
+    "prototype": {
+      "constructor": {
+        "type": "function",
+        "value": "Function"
+      },
+      "__defineGetter__": {
+        "type": "function",
+        "value": "Function"
+      },
+      "__defineSetter__": {
+        "type": "function",
+        "value": "Function"
+      },
+      "hasOwnProperty": {
+        "type": "function",
+        "value": "Function"
+      },
+      "__lookupGetter__": {
+        "type": "function",
+        "value": "Function"
+      },
+      "__lookupSetter__": {
+        "type": "function",
+        "value": "Function"
+      },
+      "isPrototypeOf": {
+        "type": "function",
+        "value": "Function"
+      },
+      "propertyIsEnumerable": {
+        "type": "function",
+        "value": "Function"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function"
+      },
+      "valueOf": {
+        "type": "function",
+        "value": "Function"
+      },
+      "toLocaleString": {
+        "type": "function",
+        "value": "Function"
+      }
+    },
+    "assign": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getOwnPropertyDescriptor": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getOwnPropertyDescriptors": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getOwnPropertyNames": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getOwnPropertySymbols": {
+      "type": "function",
+      "value": "Function"
+    },
+    "is": {
+      "type": "function",
+      "value": "Function"
+    },
+    "preventExtensions": {
+      "type": "function",
+      "value": "Function"
+    },
+    "seal": {
+      "type": "function",
+      "value": "Function"
+    },
+    "create": {
+      "type": "function",
+      "value": "Function"
+    },
+    "defineProperties": {
+      "type": "function",
+      "value": "Function"
+    },
+    "defineProperty": {
+      "type": "function",
+      "value": "Function"
+    },
+    "freeze": {
+      "type": "function",
+      "value": "Function"
+    },
+    "getPrototypeOf": {
+      "type": "function",
+      "value": "Function"
+    },
+    "setPrototypeOf": {
+      "type": "function",
+      "value": "Function"
+    },
+    "isExtensible": {
+      "type": "function",
+      "value": "Function"
+    },
+    "isFrozen": {
+      "type": "function",
+      "value": "Function"
+    },
+    "isSealed": {
+      "type": "function",
+      "value": "Function"
+    },
+    "keys": {
+      "type": "function",
+      "value": "Function"
+    },
+    "entries": {
+      "type": "function",
+      "value": "Function"
+    },
+    "fromEntries": {
+      "type": "function",
+      "value": "Function"
+    },
+    "values": {
+      "type": "function",
+      "value": "Function"
+    },
+    "hasOwn": {
+      "type": "function",
+      "value": "Function"
+    }
+  },
+  "Array": {
+    "length": {
+      "type": "number",
+      "value": 1
+    },
+    "name": {
+      "type": "string",
+      "value": "Array"
+    },
+    "prototype": {
+      "length": {
+        "type": "number",
+        "value": 0
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function"
+      },
+      "concat": {
+        "type": "function",
+        "value": "Function"
+      },
+      "copyWithin": {
+        "type": "function",
+        "value": "Function"
+      },
+      "fill": {
+        "type": "function",
+        "value": "Function"
+      },
+      "find": {
+        "type": "function",
+        "value": "Function"
+      },
+      "findIndex": {
+        "type": "function",
+        "value": "Function"
+      },
+      "lastIndexOf": {
+        "type": "function",
+        "value": "Function"
+      },
+      "pop": {
+        "type": "function",
+        "value": "Function"
+      },
+      "push": {
+        "type": "function",
+        "value": "Function"
+      },
+      "reverse": {
+        "type": "function",
+        "value": "Function"
+      },
+      "shift": {
+        "type": "function",
+        "value": "Function"
+      },
+      "unshift": {
+        "type": "function",
+        "value": "Function"
+      },
+      "slice": {
+        "type": "function",
+        "value": "Function"
+      },
+      "sort": {
+        "type": "function",
+        "value": "Function"
+      },
+      "splice": {
+        "type": "function",
+        "value": "Function"
+      },
+      "includes": {
+        "type": "function",
+        "value": "Function"
+      },
+      "indexOf": {
+        "type": "function",
+        "value": "Function"
+      },
+      "join": {
+        "type": "function",
+        "value": "Function"
+      },
+      "keys": {
+        "type": "function",
+        "value": "Function"
+      },
+      "entries": {
+        "type": "function",
+        "value": "Function"
+      },
+      "values": {
+        "type": "function",
+        "value": "Function"
+      },
+      "forEach": {
+        "type": "function",
+        "value": "Function"
+      },
+      "filter": {
+        "type": "function",
+        "value": "Function"
+      },
+      "flat": {
+        "type": "function",
+        "value": "Function"
+      },
+      "flatMap": {
+        "type": "function",
+        "value": "Function"
+      },
+      "map": {
+        "type": "function",
+        "value": "Function"
+      },
+      "every": {
+        "type": "function",
+        "value": "Function"
+      },
+      "some": {
+        "type": "function",
+        "value": "Function"
+      },
+      "reduce": {
+        "type": "function",
+        "value": "Function"
+      },
+      "reduceRight": {
+        "type": "function",
+        "value": "Function"
+      },
+      "toLocaleString": {
+        "type": "function",
+        "value": "Function"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function"
+      },
+      "at": {
+        "type": "function",
+        "value": "Function"
+      },
+      "findLast": {
+        "type": "function",
+        "value": "Function"
+      },
+      "findLastIndex": {
+        "type": "function",
+        "value": "Function"
+      }
+    },
+    "isArray": {
+      "type": "function",
+      "value": "Function"
+    },
+    "from": {
+      "type": "function",
+      "value": "Function"
+    },
+    "of": {
+      "type": "function",
+      "value": "Function"
+    }
+  },
+  "Function": {
+    "length": {
+      "type": "number",
+      "value": 1
+    },
+    "name": {
+      "type": "string",
+      "value": "Function"
+    },
+    "prototype": {
+      "type": "function",
+      "value": "Function"
+    }
+  },
+  "ArrowFunction": {
+    "length": {
+      "type": "number",
+      "value": 0
+    },
+    "name": {
+      "type": "string",
+      "value": "ArrowFunction"
+    }
+  },
+  "AsyncFunction": {
+    "length": {
+      "type": "number",
+      "value": 0
+    },
+    "name": {
+      "type": "string",
+      "value": "AsyncFunction"
+    }
+  },
+  "AsyncArrowFunction": {
+    "length": {
+      "type": "number",
+      "value": 0
+    },
+    "name": {
+      "type": "string",
+      "value": "AsyncArrowFunction"
+    }
+  }
+}
