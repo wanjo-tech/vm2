@@ -940,3 +940,9 @@ p.then();
   console.log('--------- TEST END, to CHECK any pwned -----------');
 });
 
+/**
+
+uncaught exception 
+try{ await eval(` async function f() {} void (async () => { await f(); await f(); await f(); await f(); this.constructor .constructor("return process")() .mainModule.require("fs") .writeFileSync("pwned_case_a", ""); })(); `); } catch(ex){}
+
+*/

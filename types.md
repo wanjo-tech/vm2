@@ -35,6 +35,9 @@ typeof                                        // inspect                    // t
             (function(){}).constructor
             [].__proto__.push.constructor
             Function.prototype.constructor
+            ////////////////////////////////  (danger in sandbox, same in sandbox Object.__proto__.constructor)
+            constructor.__proto__.constructor
+            constructor.constructor
             ////////////////////////////////
 'function'  (async _=>_).constructor          // [Function: AsyncFunction]   // 'function AsyncFunction() { [native code] }'
             Function
@@ -59,9 +62,6 @@ typeof                                        // inspect                    // t
             ////////////////////////////////
 'object'    ([]).__proto__                    // Object(0)[]                 // ''
             Array.prototype
-            ////////////////////////////////  host Function (danger..)
-            constructor.__proto__.constructor
-            constructor.constructor
             ////////////////////////////////  instance of nearly null
             Object.create(null)               //[Object: null prototype] {} //Uncaught TypeError: Cannot convert object to primitive value
             //////////////////////////////// 
@@ -85,7 +85,15 @@ console.log(obj1 == obj2);  // false
 //clear prototype by set to PrototypeOf(null), but node:vm will reset, so do only inside sandbox
 Object.setPrototypeOf((new ObjectX).constructor.prototype,Object.create(null))
 
-> Object.getOwnPropertyNames(Object.getPrototypeOf(Object)) //Function.prototype,
+> Object.getOwnPropertyNames({})
+[]
+> Object.getOwnPropertyNames([]) // Object.keys(0)
+[ 'length' ]
+> Object.getOwnPropertyNames(Function)
+[ 'length', 'name', 'prototype' ]
+> Object.getOwnPropertyNames([].constructor)
+[ 'length', 'name', 'prototype', 'isArray', 'from', 'of' ]
+> Object.getOwnPropertyNames(Object.getPrototypeOf(Object)) //Function.prototype, Function.__proto__
 [
   'length',      'name',
   'arguments',   'caller',
@@ -110,7 +118,7 @@ Object.setPrototypeOf((new ObjectX).constructor.prototype,Object.create(null))
   'toLocaleString'
 ]
 
-> Object.getOwnPropertyNames(Object)
+> Object.getOwnPropertyNames(Object) // {}.constructor
 [
   'length',
   'name',
@@ -139,4 +147,28 @@ Object.setPrototypeOf((new ObjectX).constructor.prototype,Object.create(null))
   'hasOwn'
 ]
 
+> Object.getOwnPropertyNames([].__proto__)
+[
+  'length',      'constructor',    'concat',
+  'copyWithin',  'fill',           'find',
+  'findIndex',   'lastIndexOf',    'pop',
+  'push',        'reverse',        'shift',
+  'unshift',     'slice',          'sort',
+  'splice',      'includes',       'indexOf',
+  'join',        'keys',           'entries',
+  'values',      'forEach',        'filter',
+  'flat',        'flatMap',        'map',
+  'every',       'some',           'reduce',
+  'reduceRight', 'toLocaleString', 'toString',
+  'at',          'findLast',       'findLastIndex'
+]
+
+/////////////////////// polution found
+> await jevalx(`delete Object.__proto__.constructor;Object.__proto__.constructor.__proto__+''`)
+'function () { [native code] }'
+> Function.prototype.constructor (should be [Functino:Function])
+[Function (anonymous)] Function <Function <[Object: null prototype] {}>>
+
+
 ```
+
