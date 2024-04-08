@@ -35,18 +35,19 @@ function findEvilGetter(obj,deep=3) {
 // [ctxx,rst] = await jevalx_raw('[({}).constructor,constructor]') //sandbox and host
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
+function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
+
 const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
   if (!ctx || !vm.isContext(ctx)){
-    function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
-    let ctx_base = new ObjectX;
-    ctxx = vm.createContext(ctx_base);
-    [ctxx,rst] = jevalx_raw(`delete Function;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`,ctxx);
+    ctxx = vm.createContext(new ObjectX);
+    //[ctxx,rst] = jevalx_raw(`delete Function;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete Symbol;delete Reflect;delete Proxy;`,ctxx);
+    [ctxx,rst] = jevalx_raw(`delete eval;delete Function;delete Symbol;delete Reflect;delete Proxy;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];`,ctxx);
+    ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//important.
     //ctxx.console_log = console_log;//for tmp debug only...
-    ctxx.eval=fwd_eval;
     //ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
     //ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
     //ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
