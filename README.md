@@ -1,10 +1,6 @@
 # Replacement for discontinued vm2 (https://github.com/patriksimek/vm2/issues/533)
 
-We post the solution here for your referece here.  Wish you a good day. 
-
-Challenge still accepted!
-
-The plan is simple, just to freeze the danger part and hide-and-see!!  Might be dirty but it is useful when sandbox still needed for projects.
+We post the solution here for your referece.  Challenge still accepted!
 
 ## code
 
@@ -23,18 +19,18 @@ https://github.com/wanjo-tech/vm2/blob/main/test_jevalx.js
 * (DONE) import() can be intercepted. (TODO) handover to caller in future
 * (DONE) timeout handling to defence ddos attach by codes like: (async()=>{while(1)0})
 * (DONT) sth throw from sandbox need to be checked.
-* (WAIT) works in bun (another js runtime) not yet; waiting for their patches.
-* (WAIT) some inner uncaughtRejectPromise waiting for catching
+* (WAIT) works in bun (another js runtime): not yet, waiting for their patches.
 
-thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being annoyed by me ;)
+Great thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being annoyed by me ;)
 
 ## application
 
-I use it in my kk project.
+* I use it in my kk project.
+* wait for you
 
 ## docker/podman
 
-TBD
+(COMING SOON)
 
 ## contribution
 
