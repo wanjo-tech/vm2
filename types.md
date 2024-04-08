@@ -56,5 +56,9 @@ console.log(obj1 === obj1); // true
 console.log(obj1 === obj2); // false
 console.log(obj1 == obj2);  // false
 
+//clear prototype by set to PrototypeOf(null), but node:vm will reset, so do only inside sandbox
+Object.setPrototypeOf((new ObjectX).constructor.prototype,Object.create(null))
+
+
 
 ```
