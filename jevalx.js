@@ -12,11 +12,10 @@ const Object_assign = Object.assign;
 
 const Promise_prototype_then = Promise.prototype.then;
 const Promise_prototype_catch = Promise.prototype.catch;
-//const Promise_prototype = Object_getPrototypeOf(Promise);
+
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___catch = Promise.__proto__.catch;
 const Promise___proto___then = Promise.__proto__.then;
-const Promise___proto__ = Promise.__proto__;
 
 function findEvilGetter(obj,deep=3) {
   let currentObj = obj;
@@ -36,23 +35,21 @@ function findEvilGetter(obj,deep=3) {
 // [ctxx,rst] = await jevalx_raw('[({}).constructor,constructor]') //sandbox and host
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
-//const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
+const sFunction="(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
   if (!ctx || !vm.isContext(ctx)){
     function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
-    let ctx_base = new ObjectX;
-    ctx_base.constructor.constructor = (...args)=>fwd_eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`);
+    let ctx_base = new ObjectX;ctx_base.__proto__ = {};
     ctxx = vm.createContext(ctx_base);
-    //[ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Object.__proto__.constructor=Function=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`,ctxx);
-    [ctxx,rst] = jevalx_raw(`delete Function;constructor.__proto__.constructor=Function=constructor.constructor;delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`,ctxx);
-    ctxx.console_log = console_log;//for tmp debug only...
+    [ctxx,rst] = jevalx_raw(`delete Function;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete eval;delete Symbol;delete Reflect;delete Proxy;`,ctxx);
+    //ctxx.console_log = console_log;//for tmp debug only...
     ctxx.eval=fwd_eval;
-    ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
-    ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
-    ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
+    //ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
+    //ctxx.Reflect=(...args)=>{throw {message:'TodoReflect'}};
+    //ctxx.Proxy=(...args)=>{throw {message:'TodoProxy'}};
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
@@ -71,7 +68,6 @@ let jevalx_core = async(js,ctx,timeout=666)=>{
 
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       //TODO make some fake import in future...or put it in the args by caller...
-      //console_log('TODO EvilImport',{specifier,referrer});
       evil++; err = {message:'EvilImport',js};
       if (Promise___proto___apply!=Promise.__proto__.apply){
         err = {message:'EvilPromiseApply',js};
