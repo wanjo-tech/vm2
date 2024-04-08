@@ -44,8 +44,7 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
   if (!ctx || !vm.isContext(ctx)){
     ctxx = vm.createContext(new ObjectX);
-    //[ctxx,rst] = jevalx_raw(`delete Function;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];delete Symbol;delete Reflect;delete Proxy;`,ctxx);
-    [ctxx,rst] = jevalx_raw(`delete eval;delete Function;delete Symbol;delete Reflect;delete Proxy;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))delete Object[k];`,ctxx);
+    [ctxx,rst] = jevalx_raw(`delete eval;delete Function;delete Symbol;delete Reflect;delete Proxy;Function=constructor.__proto__.constructor=${sFunction};delete Object.prototype.__defineGetter__;delete Object.prototype.__defineGetter__;for(let k of Object.getOwnPropertyNames(Object))if(['keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k];`,ctxx);
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//important.
     //ctxx.console_log = console_log;//for tmp debug only...
     //ctxx.Symbol = (...args)=>{throw {message:'TodoSymbol'}};
