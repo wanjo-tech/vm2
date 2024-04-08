@@ -1,4 +1,3 @@
-delete process
 function buildObjectTree(obj, depth = 0, path = []) {
     const MAX_DEPTH = 7;
     if (depth > MAX_DEPTH) {
@@ -12,12 +11,10 @@ function buildObjectTree(obj, depth = 0, path = []) {
     Object.getOwnPropertyNames(obj).forEach(prop => {
         try {
             const property = obj[prop];
-            // 尝试转换属性值为字符串
             let propertyStr;
             try {
                 propertyStr = JSON.stringify(property);
                 if (propertyStr === undefined) {
-                    // 对于某些类型，如函数，JSON.stringify 返回 undefined
                     propertyStr = property.toString();
                 }
             } catch (error) {
@@ -41,21 +38,26 @@ function buildObjectTree(obj, depth = 0, path = []) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }
     });
+    const proto = Object.getPrototypeOf(obj);
+    if (proto) {
+        tree['getPrototypeOf'] = buildObjectTree(proto, depth + 1, [...path, obj]);
+    }
+    if (obj.__proto__) {
+        tree['__proto__'] = buildObjectTree(proto, depth + 1, [...path, obj]);
+    }
 
     return tree;
 }
 
 const rootObjects = {
-    //global: global,
-    //this: this,
-    //ObjectConstructor: Object.constructor,
-    Constructor: constructor,
-    Object: Object,
-    Array: Array,
-    Function: Function,
-    ArrowFunction: () => {},
-    AsyncFunction: async () => {},
-    AsyncArrowFunction: async () => {},
+    _Constructor: constructor,
+    _Object: Object,
+    _Array: Array,
+    _Function: Function,
+    _ArrowFunction: () => {},
+    _AsyncFunction: async () => {},
+    _AsyncArrowFunction: async () => {},
+    _Promise: (async () => {}),
 };
 
 const objectTrees = {};

@@ -880,6 +880,23 @@ false
   console.log('Q33 check=',typeof(process),typeof(Promise));
 
 }).then(async()=>{
+var code=`
+const Function = (async _=>_).constructor;
+const Object = constructor.__proto__.__proto__.constructor;
+Object.defineProperty(Object.__proto__, 'catch', {
+	set: [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q34', ''))"])),
+	get: ()=>1
+});
+false
+`
+  try{
+    console.log('Q34 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q34 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q34 check=',typeof(process),typeof(Promise));
+
+}).then(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
 //Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
