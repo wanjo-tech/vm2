@@ -840,7 +840,7 @@ const Function = (async _=>_).constructor;
 const promise = import('');
 constructor.__proto__.apply = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q32', ''))"]));
 promise.catch();
-console_log('promise_catch');
+wtf
 `
   try{
     console.log('Q32 result=',await jevalx(code));
