@@ -1,5 +1,10 @@
-const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf;
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
+});
+
 var {jevalx,S_SETUP} = require('./jevalx');
+
+const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf,Object_getOwnPropertyDescriptor=Object.getOwnPropertyDescriptor;
 
 eval(S_SETUP);
 
@@ -21,7 +26,24 @@ function buildObjectTree(obj, depth = 0, path = []) {
     }
 
     const tree = {};
-    Object_getOwnPropertyNames(obj).forEach(prop => {
+    Object.getOwnPropertyNames(obj).forEach(prop => {
+        const descriptor = Object_getOwnPropertyDescriptor(obj, prop);
+        let propertyStr = 'Uninitialized';
+        let danger = undefined;
+        if (descriptor) {
+            if (descriptor.get) {
+                propertyStr = 'Getter function';
+                danger = true; // 
+            } else if (descriptor.value) {
+                try {
+                    const property = descriptor.value;
+                    propertyStr = JSON.stringify(property) || property.toString();
+                    if (propertyStr.indexOf('Object(') >= 0) danger = true;
+                } catch (error) {
+                    propertyStr = 'Cannot convert to string';
+                }
+            }
+        }
         try {
             const property = obj[prop];
             let propertyStr;
@@ -31,7 +53,7 @@ function buildObjectTree(obj, depth = 0, path = []) {
                 if (propertyStr === undefined) {
                     propertyStr = property.toString();
                 }
-                if (propertyStr.indexOf('Object(')>=0) danger=true;
+                if (propertyStr.indexOf('Object')>=0) danger=true;
             } catch (error) {
                 propertyStr = 'Cannot convert to string';
             }

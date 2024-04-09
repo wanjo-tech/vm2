@@ -2,10 +2,12 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
 });
 
-const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf;
 var {jevalx,S_SETUP} = require('./jevalx');
 
+const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf,Object_getOwnPropertyDescriptor=Object.getOwnPropertyDescriptor;
+
 var code=`
+
 //if (constructor==Object) Object_setPrototypeOf(constructor,null);
 
 if (Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
@@ -24,7 +26,24 @@ function buildObjectTree(obj, depth = 0, path = []) {
     }
 
     const tree = {};
-    Object_getOwnPropertyNames(obj).forEach(prop => {
+    Object.getOwnPropertyNames(obj).forEach(prop => {
+        const descriptor = Object_getOwnPropertyDescriptor(obj, prop);
+        let propertyStr = 'Uninitialized';
+        let danger = undefined;
+        if (descriptor) {
+            if (descriptor.get) {
+                propertyStr = 'Getter function';
+                danger = true; // 
+            } else if (descriptor.value) {
+                try {
+                    const property = descriptor.value;
+                    propertyStr = JSON.stringify(property) || property.toString();
+                    if (propertyStr.indexOf('Object(') >= 0) danger = true;
+                } catch (error) {
+                    propertyStr = 'Cannot convert to string';
+                }
+            }
+        }
         try {
             const property = obj[prop];
             let propertyStr;
@@ -34,7 +53,7 @@ function buildObjectTree(obj, depth = 0, path = []) {
                 if (propertyStr === undefined) {
                     propertyStr = property.toString();
                 }
-                if (propertyStr.indexOf('Object(')>=0) danger=true;
+                if (propertyStr.indexOf('Object')>=0) danger=true;
             } catch (error) {
                 propertyStr = 'Cannot convert to string';
             }
@@ -93,6 +112,6 @@ console_log(jsonResult);
 
 (async()=>{
   await jevalx(`console_log('[')`,{console_log});
-  await jevalx(code,{console_log,Object_getOwnPropertyNames,Object_getPrototypeOf,Object_setPrototypeOf});
+  await jevalx(code,{console_log,Object_getOwnPropertyNames,Object_getPrototypeOf,Object_setPrototypeOf,Object_getOwnPropertyDescriptor});
   await jevalx(`console_log(']')`,{console_log});
 })()

@@ -8,8 +8,8 @@
     },
     "name": {
       "type": "string",
-      "value": "ObjectX",
-      "str": "\"ObjectX\""
+      "value": "Global",
+      "str": "\"Global\""
     },
     "arguments": {
       "type": "object",
@@ -25,7 +25,7 @@
       "constructor": {
         "type": "function",
         "value": "Function",
-        "str": "function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}}"
+        "str": "function Global(){if (!(this instanceof Global)){return new Global()}}"
       }
     },
     "getPrototypeOf()": {
