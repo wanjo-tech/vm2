@@ -125,5 +125,5 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   return rst;
 }
 var jevalx = jevalx_core;
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext,S_SETUP}
 

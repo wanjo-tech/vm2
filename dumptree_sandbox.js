@@ -2,6 +2,8 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
 });
 
+const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames;
+var {jevalx,S_SETUP} = require('./jevalx');
 
 var code=`
 function buildObjectTree(obj, depth = 0, path = []) {
@@ -14,7 +16,7 @@ function buildObjectTree(obj, depth = 0, path = []) {
     }
 
     const tree = {};
-    Object.getOwnPropertyNames(obj).forEach(prop => {
+    Object_getOwnPropertyNames(obj).forEach(prop => {
         try {
             const property = obj[prop];
             let propertyStr;
@@ -44,12 +46,12 @@ function buildObjectTree(obj, depth = 0, path = []) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }
     });
-    const proto = Object.getPrototypeOf(obj);
+    const proto = Object_getPrototypeOf(obj);
     if (proto) {
         tree['getPrototypeOf'] = buildObjectTree(proto, depth + 1, [...path, obj]);
     }
     if (obj.__proto__) {
-        tree['__proto__'] = buildObjectTree(proto, depth + 1, [...path, obj]);
+        tree['proto'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
     }
 
     return tree;
@@ -59,10 +61,8 @@ const rootObjects = {
     _Constructor: constructor,
     _Object: Object,
     _Array: Array,
-    _Function: Function,
-    _ArrowFunction: () => {},
+    _Function: (()=>_).constructor,
     _AsyncFunction: async () => {},
-    _AsyncArrowFunction: async () => {},
     _Promise: (async () => {}),
 };
 
@@ -72,9 +72,10 @@ for (const key in rootObjects) {
 }
 
 const jsonResult = JSON.stringify(objectTrees, null, 2);
-console.log(jsonResult);
+console_log(jsonResult);
 `
-var {jevalx} = require('./jevalx');
 (async()=>{
-  await jevalx(code,{console:console,Object:{getPrototypeOf:Object.getPrototypeOf,getOwnPropertyNames:Object.getOwnPropertyNames}});
+  await jevalx(`console_log('[')`,{console_log});
+  await jevalx(code,{console_log,Object_getOwnPropertyNames,Object_getPrototypeOf});
+  await jevalx(`console_log(']')`,{console_log});
 })()
