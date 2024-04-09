@@ -73,7 +73,8 @@ for (const key in rootObjects) {
 
 const jsonResult = JSON.stringify(objectTrees, null, 2);
 console_log(jsonResult);
-`
+`;
+
 (async()=>{
   await jevalx(`console_log('[')`,{console_log});
   await jevalx(code,{console_log,Object_getOwnPropertyNames,Object_getPrototypeOf});
