@@ -34,6 +34,7 @@ function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
 const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 const S_SETUP = `
 delete Object.prototype.constructor;
+delete constructor.getPrototypeOf;
 delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;

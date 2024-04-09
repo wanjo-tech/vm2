@@ -57,10 +57,10 @@ function buildObjectTree(obj, depth = 0, path = []) {
     });
     const proto = Object_getPrototypeOf(obj);
     if (proto) {
-        tree['getPrototypeOf'] = buildObjectTree(proto, depth + 1, [...path, obj]);
+        tree['getPrototypeOf()'] = buildObjectTree(proto, depth + 1, [...path, obj]);
     }
     if (obj.__proto__) {
-        tree['proto'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
+        tree['proto()'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
     }
 
     return tree;

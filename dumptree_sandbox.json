@@ -28,7 +28,7 @@
         "str": "function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}}"
       }
     },
-    "getPrototypeOf": {
+    "getPrototypeOf()": {
       "length": {
         "type": "number",
         "value": 0,
@@ -74,7 +74,7 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -116,7 +116,7 @@
           "str": "function toLocaleString() { [native code] }"
         }
       },
-      "proto": {
+      "proto()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -159,7 +159,7 @@
         }
       }
     },
-    "proto": {
+    "proto()": {
       "length": {
         "type": "number",
         "value": 0,
@@ -205,7 +205,7 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -247,7 +247,7 @@
           "str": "function toLocaleString() { [native code] }"
         }
       },
-      "proto": {
+      "proto()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -364,7 +364,7 @@
       "value": "Function",
       "str": "function values() { [native code] }"
     },
-    "getPrototypeOf": {
+    "getPrototypeOf()": {
       "length": {
         "type": "number",
         "value": 0,
@@ -410,7 +410,7 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -452,7 +452,7 @@
           "str": "function toLocaleString() { [native code] }"
         }
       },
-      "proto": {
+      "proto()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -495,7 +495,7 @@
         }
       }
     },
-    "proto": {
+    "proto()": {
       "length": {
         "type": "number",
         "value": 0,
@@ -541,7 +541,7 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -583,7 +583,7 @@
           "str": "function toLocaleString() { [native code] }"
         }
       },
-      "proto": {
+      "proto()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -819,7 +819,7 @@
         "value": "Function",
         "str": "function findLastIndex() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -861,7 +861,7 @@
           "str": "function toLocaleString() { [native code] }"
         }
       },
-      "proto": {
+      "proto()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -919,7 +919,7 @@
       "value": "Function",
       "str": "function of() { [native code] }"
     },
-    "getPrototypeOf": {
+    "getPrototypeOf()": {
       "length": {
         "type": "number",
         "value": 0,
@@ -965,7 +965,7 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -1007,7 +1007,7 @@
           "str": "function toLocaleString() { [native code] }"
         }
       },
-      "proto": {
+      "proto()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -1050,7 +1050,7 @@
         }
       }
     },
-    "proto": {
+    "proto()": {
       "length": {
         "type": "number",
         "value": 0,
@@ -1096,7 +1096,7 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -1138,7 +1138,7 @@
           "str": "function toLocaleString() { [native code] }"
         }
       },
-      "proto": {
+      "proto()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -1193,7 +1193,7 @@
       "value": "",
       "str": "\"\""
     },
-    "getPrototypeOf": {
+    "getPrototypeOf()": {
       "length": {
         "type": "number",
         "value": 0,
@@ -1239,7 +1239,7 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -1281,7 +1281,7 @@
           "str": "function toLocaleString() { [native code] }"
         }
       },
-      "proto": {
+      "proto()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -1324,7 +1324,7 @@
         }
       }
     },
-    "proto": {
+    "proto()": {
       "length": {
         "type": "number",
         "value": 0,
@@ -1370,7 +1370,7 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -1412,7 +1412,7 @@
           "str": "function toLocaleString() { [native code] }"
         }
       },
-      "proto": {
+      "proto()": {
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -1467,13 +1467,13 @@
       "value": "_AsyncFunction",
       "str": "\"_AsyncFunction\""
     },
-    "getPrototypeOf": {
+    "getPrototypeOf()": {
       "constructor": {
         "type": "function",
         "value": "Function",
         "str": "function AsyncFunction() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "length": {
           "type": "number",
           "value": 0,
@@ -1519,7 +1519,7 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf": {
+        "getPrototypeOf()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -1561,7 +1561,7 @@
             "str": "function toLocaleString() { [native code] }"
           }
         },
-        "proto": {
+        "proto()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -1604,7 +1604,7 @@
           }
         }
       },
-      "proto": {
+      "proto()": {
         "length": {
           "type": "number",
           "value": 0,
@@ -1650,7 +1650,7 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf": {
+        "getPrototypeOf()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -1692,7 +1692,7 @@
             "str": "function toLocaleString() { [native code] }"
           }
         },
-        "proto": {
+        "proto()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -1736,13 +1736,13 @@
         }
       }
     },
-    "proto": {
+    "proto()": {
       "constructor": {
         "type": "function",
         "value": "Function",
         "str": "function AsyncFunction() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "length": {
           "type": "number",
           "value": 0,
@@ -1788,7 +1788,7 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf": {
+        "getPrototypeOf()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -1830,7 +1830,7 @@
             "str": "function toLocaleString() { [native code] }"
           }
         },
-        "proto": {
+        "proto()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -1873,7 +1873,7 @@
           }
         }
       },
-      "proto": {
+      "proto()": {
         "length": {
           "type": "number",
           "value": 0,
@@ -1919,7 +1919,7 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf": {
+        "getPrototypeOf()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -1961,7 +1961,7 @@
             "str": "function toLocaleString() { [native code] }"
           }
         },
-        "proto": {
+        "proto()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -2017,13 +2017,13 @@
       "value": "_Promise",
       "str": "\"_Promise\""
     },
-    "getPrototypeOf": {
+    "getPrototypeOf()": {
       "constructor": {
         "type": "function",
         "value": "Function",
         "str": "function AsyncFunction() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "length": {
           "type": "number",
           "value": 0,
@@ -2069,7 +2069,7 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf": {
+        "getPrototypeOf()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -2111,7 +2111,7 @@
             "str": "function toLocaleString() { [native code] }"
           }
         },
-        "proto": {
+        "proto()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -2154,7 +2154,7 @@
           }
         }
       },
-      "proto": {
+      "proto()": {
         "length": {
           "type": "number",
           "value": 0,
@@ -2200,7 +2200,7 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf": {
+        "getPrototypeOf()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -2242,7 +2242,7 @@
             "str": "function toLocaleString() { [native code] }"
           }
         },
-        "proto": {
+        "proto()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -2286,13 +2286,13 @@
         }
       }
     },
-    "proto": {
+    "proto()": {
       "constructor": {
         "type": "function",
         "value": "Function",
         "str": "function AsyncFunction() { [native code] }"
       },
-      "getPrototypeOf": {
+      "getPrototypeOf()": {
         "length": {
           "type": "number",
           "value": 0,
@@ -2338,7 +2338,7 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf": {
+        "getPrototypeOf()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -2380,7 +2380,7 @@
             "str": "function toLocaleString() { [native code] }"
           }
         },
-        "proto": {
+        "proto()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -2423,7 +2423,7 @@
           }
         }
       },
-      "proto": {
+      "proto()": {
         "length": {
           "type": "number",
           "value": 0,
@@ -2469,7 +2469,7 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf": {
+        "getPrototypeOf()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -2511,7 +2511,7 @@
             "str": "function toLocaleString() { [native code] }"
           }
         },
-        "proto": {
+        "proto()": {
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
