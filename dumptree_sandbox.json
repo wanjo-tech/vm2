@@ -1,6 +1,7 @@
 [
 {
   "_Constructor": {
+    "typeobj": "function",
     "length": {
       "type": "number",
       "value": 0,
@@ -11,28 +12,24 @@
       "value": "",
       "str": "\"\""
     },
-    "arguments": {
-      "type": "object",
-      "value": null,
-      "str": "null"
-    },
-    "caller": {
-      "type": "object",
-      "value": null,
-      "str": "null"
-    },
     "prototype": {
+      "typeobj": "object",
       "constructor": {
         "type": "function",
         "value": "Function",
         "str": "Cannot convert to string"
-      },
-      "_proto()": {}
-    },
-    "_proto()": {}
+      }
+    }
   },
-  "_Object": {
+  "root_Object": {
+    "typeobj": "function",
     "prototype": {
+      "typeobj": "object",
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+      },
       "hasOwnProperty": {
         "type": "function",
         "value": "Function",
@@ -104,7 +101,8 @@
       "value": "Function",
       "str": "function values() { [native code] }"
     },
-    "getPrototypeOf()": {
+    "prototype_": {
+      "typeobj": "function",
       "length": {
         "type": "number",
         "value": 0,
@@ -150,7 +148,13 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf()": {
+      "prototype_": {
+        "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -194,7 +198,8 @@
       }
     }
   },
-  "_Array": {
+  "root_Array": {
+    "typeobj": "function",
     "length": {
       "type": "number",
       "value": 1,
@@ -206,6 +211,7 @@
       "str": "\"Array\""
     },
     "prototype": {
+      "typeobj": "object",
       "length": {
         "type": "number",
         "value": 0,
@@ -386,7 +392,13 @@
         "value": "Function",
         "str": "function findLastIndex() { [native code] }"
       },
-      "getPrototypeOf()": {
+      "prototype_": {
+        "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -444,7 +456,8 @@
       "value": "Function",
       "str": "function of() { [native code] }"
     },
-    "getPrototypeOf()": {
+    "prototype_": {
+      "typeobj": "function",
       "length": {
         "type": "number",
         "value": 0,
@@ -490,7 +503,13 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf()": {
+      "prototype_": {
+        "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -534,7 +553,8 @@
       }
     }
   },
-  "_Function": {
+  "root_Function": {
+    "typeobj": "function",
     "length": {
       "type": "number",
       "value": 0,
@@ -542,10 +562,11 @@
     },
     "name": {
       "type": "string",
-      "value": "",
-      "str": "\"\""
+      "value": "Function",
+      "str": "\"Function\""
     },
-    "getPrototypeOf()": {
+    "prototype_": {
+      "typeobj": "function",
       "length": {
         "type": "number",
         "value": 0,
@@ -591,7 +612,13 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "getPrototypeOf()": {
+      "prototype_": {
+        "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -635,7 +662,8 @@
       }
     }
   },
-  "_AsyncFunction": {
+  "root_AsyncFunction": {
+    "typeobj": "function",
     "length": {
       "type": "number",
       "value": 0,
@@ -643,16 +671,18 @@
     },
     "name": {
       "type": "string",
-      "value": "_AsyncFunction",
-      "str": "\"_AsyncFunction\""
+      "value": "root_AsyncFunction",
+      "str": "\"root_AsyncFunction\""
     },
-    "getPrototypeOf()": {
+    "prototype_": {
+      "typeobj": "object",
       "constructor": {
         "type": "function",
         "value": "Function",
         "str": "function AsyncFunction() { [native code] }"
       },
-      "getPrototypeOf()": {
+      "prototype_": {
+        "typeobj": "function",
         "length": {
           "type": "number",
           "value": 0,
@@ -698,7 +728,13 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf()": {
+        "prototype_": {
+          "typeobj": "object",
+          "constructor": {
+            "type": "function",
+            "value": "Function",
+            "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+          },
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -743,7 +779,8 @@
       }
     }
   },
-  "_Promise": {
+  "root_Promise": {
+    "typeobj": "function",
     "length": {
       "type": "number",
       "value": 0,
@@ -751,16 +788,18 @@
     },
     "name": {
       "type": "string",
-      "value": "_Promise",
-      "str": "\"_Promise\""
+      "value": "root_Promise",
+      "str": "\"root_Promise\""
     },
-    "getPrototypeOf()": {
+    "prototype_": {
+      "typeobj": "object",
       "constructor": {
         "type": "function",
         "value": "Function",
         "str": "function AsyncFunction() { [native code] }"
       },
-      "getPrototypeOf()": {
+      "prototype_": {
+        "typeobj": "function",
         "length": {
           "type": "number",
           "value": 0,
@@ -806,7 +845,13 @@
           "value": "Function",
           "str": "function toString() { [native code] }"
         },
-        "getPrototypeOf()": {
+        "prototype_": {
+          "typeobj": "object",
+          "constructor": {
+            "type": "function",
+            "value": "Function",
+            "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+          },
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",

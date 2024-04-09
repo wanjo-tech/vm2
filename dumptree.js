@@ -8,12 +8,12 @@ const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object
 
 eval(S_SETUP);
 
-if (Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
+if (constructor && Object && Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
   console_log('test constructor.__proto__.constructor');
   constructor.__proto__.constructor=Object.__proto__.constructor;
 }
 //if (constructor==Object)
-Object_setPrototypeOf(constructor, null);
+//Object_setPrototypeOf(constructor, null);
 
 const property_tocheck = [Object];
 
@@ -26,8 +26,8 @@ function buildObjectTree(obj, depth = 0, path = []) {
         return { note: 'Circular reference detected' };
     }
 
-    const tree = {};
   if (obj!==null && obj!==undefined) {
+    const tree = {typeobj:typeof(obj)};
     Object.getOwnPropertyNames(obj).forEach(prop => {
         const descriptor = Object_getOwnPropertyDescriptor(obj, prop);
         let propertyStr = 'Uninitialized';
@@ -84,23 +84,22 @@ function buildObjectTree(obj, depth = 0, path = []) {
     });
     const proto = Object_getPrototypeOf(obj);
     if (proto) {
-        tree['getPrototypeOf()'] = buildObjectTree(proto, depth + 1, [...path, obj]);
+        tree['prototype_'] = buildObjectTree(proto, depth + 1, [...path, obj]);
     }
-    if (proto !== obj.__proto__) {
-        tree['_proto()'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
+    if (proto !== obj.__proto__ && obj.__proto__) {
+        tree['__proto'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
     }
+    return tree;
   }
-
-  return tree;
 }
 
 const rootObjects = {
     _Constructor: constructor,
-    _Object: Object,
-    _Array: Array,
-    _Function: (()=>_).constructor,
-    _AsyncFunction: async () => {},
-    _Promise: (async () => {}),
+    root_Object: Object,
+    root_Array: Array,
+    root_Function: (()=>_).constructor,
+    root_AsyncFunction: async () => {},
+    root_Promise: (async () => {}),
 };
 
 const objectTrees = {};
