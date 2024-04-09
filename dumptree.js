@@ -27,6 +27,7 @@ function buildObjectTree(obj, depth = 0, path = []) {
     }
 
     const tree = {};
+  if (obj!==null && obj!==undefined) {
     Object.getOwnPropertyNames(obj).forEach(prop => {
         const descriptor = Object_getOwnPropertyDescriptor(obj, prop);
         let propertyStr = 'Uninitialized';
@@ -85,11 +86,12 @@ function buildObjectTree(obj, depth = 0, path = []) {
     if (proto) {
         tree['getPrototypeOf()'] = buildObjectTree(proto, depth + 1, [...path, obj]);
     }
-    if (obj.__proto__) {
-        tree['proto()'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
+    if (proto !== obj.__proto__) {
+        tree['_proto()'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
     }
+  }
 
-    return tree;
+  return tree;
 }
 
 const rootObjects = {

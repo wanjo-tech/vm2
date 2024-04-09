@@ -29,7 +29,7 @@ function findEvilGetter(obj,maxdepth=3) {
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
-function Global(){if (!(this instanceof Global)){return new Global()}};
+//function Global(){if (!(this instanceof Global)){return new Global()}};
 
 const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 const S_SETUP = `
@@ -46,7 +46,8 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
   fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
   if (!ctx || !vm.isContext(ctx)){
-    ctxx = vm.createContext(new Global);
+    ctxx = vm.createContext(new function(){});
+    //ctxx = vm.createContext(new Global);
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
     ctxx.console_log = console_log;
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//essential.

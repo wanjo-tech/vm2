@@ -12,7 +12,8 @@ if (Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=c
   console_log('test constructor.__proto__.constructor');
   constructor.__proto__.constructor=Object.__proto__.constructor;
 }
-if (constructor==Object) Object_setPrototypeOf(constructor, null);//for host testing
+//if (constructor==Object)
+Object_setPrototypeOf(constructor, null);
 
 const property_tocheck = [Object];
 
@@ -26,6 +27,7 @@ function buildObjectTree(obj, depth = 0, path = []) {
     }
 
     const tree = {};
+  if (obj!==null && obj!==undefined) {
     Object.getOwnPropertyNames(obj).forEach(prop => {
         const descriptor = Object_getOwnPropertyDescriptor(obj, prop);
         let propertyStr = 'Uninitialized';
@@ -84,11 +86,12 @@ function buildObjectTree(obj, depth = 0, path = []) {
     if (proto) {
         tree['getPrototypeOf()'] = buildObjectTree(proto, depth + 1, [...path, obj]);
     }
-    if (obj.__proto__) {
-        tree['proto()'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
+    if (proto !== obj.__proto__) {
+        tree['_proto()'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
     }
+  }
 
-    return tree;
+  return tree;
 }
 
 const rootObjects = {
