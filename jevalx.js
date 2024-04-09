@@ -5,6 +5,11 @@ const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___catch = Promise.__proto__.catch;
 const Promise___proto___then = Promise.__proto__.then;
 
+//
+const Promise_prototype_catch = Promise.prototype.catch;
+const Promise_prototype_then = Promise.prototype.then;
+const Promise_prototype_apply = Promise.prototype.apply;
+
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
@@ -56,9 +61,30 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   return jevalx_raw(js,ctxx,timeout,js_opts)
 }
 
+const jevalx_dev = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
+  let ctxx,rst,err,evil=0;
+  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'Evil',js};console.log(999,reason) };
+  process.addListener('unhandledRejection',tmpHandler);
+  try{
+    [ctxx,rst] = await jevalx_ext(`(async()=>{
+      var rst = eval(${JSON.stringify(js)});
+      for(let i=0;i<9;i++){
+        if (typeof(rst)=='function') rst= await rst();
+        else if (rst.then) rst=await rst;
+        else break;
+      }
+      return rst;
+    })()`,ctx);
+  }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
+  //resetPromise();
+  process.removeListener('unhandledRejection',tmpHandler);
+  if (evil || err) throw err;
+  return rst;
+}
+
 let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0;
-  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'Evil',js} };
+  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'Evil',js};console.log(999,reason) };
   process.addListener('unhandledRejection',tmpHandler);
   let check_Promise= (seq=0)=>{
     if (Promise___proto___apply!=Promise.__proto__.apply){
@@ -79,6 +105,15 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
     Promise.__proto__.catch= Promise___proto___catch;
   }
   try{
+    if (Promise.prototype.then != Promise_prototype_then)
+    Promise.prototype.then = function() {
+//console.log('then',evil);
+      if (evil || err) {
+        resetPromise();
+        throw err;
+      }
+      return Promise_prototype_then.apply(this, arguments);
+    };
     Promise.prototype.apply = function() {
       if (evil || err) {
         resetPromise();
@@ -134,5 +169,5 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   return rst;
 }
 var jevalx = jevalx_core;
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext,S_SETUP}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext,S_SETUP,jevalx_dev}
 
