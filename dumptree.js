@@ -23,11 +23,13 @@ function buildObjectTree(obj, depth = 0, path = []) {
         try {
             const property = obj[prop];
             let propertyStr;
+            let danger = undefined;
             try {
                 propertyStr = JSON.stringify(property);
                 if (propertyStr === undefined) {
                     propertyStr = property.toString();
                 }
+                if (propertyStr.indexOf('Object(')>=0) danger=true;
             } catch (error) {
                 propertyStr = 'Cannot convert to string';
             }
@@ -42,15 +44,16 @@ function buildObjectTree(obj, depth = 0, path = []) {
                 tree[prop] = { 
                     type: typeof property, 
                     value: typeof property === 'function' ? 'Function' : property, 
-                    str: propertyStr 
+                    str: propertyStr ,
+                    danger,
                 };
             }
-            if (prop=='constructor'){
-              if (property==Object_tocheck){
-                tree[prop] = tree[prop]||{}
-                tree[prop]['FOUND'] = true;
-              }
-            }
+            //if (prop=='constructor'){
+            //  if (property==Object_tocheck){
+            //    tree[prop] = tree[prop]||{}
+            //    tree[prop]['FOUND'] = true;
+            //  }
+            //}
         } catch (error) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }
