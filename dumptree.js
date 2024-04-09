@@ -1,6 +1,12 @@
 const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames;
 var {jevalx,S_SETUP} = require('./jevalx');
+
 eval(S_SETUP);
+
+//delete constructor.__proto__.constructor;
+//delete Object.__proto__.constructor;//whatif
+
+const Object_tocheck = Object;
 
 function buildObjectTree(obj, depth = 0, path = []) {
     const MAX_DEPTH = 7;
@@ -37,6 +43,12 @@ function buildObjectTree(obj, depth = 0, path = []) {
                     value: typeof property === 'function' ? 'Function' : property, 
                     str: propertyStr 
                 };
+            }
+            if (prop=='constructor'){
+              if (property==Object_tocheck){
+                tree[prop] = tree[prop]||{}
+                tree[prop]['FOUND'] = true;
+              }
             }
         } catch (error) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };

@@ -32,7 +32,9 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 function ObjectX(){if (!(this instanceof ObjectX)){return new ObjectX()}};
 
 const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
-const S_SETUP = `delete constructor.__proto__.__proto__.constructor;
+const S_SETUP = `
+delete Object.prototype.constructor;
+delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
 Object.setPrototypeOf(constructor.prototype,null);`+['eval','Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') + `Object.__proto__.constructor=Function=constructor.__proto__.constructor=${S_FUNCTION};for(let k of Object.getOwnPropertyNames(Object))if(['fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k];`;
