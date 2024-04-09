@@ -38,7 +38,9 @@ delete constructor.getPrototypeOf;
 delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
-Object.setPrototypeOf(constructor.prototype,null);`+['eval','Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') + `Object.__proto__.constructor=Function=constructor.__proto__.constructor=${S_FUNCTION};for(let k of Object.getOwnPropertyNames(Object))if(['fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k];`;
+Object.setPrototypeOf(constructor.prototype,null);`+['eval','Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') + `Object.__proto__.constructor=Function=constructor.__proto__.constructor=${S_FUNCTION};
+for(let k of Object.getOwnPropertyNames(Object))if(['fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k];
+`;
 
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;

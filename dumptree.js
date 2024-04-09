@@ -1,9 +1,11 @@
-const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames;
+const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf;
 var {jevalx,S_SETUP} = require('./jevalx');
 
 eval(S_SETUP);
 
-if (Object.__proto__.constructor!=constructor.__proto__.constructor){
+//if (constructor==Object) Object_setPrototypeOf(constructor,null);
+
+if (Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
   console_log('test constructor.__proto__.constructor');
   constructor.__proto__.constructor=Object.__proto__.constructor;
 }
@@ -48,12 +50,11 @@ function buildObjectTree(obj, depth = 0, path = []) {
                     danger,
                 };
             }
-            //if (prop=='constructor'){
-            //  if (property==Object_tocheck){
-            //    tree[prop] = tree[prop]||{}
-            //    tree[prop]['FOUND'] = true;
-            //  }
-            //}
+            if (prop=='constructor'){
+              if (property==Object_tocheck){
+                tree[prop]['danger'] = true;
+              }
+            }
         } catch (error) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }

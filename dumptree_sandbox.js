@@ -2,11 +2,13 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
 });
 
-const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames;
+const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf;
 var {jevalx,S_SETUP} = require('./jevalx');
 
 var code=`
-if (Object.__proto__.constructor!=constructor.__proto__.constructor){
+//if (constructor==Object) Object_setPrototypeOf(constructor,null);
+
+if (Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
   console_log('test constructor.__proto__.constructor');
   constructor.__proto__.constructor=Object.__proto__.constructor;
 }
@@ -51,12 +53,11 @@ function buildObjectTree(obj, depth = 0, path = []) {
                     danger,
                 };
             }
-            //if (prop=='constructor'){
-            //  if (property==Object_tocheck){
-            //    tree[prop] = tree[prop]||{}
-            //    tree[prop]['FOUND'] = true;
-            //  }
-            //}
+            if (prop=='constructor'){
+              if (property==Object_tocheck){
+                tree[prop]['danger'] = true;
+              }
+            }
         } catch (error) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }
@@ -92,6 +93,6 @@ console_log(jsonResult);
 
 (async()=>{
   await jevalx(`console_log('[')`,{console_log});
-  await jevalx(code,{console_log,Object_getOwnPropertyNames,Object_getPrototypeOf});
+  await jevalx(code,{console_log,Object_getOwnPropertyNames,Object_getPrototypeOf,Object_setPrototypeOf});
   await jevalx(`console_log(']')`,{console_log});
 })()
