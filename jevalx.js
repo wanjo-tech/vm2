@@ -55,29 +55,105 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
     //ctxx = vm.createContext(new Global);
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
     ctxx.console_log = console_log;
+    ctxx.setTimeout= setTimeout;//tmp test
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//essential.
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
 }
 
+function resetPromise(){
+  Promise.__proto__.apply = Promise___proto___apply;
+  Promise.__proto__.catch= Promise___proto___catch;
+  Promise.prototype.catch = Promise_prototype_catch;
+  Promise.prototype.apply= Promise_prototype_apply;
+  Promise.prototype.then= Promise_prototype_then;
+}
 const jevalx_dev = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0;
   let tmpHandler = (reason, promise)=>{ if (!err) err={message:'Evil',js};console.log(999,reason) };
   process.addListener('unhandledRejection',tmpHandler);
   try{
+
+await new Promise(async(r,j)=>{
+  setTimeout(()=>{j({message:'TimeoutX',js})},timeout+666)//FOR DEV ONLY...
+
+  let check_Promise= (seq=0)=>{
+    if (Promise___proto___apply!=Promise.__proto__.apply){
+      evil++;err = {message:'EvilPromiseApply'+seq,js};
+      Promise.__proto__.apply = Promise___proto___apply
+    }
+    if (Promise___proto___catch!=Promise.__proto__.catch){
+      evil++;err = {message:'EvilPromiseCatch'+seq,js};
+      Promise.__proto__.catch = Promise___proto___catch
+    }
+    if (Promise___proto___then!=Promise.__proto__.then){
+      evil++;err = {message:'EvilPromiseThen'+seq,js};
+      Promise.__proto__.then = Promise___proto___then
+    }
+  };
+
+    if (Promise.prototype.then != Promise_prototype_then)
+    Promise.prototype.then = function() {
+console.log('then',evil);
+      if (evil || err) {
+        resetPromise();
+        throw err;
+      }
+      return Promise_prototype_then.apply(this, arguments);
+    };
+    Promise.prototype.apply = function() {
+      if (evil || err) {
+        resetPromise();
+        throw err;
+      }
+      return Promise_prototype_apply.apply(this, arguments);
+    };
+    Promise.prototype.catch = function() {
+console.log('catch',evil);
+      if (evil || err) {
+        resetPromise();
+        throw err;
+      }
+      return Promise_prototype_catch.apply(this, arguments);
+    };
+
+var js_json = JSON.stringify(js);
+console.log('===>',js_json);
+
     [ctxx,rst] = await jevalx_ext(`(async()=>{
-      var rst = eval(${JSON.stringify(js)});
+      var rst = eval(${js_json});
       for(let i=0;i<9;i++){
         if (typeof(rst)=='function') rst= await rst();
-        else if (rst.then) rst=await rst;
+        else if (rst.then) { //rst=await rst;
+            rst = await new Promise(async(r,j)=>{
+              setTimeout(()=>j({message:'Timeout'}),timeout=${timeout});//TODO
+              try{ r(await rst) } catch(ex) { j(ex) };
+            });
+        }
         else break;
       }
       return rst;
-    })()`,ctx);
+    })()`,ctx,timeout,{async importModuleDynamically(specifier, referrer, importAttributes){
+      if (user_import_handler) {
+        return user_import_handler({specifier, referrer, importAttributes})
+      }
+      if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
+      evil++; err = {message:'EvilImport',js};
+      //check_Promise();
+      throw('EvilImport');
+    }});
+
+    if (findEvilGetter(rst)) throw {message:'EvilProto',js};
+
+    setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
+});
+
+      //check_Promise(1);
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
-  //resetPromise();
+
   process.removeListener('unhandledRejection',tmpHandler);
+  resetPromise();
   if (evil || err) throw err;
   return rst;
 }
@@ -107,7 +183,7 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   try{
     if (Promise.prototype.then != Promise_prototype_then)
     Promise.prototype.then = function() {
-//console.log('then',evil);
+console.log('then',evil);
       if (evil || err) {
         resetPromise();
         throw err;
@@ -115,13 +191,16 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
       return Promise_prototype_then.apply(this, arguments);
     };
     Promise.prototype.apply = function() {
+console.log('apply',evil);
       if (evil || err) {
         resetPromise();
         throw err;
       }
       return Promise_prototype_apply.apply(this, arguments);
     };
+    if (Promise.prototype.catch != Promise_prototype_catch)
     Promise.prototype.catch = function() {
+console.log('catch',evil);
       if (evil || err) {
         resetPromise();
         throw err;
