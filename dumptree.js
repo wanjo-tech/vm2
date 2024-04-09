@@ -8,13 +8,14 @@ const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object
 
 eval(S_SETUP);
 
-//if (constructor==Object) Object_setPrototypeOf(constructor,null);
-
 if (Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
   console_log('test constructor.__proto__.constructor');
   constructor.__proto__.constructor=Object.__proto__.constructor;
 }
-const Object_tocheck = Object;
+//if (constructor==Object)
+Object_setPrototypeOf(constructor, null);
+
+const property_tocheck = [Object];
 
 function buildObjectTree(obj, depth = 0, path = []) {
     const MAX_DEPTH = 7;
@@ -33,12 +34,12 @@ function buildObjectTree(obj, depth = 0, path = []) {
         if (descriptor) {
             if (descriptor.get) {
                 propertyStr = 'Getter function';
-                danger = true; // 
+                danger = 3; // 
             } else if (descriptor.value) {
                 try {
                     const property = descriptor.value;
                     propertyStr = JSON.stringify(property) || property.toString();
-                    if (propertyStr.indexOf('Object(') >= 0) danger = true;
+                    if (propertyStr.indexOf('Object(') >= 0) danger = 4;
                 } catch (error) {
                     propertyStr = 'Cannot convert to string';
                 }
@@ -47,13 +48,12 @@ function buildObjectTree(obj, depth = 0, path = []) {
         try {
             const property = obj[prop];
             let propertyStr;
-            let danger = undefined;
             try {
                 propertyStr = JSON.stringify(property);
                 if (propertyStr === undefined) {
                     propertyStr = property.toString();
                 }
-                if (propertyStr.indexOf('Object')>=0) danger=true;
+                if (propertyStr.indexOf('Object')>=0) danger=1;
             } catch (error) {
                 propertyStr = 'Cannot convert to string';
             }
@@ -73,8 +73,8 @@ function buildObjectTree(obj, depth = 0, path = []) {
                 };
             }
             if (prop=='constructor'){
-              if (property==Object_tocheck){
-                tree[prop]['danger'] = true;
+              if (property_tocheck.indexOf(property_tocheck)>=0){
+                tree[prop]['danger'] = 2;
               }
             }
         } catch (error) {
