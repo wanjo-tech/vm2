@@ -6,8 +6,10 @@ const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object
 var {jevalx,S_SETUP} = require('./jevalx');
 
 var code=`
-//delete constructor.__proto__.constructor;
-//delete Object.__proto__.constructor;//whatif
+if (Object.__proto__.constructor!=constructor.__proto__.constructor){
+  console_log('test constructor.__proto__.constructor');
+  constructor.__proto__.constructor=Object.__proto__.constructor;
+}
 const Object_tocheck = Object;
 
 function buildObjectTree(obj, depth = 0, path = []) {

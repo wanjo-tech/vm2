@@ -1,31 +1,6 @@
 {
-  "Constructor": {
-    "length": {
-      "type": "number",
-      "value": 1,
-      "str": "1"
-    },
-    "name": {
-      "type": "string",
-      "value": "Object",
-      "str": "\"Object\""
-    },
+  "_Constructor": {
     "prototype": {
-      "constructor": {
-        "type": "function",
-        "value": "Function",
-        "str": "function Object() { [native code] }"
-      },
-      "__defineGetter__": {
-        "type": "function",
-        "value": "Function",
-        "str": "function __defineGetter__() { [native code] }"
-      },
-      "__defineSetter__": {
-        "type": "function",
-        "value": "Function",
-        "str": "function __defineSetter__() { [native code] }"
-      },
       "hasOwnProperty": {
         "type": "function",
         "value": "Function",
@@ -67,90 +42,15 @@
         "str": "function toLocaleString() { [native code] }"
       }
     },
-    "assign": {
-      "type": "function",
-      "value": "Function",
-      "str": "function assign() { [native code] }"
-    },
-    "getOwnPropertyDescriptor": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertyDescriptor() { [native code] }"
-    },
-    "getOwnPropertyDescriptors": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertyDescriptors() { [native code] }"
-    },
     "getOwnPropertyNames": {
       "type": "function",
       "value": "Function",
       "str": "function getOwnPropertyNames() { [native code] }"
     },
-    "getOwnPropertySymbols": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertySymbols() { [native code] }"
-    },
     "is": {
       "type": "function",
       "value": "Function",
       "str": "function is() { [native code] }"
-    },
-    "preventExtensions": {
-      "type": "function",
-      "value": "Function",
-      "str": "function preventExtensions() { [native code] }"
-    },
-    "seal": {
-      "type": "function",
-      "value": "Function",
-      "str": "function seal() { [native code] }"
-    },
-    "create": {
-      "type": "function",
-      "value": "Function",
-      "str": "function create() { [native code] }"
-    },
-    "defineProperties": {
-      "type": "function",
-      "value": "Function",
-      "str": "function defineProperties() { [native code] }"
-    },
-    "defineProperty": {
-      "type": "function",
-      "value": "Function",
-      "str": "function defineProperty() { [native code] }"
-    },
-    "freeze": {
-      "type": "function",
-      "value": "Function",
-      "str": "function freeze() { [native code] }"
-    },
-    "getPrototypeOf": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getPrototypeOf() { [native code] }"
-    },
-    "setPrototypeOf": {
-      "type": "function",
-      "value": "Function",
-      "str": "function setPrototypeOf() { [native code] }"
-    },
-    "isExtensible": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isExtensible() { [native code] }"
-    },
-    "isFrozen": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isFrozen() { [native code] }"
-    },
-    "isSealed": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isSealed() { [native code] }"
     },
     "keys": {
       "type": "function",
@@ -172,39 +72,271 @@
       "value": "Function",
       "str": "function values() { [native code] }"
     },
-    "hasOwn": {
-      "type": "function",
-      "value": "Function",
-      "str": "function hasOwn() { [native code] }"
-    }
-  },
-  "Object": {
-    "length": {
-      "type": "number",
-      "value": 1,
-      "str": "1"
-    },
-    "name": {
-      "type": "string",
-      "value": "Object",
-      "str": "\"Object\""
-    },
-    "prototype": {
+    "getPrototypeOf": {
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\""
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
       "constructor": {
         "type": "function",
         "value": "Function",
-        "str": "function Object() { [native code] }"
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
       },
-      "__defineGetter__": {
+      "apply": {
         "type": "function",
         "value": "Function",
-        "str": "function __defineGetter__() { [native code] }"
+        "str": "function apply() { [native code] }"
       },
-      "__defineSetter__": {
+      "bind": {
         "type": "function",
         "value": "Function",
-        "str": "function __defineSetter__() { [native code] }"
+        "str": "function bind() { [native code] }"
       },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      },
+      "proto": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      }
+    },
+    "proto": {
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\""
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      },
+      "proto": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      }
+    }
+  },
+  "_Object": {
+    "prototype": {
       "hasOwnProperty": {
         "type": "function",
         "value": "Function",
@@ -246,90 +378,15 @@
         "str": "function toLocaleString() { [native code] }"
       }
     },
-    "assign": {
-      "type": "function",
-      "value": "Function",
-      "str": "function assign() { [native code] }"
-    },
-    "getOwnPropertyDescriptor": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertyDescriptor() { [native code] }"
-    },
-    "getOwnPropertyDescriptors": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertyDescriptors() { [native code] }"
-    },
     "getOwnPropertyNames": {
       "type": "function",
       "value": "Function",
       "str": "function getOwnPropertyNames() { [native code] }"
     },
-    "getOwnPropertySymbols": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertySymbols() { [native code] }"
-    },
     "is": {
       "type": "function",
       "value": "Function",
       "str": "function is() { [native code] }"
-    },
-    "preventExtensions": {
-      "type": "function",
-      "value": "Function",
-      "str": "function preventExtensions() { [native code] }"
-    },
-    "seal": {
-      "type": "function",
-      "value": "Function",
-      "str": "function seal() { [native code] }"
-    },
-    "create": {
-      "type": "function",
-      "value": "Function",
-      "str": "function create() { [native code] }"
-    },
-    "defineProperties": {
-      "type": "function",
-      "value": "Function",
-      "str": "function defineProperties() { [native code] }"
-    },
-    "defineProperty": {
-      "type": "function",
-      "value": "Function",
-      "str": "function defineProperty() { [native code] }"
-    },
-    "freeze": {
-      "type": "function",
-      "value": "Function",
-      "str": "function freeze() { [native code] }"
-    },
-    "getPrototypeOf": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getPrototypeOf() { [native code] }"
-    },
-    "setPrototypeOf": {
-      "type": "function",
-      "value": "Function",
-      "str": "function setPrototypeOf() { [native code] }"
-    },
-    "isExtensible": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isExtensible() { [native code] }"
-    },
-    "isFrozen": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isFrozen() { [native code] }"
-    },
-    "isSealed": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isSealed() { [native code] }"
     },
     "keys": {
       "type": "function",
@@ -351,13 +408,270 @@
       "value": "Function",
       "str": "function values() { [native code] }"
     },
-    "hasOwn": {
-      "type": "function",
-      "value": "Function",
-      "str": "function hasOwn() { [native code] }"
+    "getPrototypeOf": {
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\""
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      },
+      "proto": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      }
+    },
+    "proto": {
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\""
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      },
+      "proto": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      }
     }
   },
-  "Array": {
+  "_Array": {
     "length": {
       "type": "number",
       "value": 1,
@@ -548,6 +862,90 @@
         "type": "function",
         "value": "Function",
         "str": "function findLastIndex() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      },
+      "proto": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
       }
     },
     "isArray": {
@@ -564,26 +962,271 @@
       "type": "function",
       "value": "Function",
       "str": "function of() { [native code] }"
+    },
+    "getPrototypeOf": {
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\""
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      },
+      "proto": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      }
+    },
+    "proto": {
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\""
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      },
+      "proto": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      }
     }
   },
-  "Function": {
-    "length": {
-      "type": "number",
-      "value": 1,
-      "str": "1"
-    },
-    "name": {
-      "type": "string",
-      "value": "Function",
-      "str": "\"Function\""
-    },
-    "prototype": {
-      "type": "function",
-      "value": "Function",
-      "str": "function () { [native code] }"
-    }
-  },
-  "ArrowFunction": {
+  "_Function": {
     "length": {
       "type": "number",
       "value": 0,
@@ -591,11 +1234,273 @@
     },
     "name": {
       "type": "string",
-      "value": "ArrowFunction",
-      "str": "\"ArrowFunction\""
+      "value": "",
+      "str": "\"\""
+    },
+    "getPrototypeOf": {
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\""
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      },
+      "proto": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      }
+    },
+    "proto": {
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\""
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      },
+      "proto": {
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      }
     }
   },
-  "AsyncFunction": {
+  "_AsyncFunction": {
     "length": {
       "type": "number",
       "value": 0,
@@ -603,11 +1508,549 @@
     },
     "name": {
       "type": "string",
-      "value": "AsyncFunction",
-      "str": "\"AsyncFunction\""
+      "value": "_AsyncFunction",
+      "str": "\"_AsyncFunction\""
+    },
+    "getPrototypeOf": {
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function AsyncFunction() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "length": {
+          "type": "number",
+          "value": 0,
+          "str": "0"
+        },
+        "name": {
+          "type": "string",
+          "value": "",
+          "str": "\"\""
+        },
+        "arguments": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "caller": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
+        "apply": {
+          "type": "function",
+          "value": "Function",
+          "str": "function apply() { [native code] }"
+        },
+        "bind": {
+          "type": "function",
+          "value": "Function",
+          "str": "function bind() { [native code] }"
+        },
+        "call": {
+          "type": "function",
+          "value": "Function",
+          "str": "function call() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "getPrototypeOf": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        },
+        "proto": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        }
+      },
+      "proto": {
+        "length": {
+          "type": "number",
+          "value": 0,
+          "str": "0"
+        },
+        "name": {
+          "type": "string",
+          "value": "",
+          "str": "\"\""
+        },
+        "arguments": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "caller": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
+        "apply": {
+          "type": "function",
+          "value": "Function",
+          "str": "function apply() { [native code] }"
+        },
+        "bind": {
+          "type": "function",
+          "value": "Function",
+          "str": "function bind() { [native code] }"
+        },
+        "call": {
+          "type": "function",
+          "value": "Function",
+          "str": "function call() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "getPrototypeOf": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        },
+        "proto": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        }
+      }
+    },
+    "proto": {
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function AsyncFunction() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "length": {
+          "type": "number",
+          "value": 0,
+          "str": "0"
+        },
+        "name": {
+          "type": "string",
+          "value": "",
+          "str": "\"\""
+        },
+        "arguments": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "caller": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
+        "apply": {
+          "type": "function",
+          "value": "Function",
+          "str": "function apply() { [native code] }"
+        },
+        "bind": {
+          "type": "function",
+          "value": "Function",
+          "str": "function bind() { [native code] }"
+        },
+        "call": {
+          "type": "function",
+          "value": "Function",
+          "str": "function call() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "getPrototypeOf": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        },
+        "proto": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        }
+      },
+      "proto": {
+        "length": {
+          "type": "number",
+          "value": 0,
+          "str": "0"
+        },
+        "name": {
+          "type": "string",
+          "value": "",
+          "str": "\"\""
+        },
+        "arguments": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "caller": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
+        "apply": {
+          "type": "function",
+          "value": "Function",
+          "str": "function apply() { [native code] }"
+        },
+        "bind": {
+          "type": "function",
+          "value": "Function",
+          "str": "function bind() { [native code] }"
+        },
+        "call": {
+          "type": "function",
+          "value": "Function",
+          "str": "function call() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "getPrototypeOf": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        },
+        "proto": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        }
+      }
     }
   },
-  "AsyncArrowFunction": {
+  "_Promise": {
     "length": {
       "type": "number",
       "value": 0,
@@ -615,8 +2058,546 @@
     },
     "name": {
       "type": "string",
-      "value": "AsyncArrowFunction",
-      "str": "\"AsyncArrowFunction\""
+      "value": "_Promise",
+      "str": "\"_Promise\""
+    },
+    "getPrototypeOf": {
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function AsyncFunction() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "length": {
+          "type": "number",
+          "value": 0,
+          "str": "0"
+        },
+        "name": {
+          "type": "string",
+          "value": "",
+          "str": "\"\""
+        },
+        "arguments": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "caller": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
+        "apply": {
+          "type": "function",
+          "value": "Function",
+          "str": "function apply() { [native code] }"
+        },
+        "bind": {
+          "type": "function",
+          "value": "Function",
+          "str": "function bind() { [native code] }"
+        },
+        "call": {
+          "type": "function",
+          "value": "Function",
+          "str": "function call() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "getPrototypeOf": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        },
+        "proto": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        }
+      },
+      "proto": {
+        "length": {
+          "type": "number",
+          "value": 0,
+          "str": "0"
+        },
+        "name": {
+          "type": "string",
+          "value": "",
+          "str": "\"\""
+        },
+        "arguments": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "caller": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
+        "apply": {
+          "type": "function",
+          "value": "Function",
+          "str": "function apply() { [native code] }"
+        },
+        "bind": {
+          "type": "function",
+          "value": "Function",
+          "str": "function bind() { [native code] }"
+        },
+        "call": {
+          "type": "function",
+          "value": "Function",
+          "str": "function call() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "getPrototypeOf": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        },
+        "proto": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        }
+      }
+    },
+    "proto": {
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function AsyncFunction() { [native code] }"
+      },
+      "getPrototypeOf": {
+        "length": {
+          "type": "number",
+          "value": 0,
+          "str": "0"
+        },
+        "name": {
+          "type": "string",
+          "value": "",
+          "str": "\"\""
+        },
+        "arguments": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "caller": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
+        "apply": {
+          "type": "function",
+          "value": "Function",
+          "str": "function apply() { [native code] }"
+        },
+        "bind": {
+          "type": "function",
+          "value": "Function",
+          "str": "function bind() { [native code] }"
+        },
+        "call": {
+          "type": "function",
+          "value": "Function",
+          "str": "function call() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "getPrototypeOf": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        },
+        "proto": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        }
+      },
+      "proto": {
+        "length": {
+          "type": "number",
+          "value": 0,
+          "str": "0"
+        },
+        "name": {
+          "type": "string",
+          "value": "",
+          "str": "\"\""
+        },
+        "arguments": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "caller": {
+          "type": "error",
+          "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+          "str": "Error"
+        },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        },
+        "apply": {
+          "type": "function",
+          "value": "Function",
+          "str": "function apply() { [native code] }"
+        },
+        "bind": {
+          "type": "function",
+          "value": "Function",
+          "str": "function bind() { [native code] }"
+        },
+        "call": {
+          "type": "function",
+          "value": "Function",
+          "str": "function call() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "getPrototypeOf": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        },
+        "proto": {
+          "hasOwnProperty": {
+            "type": "function",
+            "value": "Function",
+            "str": "function hasOwnProperty() { [native code] }"
+          },
+          "__lookupGetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupGetter__() { [native code] }"
+          },
+          "__lookupSetter__": {
+            "type": "function",
+            "value": "Function",
+            "str": "function __lookupSetter__() { [native code] }"
+          },
+          "isPrototypeOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function isPrototypeOf() { [native code] }"
+          },
+          "propertyIsEnumerable": {
+            "type": "function",
+            "value": "Function",
+            "str": "function propertyIsEnumerable() { [native code] }"
+          },
+          "toString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toString() { [native code] }"
+          },
+          "valueOf": {
+            "type": "function",
+            "value": "Function",
+            "str": "function valueOf() { [native code] }"
+          },
+          "toLocaleString": {
+            "type": "function",
+            "value": "Function",
+            "str": "function toLocaleString() { [native code] }"
+          }
+        }
+      }
     }
   }
 }
