@@ -1,6 +1,7 @@
 const vm = require('node:vm');
 const console_log = console.log;
 
+const PromiseWtf = Promise;
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___catch = Promise.__proto__.catch;
 const Promise___proto___then = Promise.__proto__.then;
@@ -71,6 +72,7 @@ function resetPromise(){
   Promise.prototype.catch = Promise_prototype_catch;
   Promise.prototype.apply= Promise_prototype_apply;
   Promise.prototype.then= Promise_prototype_then;
+  //Promise = PromiseWtf;
 }
 
 let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
@@ -91,44 +93,28 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
       Promise.__proto__.then = Promise___proto___then
     }
   };
-  let resetPromise=()=>{
-    Promise.__proto__.apply = Promise___proto___apply;
-    Promise.__proto__.catch= Promise___proto___catch;
-  }
   try{
     if (Promise.prototype.then != Promise_prototype_then)
     Promise.prototype.then = function() {
-console.log('then',evil);
-      if (evil || err) {
-        resetPromise();
-        throw err;
-      }
+      if (evil || err) { resetPromise(); throw err; }
       return Promise_prototype_then.apply(this, arguments);
     };
     Promise.prototype.apply = function() {
-console.log('apply',evil);
-      if (evil || err) {
-        resetPromise();
-        throw err;
-      }
+      if (evil || err) { resetPromise(); throw err; }
       return Promise_prototype_apply.apply(this, arguments);
     };
     Promise.prototype.catch = function() {
-console.log('catch',evil);
-      if (evil || err) {
-        resetPromise();
-        throw err;
-      }
+      if (evil || err) { resetPromise(); throw err; }
       return Promise_prototype_catch.apply(this, arguments);
     };
 
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
-      if (user_import_handler) {
-        return user_import_handler({specifier, referrer, importAttributes})
-      }
-      //if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
-      evil++; err = {message:'EvilImport',js};
       check_Promise();
+      if (!evil && !err){
+        if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
+        if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
+      }
+      evil++; err = {message:'EvilImport',js};
       throw('EvilImport');
     }});
     await new Promise(async(r,j)=>{
