@@ -32,31 +32,11 @@ void (async () => {
     console.log('AAAA ex=',ex);
   }
   console.log('AAAA check=',typeof(process),typeof(Promise));
-}).then(async()=>{
-////https://gist.github.com/leesh3288/e4aa7b90417b0b0ac7bcd5b09ac7d3bd
-  var code=`
-    const Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
-    const customInspectSymbol = Symbol.for({
-      toString: () => "nodejs.util.inspect.custom",
-    });
-    throw {
-      [customInspectSymbol]: () => {
-        this.constructor
-          .constructor("return process")()
-          .mainModule.require("fs")
-          .writeFileSync("pwned_case_b", "");
-      },
-    }
-  `;
-  try{
-    console.log('BBBB result=',await jevalx(code));
-  }catch(ex){
-    console.log('BBBB ex=',ex.message);
-  }
-  console.log('BBBB check=',typeof(process),typeof(Promise));
 })
-.then(async()=>{ await test_cases['BBB2'];}
-).then(async()=>{
+.then(test_cases['BBBB'])
+.then(test_cases['BBB2'])
+.then(async()=>{
+console.log('----- cccc');
 var code=`
 Object.defineProperty(this.constructor.constructor("return this")(),"process",{set(process) { process.mainModule.require("fs").writeFileSync("pwned_case_c", ""+(typeof this)+this)}})
 `

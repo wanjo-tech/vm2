@@ -30,14 +30,9 @@ q7:async()=>{
 var case_id= 'r4';
 var code=`
 import('').catch(_=>_).constructor.__proto__ = {
-        set constructor(f) {
-console_log('!!!!!!! r4 setter called');
-f("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "");}
+        set constructor(f) { f("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "");}
 }
-console_log('!!! rt',''+import('').catch(_=>_).constructor,
-import('').catch(_=>_).constructor.__proto__,
-);
-false;
+undefined;
 `;
        try{
          console_log(`${case_id} result=`,await jevalx(code,{console_log}));
@@ -62,6 +57,29 @@ i.constructor.constructor("return process")().mainModule.require("fs").writeFile
        }
      console_log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
+BBBB:async()=>{
+////https://gist.github.com/leesh3288/e4aa7b90417b0b0ac7bcd5b09ac7d3bd
+  var code=`
+    const Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
+    const customInspectSymbol = Symbol.for({
+      toString: () => "nodejs.util.inspect.custom",
+    });
+    throw {
+      [customInspectSymbol]: () => {
+        this.constructor
+          .constructor("return process")()
+          .mainModule.require("fs")
+          .writeFileSync("pwned_case_b", "");
+      },
+    }
+  `;
+  try{
+    console.log('BBBB result=',await jevalx(code));
+  }catch(ex){
+    console.log('BBBB ex=',ex.message);
+  }
+  console.log('BBBB check=',typeof(process),typeof(Promise));
+},
 BBB2:async()=>{
 var case_id='BBB2';
   var code=`
