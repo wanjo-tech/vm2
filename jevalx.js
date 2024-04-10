@@ -1,12 +1,10 @@
 const vm = require('node:vm');
 const console_log = console.log;
 
-const PromiseWtf = Promise;
+//const Promise___proto___ = Object.getPrototypeOf(Promise);
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___catch = Promise.__proto__.catch;
 const Promise___proto___then = Promise.__proto__.then;
-
-//
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
 const Promise_prototype_apply = Promise.prototype.apply;
@@ -35,7 +33,7 @@ function findEvilGetter(obj,maxdepth=3) {
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
-function Global(){if (!(this instanceof Global)){return new Global()}};
+function Global(){if (this instanceof Global){}else{return new Global()}};
 
 const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 const S_SETUP = `
@@ -44,7 +42,6 @@ delete Object.prototype.constructor;
 delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
-//Object.setPrototypeOf(constructor.prototype,null);
 `+['eval','Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') 
 +`Object.__proto__.constructor=Function=${S_FUNCTION};
 constructor.__proto__.constructor=Function;
@@ -66,14 +63,14 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   return jevalx_raw(js,ctxx,timeout,js_opts)
 }
 
+// for Promise Pollultion.
 function resetPromise(){
-  Promise.__proto__.then = Promise___proto___then;
   Promise.__proto__.apply = Promise___proto___apply;
-  Promise.__proto__.catch= Promise___proto___catch;
+  //Object.setPrototypeOf(Promise,Promise___proto___);
   Promise.prototype.catch = Promise_prototype_catch;
   Promise.prototype.apply= Promise_prototype_apply;
   Promise.prototype.then= Promise_prototype_then;
-  Promise = PromiseWtf;
+  Promise.__proto__.constructor=Function;//last piece ;)
 }
 
 let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
@@ -86,10 +83,12 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
       if (evil || err) { resetPromise(); throw err; }
       return Promise_prototype_then.apply(this, arguments);
     };
+    //if (Promise.prototype.apply != Promise_prototype_apply)
     Promise.prototype.apply = function() {
       if (evil || err) { resetPromise(); throw err; }
       return Promise_prototype_apply.apply(this, arguments);
     };
+    //if (Promise.prototype.catch != Promise_prototype_catch)
     Promise.prototype.catch = function() {
       if (evil || err) { resetPromise(); throw err; }
       return Promise_prototype_catch.apply(this, arguments);
@@ -126,8 +125,10 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
-  process.removeListener('unhandledRejection',tmpHandler);
-  resetPromise();
+  finally{
+    process.removeListener('unhandledRejection',tmpHandler);
+    resetPromise();
+  }
   if (evil || err) throw err;
   return rst;
 }

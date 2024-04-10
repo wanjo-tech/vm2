@@ -1,4 +1,4 @@
-process.on('unhandledRejection', (reason, promise) => { console.error('!!!! DEBUG unhandledRejection', promise, 'reason:', reason); });
+//process.on('unhandledRejection', (reason, promise) => { console.error('!!!! DEBUG unhandledRejection', promise, 'reason:', reason); });
 
 let jevalxModule = require('./jevalx.js');
 let assertWtf = require('assert');
