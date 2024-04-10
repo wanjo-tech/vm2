@@ -68,9 +68,9 @@ Extending a new sandbox environment on top of `node:vm` not only effectively bri
 
 ## References
 
-[1] P. Simek, “Notice on the discontinuation of vm2 updates,” 2020. [Online]. Available: https://github.com/patriksimek/vm2/issues/533.
+[1] P. Simek, “Notice on the discontinuation of vm2 updates,” 2020. [Online]. Available: [https://github.com/patriksimek/vm2/issues/533].
 
-[2] Wanjo Chan, “jevalx (JsSandbox)” n.d. [Online]. Available: https://github.com/wanjo-tech/vm2/blob/main/jevalx.js.
+[2] Wanjo Chan, “jevalx (JsSandbox)” n.d. [Online]. Available: [https://github.com/wanjo-tech/vm2/blob/main/jevalx.js].
 
 [3] Wanjo Chan, "KK Project," n.d. [Online]. Available: [https://github.com/wanjo-tech/kk].
 

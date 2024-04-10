@@ -70,9 +70,9 @@
 
 ## 参考文献
 
-[1] P. Simek, “关于停止更新 vm2 的通知,” 2020. [在线]. 可用: https://github.com/patriksimek/vm2/issues/533.
+[1] P. Simek, “关于停止更新 vm2 的通知,” 2020. [在线]. 可用: [https://github.com/patriksimek/vm2/issues/533].
 
-[2] Wanjo Chan, “jevalx (JsSandbox)” n.d. [在线]. 可用: https://github.com/wanjo-tech/vm2/blob/main/jevalx.js.
+[2] Wanjo Chan, “jevalx (JsSandbox)” n.d. [在线]. 可用: [https://github.com/wanjo-tech/vm2/blob/main/jevalx.js].
 
 [3] Wanjo Chan, "KK 项目," n.d. [在线]. 可用: [https://github.com/wanjo-tech/kk].
 
