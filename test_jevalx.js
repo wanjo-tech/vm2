@@ -244,7 +244,6 @@ Reflect.defineProperty(constructor.prototype, 'cachedData', {get(){this.importMo
   }
   console.log('K2 check=',typeof(process),typeof(Promise));
 }).then(async()=>{
-//
 var code=`
 Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_L', ''))")
 `
@@ -254,6 +253,16 @@ Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_L', ''))")
     console.log('LLLL ex=',ex.message);
   }
   console.log('LLLL check=',typeof(process),typeof(Promise));
+}).then(async()=>{
+var code=`
+(async()=>0).bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_L2', ''))")
+`
+  try{
+    console.log('L2.result=',await jevalx(code));
+  }catch(ex){
+    console.log('L2.ex=',ex.message);
+  }
+  console.log('L2.check=',typeof(process),typeof(Promise));
 }).then(async()=>{
 var code=`
 const FunctionX = (_=>_).constructor;

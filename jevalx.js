@@ -42,6 +42,7 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 
 //function Global(){if (this instanceof Global){}else{return new Global()}};
 
+//important to replace the inner Function which is danger!
 const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
 //quick test
@@ -50,12 +51,10 @@ const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[ar
 //O=[].__proto__.__proto__.constructor;getOwnPropertyNames(O)
 //O=getOwnPropertyNames.__proto__.constructor;getOwnPropertyNames(O)
 const S_SETUP = `delete Object.prototype.constructor;//important: hide 'Object' itself in sandbox.
-
-//protect constructor.__proto__
+//protect constructor.__proto__:
 delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
-
 `+[
 //'eval',//RC2 set it free for testing.
 'console',//no use at all, user can attach console from host.
@@ -65,6 +64,7 @@ delete constructor.__proto__.__proto__.__defineSetter__;
 Object.__proto__.constructor=Function=${S_FUNCTION};
 for(let k of Object.getOwnPropertyNames(Object)){if(['fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k]}
 constructor.__proto__.constructor=Function;//very important
+AsyncFunction=(async()=>0).constructor;
 `;
 
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
