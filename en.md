@@ -4,7 +4,7 @@
 
 **Authors**:
 - Wanjo Chan (@mgttt), main author, responsible for sandbox design and implementation, wanjochan@gmail.com
-- @XmiliaH, contributed numerous sandbox escape test cases
+- @XmiliaH, contributed numerous sandbox escape test cases, and is of the view that this will never be secure.
 - @j4k0xb, contributed sandbox escape cases
 
 The critical importance of securely executing third-party or untrusted code in modern software development is undeniable. While JavaScript's dynamic and flexible nature boosts development efficiency, it also poses numerous security challenges. Node.js's `node:vm` module facilitates the creation of isolated execution environments, providing effective code segregation. However, security vulnerabilities reported historically have attracted significant community attention. Despite efforts like the `vm2` library to construct safer sandboxes over `node:vm`, foundational issues led to the eventual discontinuation of `vm2` [1].
