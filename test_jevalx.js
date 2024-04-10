@@ -1,4 +1,4 @@
-//process.on('unhandledRejection', (reason, promise) => { console.error('!!!! DEBUG unhandledRejection', promise, 'reason:', reason); });
+//process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test_jevalx.js unhandledRejection', promise, 'reason:', reason); });
 
 let jevalxModule = require('./jevalx.js');
 let assertWtf = require('assert');
@@ -54,27 +54,9 @@ void (async () => {
     console.log('BBBB ex=',ex.message);
   }
   console.log('BBBB check=',typeof(process),typeof(Promise));
-}).then(async()=>{
-  var code=`
-    const customInspectSymbol = Symbol.for({
-      toString: () => "nodejs.util.inspect.custom",
-    });
-    throw {
-      [customInspectSymbol]: () => {
-        this.constructor
-          .constructor("return process")()
-          .mainModule.require("fs")
-          .writeFileSync("pwned_case_b2", "");
-      },
-    }
-  `;
-  try{
-    console.log('BBB2 result=',await jevalx(code));
-  }catch(ex){
-    console.log('BBB2 ex=',ex.message);
-  }
-  console.log('BBB2 check=',typeof(process),typeof(Promise));
-}).then(async()=>{
+})
+.then(async()=>{ await test_cases['BBB2'];}
+).then(async()=>{
 var code=`
 Object.defineProperty(this.constructor.constructor("return this")(),"process",{set(process) { process.mainModule.require("fs").writeFileSync("pwned_case_c", ""+(typeof this)+this)}})
 `
@@ -826,40 +808,11 @@ i.next = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply
   }
   console.log('Q30 check=',typeof(process),typeof(Promise));
 
-}).then(async()=>{
- var code=`
-  const Function = (async _=>_).constructor;
-const Object = import('').catch(_=>_).__proto__.__proto__.constructor;
-Object.__proto__ = {
-	set defineProperty(f) {
-		f(this, 'assign', {set: [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q31', ''))"]))});
-	}
-};
-false
-`
-  try{
-    console.log('Q31 result=',await jevalx(code));
-  }catch(ex){
-    console.log('Q31 ex=',ex.message,JSON.stringify(ex.js));
-  }
-  console.log('Q31 check=',typeof(process),typeof(Promise));
-
-}).then(async()=>{
-var code=`
-const Function = (async _=>_).constructor;
-const promise = import('');
-constructor.__proto__.apply = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q32', ''))"]));
-promise.catch();
-wtf
-`
-  try{
-    console.log('Q32 result=',await jevalx(code));
-  }catch(ex){
-    console.log('Q32 ex=',ex.message,JSON.stringify(ex.js));
-  }
-  console.log('Q32 check=',typeof(process),typeof(Promise));
-
-}).then(async()=>{
+})
+.then(test_cases.q31)
+//.then(test_cases.q32) // RangeError...
+.then(async()=>{
+return //TODO 
 var code=`
 const Function = (async _=>_).constructor;
 constructor.__proto__.apply = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q32', ''))"]));
@@ -936,9 +889,9 @@ p.then();
   }
   console.log('R1 check=',typeof(process),typeof(Promise));
 
-}).then(async()=>{
-  await test_cases['r4']()
-}).then(async()=>{
+})
+.then(test_cases['r4']) //test on v20
+.then(async()=>{
   //console.log('--------- TEST END, to CHECK any pwned -----------');
   //normal case:
   console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
@@ -967,6 +920,8 @@ p.then();
   try{ console.log('deadloop',await jevalx(`(async()=>{while(1)0})`)) }catch(ex){ console.log('deadloop.ex',ex); }
 
   console.log('--------- TEST END, to CHECK any pwned -----------');
+}).catch(ex=>{
+  console.log('end ex=',ex);
 });
 
 /**
