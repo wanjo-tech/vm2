@@ -2,34 +2,13 @@
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
 const console_log = console.log;
+//let assertWtf = require('assert');
 
-if (require.main === module) {
-  let argo = argv2o();
-  console_log(argo);
-  (async()=>{
-    //const console_log = console.log;
-    //let assertWtf = require('assert');
-
-    let jevalxModule = require('./jevalx.js');
-    let jevalx = jevalxModule.jevalx;
-
-    let test_cases = require('./test_cases');
-    let case_id = argo.case;
-    if (case_id) {
-      await test_cases[case_id]();
-    }else{
-      console_log('-------------- test all start ---------------');
-      await test_cases.AAAA();
-      await test_cases.BBBB();
-      await test_cases.BBB2();
-      await test_cases.CCCC();
-      await test_cases.DDDD();
-      console_log('-------------- test all end   ---------------');
-    }
-  })();
-}else{ ////////// module.exports
+let jevalxModule = require('./jevalx.js');
+let jevalx = jevalxModule.jevalx;
 
 module.exports = {
+
 AAAA:async function(){ let case_id = arguments.callee.name;
   let code = `
 async function f() {}
@@ -145,41 +124,6 @@ var case_id='BBB2';
   console_log('BBB2 check=',typeof(process),typeof(Promise));
 },
 
-q31:async()=>{
- var code=`
-  const Function = (async _=>_).constructor;
-const Object = import('').catch(_=>_).__proto__.__proto__.constructor;
-Object.__proto__ = {
-	set defineProperty(f) {
-		f(this, 'assign', {set: [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q31', ''))"]))});
-	}
-};
-false
-`
-  try{
-    console_log('Q31 result=',await jevalx(code,{console_log}));
-  }catch(ex){
-    console_log('Q31 ex=',ex.message,JSON.stringify(ex.js));
-  }
-  console_log('Q31 check=',typeof(process),typeof(Promise));
-
-},
-q32:async()=>{
-var code=`
-const Function = (async _=>_).constructor;
-const promise = import('');
-constructor.__proto__.apply = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q32', ''))"]));
-promise.catch();
-1
-`
-  try{
-    console.log('Q32 result=',await jevalx(code));
-  }catch(ex){
-    console.log('Q32 ex=',ex.message,JSON.stringify(ex.js));
-  }
-  console.log('Q32 check=',typeof(process),typeof(Promise));
-
-},
 CCCC:async()=>{
 var code=`
 Object.defineProperty(this.constructor.constructor("return this")(),"process",{set(process) { process.mainModule.require("fs").writeFileSync("pwned_case_c", ""+(typeof this)+this)}})
@@ -223,10 +167,121 @@ obj
   console.log('EEEE check=',typeof(process),typeof(Promise));
 
 },
+FFFF:async function(){
+let case_id = arguments.callee.name;
+  var code=`
+  ({}).constructor.defineProperty(
+    this.constructor.constructor("return this")(),
+    "_process_or_any",{ set(process) { process.mainModule.require("fs").writeFileSync("pwned_case_f", ""); },
+  }
+)
+`;
+  try{
+    var rst = await jevalx(code);
+    console.log(`${case_id} result=`,rst);
+  }catch(ex){ console.log(`${case_id}.ex=`,ex); } console.log(`${case_id}.check=`,typeof(process),typeof(Promise));
+
+},
+GGGG:async()=>{
+  //var code=`[].constructor.constructor("return Proxy")()`;//anywhere the Proxy?
+  //var code=`let global_ = ({}).constructor.constructor("return this")();global_.Proxy`;
+  var code=`
+  new Proxy((_) => _, {
+  get: new Proxy((_) => _, {
+    apply: function (target, thisArg, args) {
+      args.constructor
+        .constructor("return process")()
+        ?.mainModule.require("fs")
+        .writeFileSync("pwned_case_g", "");
+    },
+  }),
+})`
+  try{
+    console.log('GGGG result=',await jevalx(code));
+  }catch(ex){
+    console.log('GGGG ex=',ex.message);
+  }
+  console.log('GGGG check=',typeof(process),typeof(Promise));
+},
+
+HHHH:async()=>{
+  var code=`
+  const hostGlobal = this.constructor.constructor("return this")();
+hostGlobal.Promise = function (executor) {
+  return new Promise(executor).then(() => {
+    hostGlobal.process.mainModule.require("fs").writeFileSync("pwned_case_h", "");
+  });
+}
+`
+  try{
+    console.log('HHHH result=',await jevalx(code));
+  }catch(ex){
+    console.log('HHHH ex=',ex.message);
+  }
+  console.log('HHHH check=',typeof(process),typeof(Promise));
+},
+
+q31:async()=>{
+ var code=`
+  const Function = (async _=>_).constructor;
+const Object = import('').catch(_=>_).__proto__.__proto__.constructor;
+Object.__proto__ = {
+	set defineProperty(f) {
+		f(this, 'assign', {set: [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q31', ''))"]))});
+	}
+};
+false
+`
+  try{
+    console_log('Q31 result=',await jevalx(code,{console_log}));
+  }catch(ex){
+    console_log('Q31 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console_log('Q31 check=',typeof(process),typeof(Promise));
+
+},
+q32:async()=>{
+var code=`
+const Function = (async _=>_).constructor;
+const promise = import('');
+constructor.__proto__.apply = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q32', ''))"]));
+promise.catch();
+1
+`
+  try{
+    console.log('Q32 result=',await jevalx(code));
+  }catch(ex){
+    console.log('Q32 ex=',ex.message,JSON.stringify(ex.js));
+  }
+  console.log('Q32 check=',typeof(process),typeof(Promise));
+
+},
+
 }
 
-} ////////// module.exports
-
+if (require.main === module) {
+  let argo = argv2o();
+  console_log(argo);
+  (async()=>{
+    let test_cases = require('./test');
+    //console_log('test_cases',test_cases);
+    let case_id = argo.case;
+    if (case_id) {
+      await test_cases[case_id]();
+    }else{
+      console_log('-------------- test all start ---------------');
+      for (let k in test_cases){
+        console_log(`-------------- test ${k} start---------------`);
+//
+        await test_cases[k]();
+        console_log(`-------------- test ${k} end ---------------`);
+      }
+      console_log('-------------- test all end   ---------------');
+    }
+  })().catch(ex=>{
+    console_log('main.catch.ex',ex);
+  });
+}
 /**
 e.g..
 node test /case=q7
