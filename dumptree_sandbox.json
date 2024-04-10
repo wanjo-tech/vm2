@@ -356,6 +356,11 @@
         "value": "Function",
         "str": "function Array() { [native code] }"
       },
+      "at": {
+        "type": "function",
+        "value": "Function",
+        "str": "function at() { [native code] }"
+      },
       "concat": {
         "type": "function",
         "value": "Function",
@@ -380,6 +385,16 @@
         "type": "function",
         "value": "Function",
         "str": "function findIndex() { [native code] }"
+      },
+      "findLast": {
+        "type": "function",
+        "value": "Function",
+        "str": "function findLast() { [native code] }"
+      },
+      "findLastIndex": {
+        "type": "function",
+        "value": "Function",
+        "str": "function findLastIndex() { [native code] }"
       },
       "lastIndexOf": {
         "type": "function",
@@ -511,20 +526,25 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "at": {
+      "toReversed": {
         "type": "function",
         "value": "Function",
-        "str": "function at() { [native code] }"
+        "str": "function toReversed() { [native code] }"
       },
-      "findLast": {
+      "toSorted": {
         "type": "function",
         "value": "Function",
-        "str": "function findLast() { [native code] }"
+        "str": "function toSorted() { [native code] }"
       },
-      "findLastIndex": {
+      "toSpliced": {
         "type": "function",
         "value": "Function",
-        "str": "function findLastIndex() { [native code] }"
+        "str": "function toSpliced() { [native code] }"
+      },
+      "with": {
+        "type": "function",
+        "value": "Function",
+        "str": "function with() { [native code] }"
       },
       "prototype_": {
         "typeobj": "object",

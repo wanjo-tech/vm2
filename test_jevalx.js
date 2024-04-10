@@ -1,4 +1,4 @@
-process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test_jevalx.js unhandledRejection', promise, 'reason:', reason); });
+//process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test_jevalx.js unhandledRejection', promise, 'reason:', reason); });
 process.on('uncaughtException', (ex) => { console.error('!!!! test_jevalx.js uncaughtException', ex); });
 
 let jevalxModule = require('./jevalx.js');
@@ -871,7 +871,9 @@ p.then();
   console.log('R1 check=',typeof(process),typeof(Promise));
 
 })
-.then(test_cases['r4']) //test on v20
+
+.then(test_cases['r4']) //
+.then(test_cases['r5']) //
 .then(async()=>{
   //console.log('--------- TEST END, to CHECK any pwned -----------');
   //normal case:

@@ -6,15 +6,6 @@ var {jevalx,S_SETUP} = require('./jevalx');
 
 const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf,Object_getOwnPropertyDescriptor=Object.getOwnPropertyDescriptor,getOwnPropertyNames = Object_getOwnPropertyNames;
 
-eval(S_SETUP);
-
-if (constructor && Object && Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
-  console_log('test constructor.__proto__.constructor');
-  constructor.__proto__.constructor=Object.__proto__.constructor;
-}
-//if (constructor==Object)
-//Object_setPrototypeOf(constructor, null);
-
 const property_tocheck = [Object];
 
 function buildObjectTree(obj, depth = 0, path = []) {
@@ -102,11 +93,22 @@ const rootObjects = {
     root_Promise: (async () => {}),
 };
 
-const objectTrees = {};
-for (const key in rootObjects) {
-    objectTrees[key] = buildObjectTree(rootObjects[key], 0, []);
+if (require.main === module) {
+  eval(S_SETUP);
+
+  if (constructor && Object && Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
+    console_log('test constructor.__proto__.constructor');
+    constructor.__proto__.constructor=Object.__proto__.constructor;
+  }
+  //if (constructor==Object)
+  //Object_setPrototypeOf(constructor, null);
+
+  const objectTrees = {};
+  for (const key in rootObjects) {
+      objectTrees[key] = buildObjectTree(rootObjects[key], 0, []);
+  }
+  const jsonResult = JSON.stringify(objectTrees, null, 2);
+  console_log(jsonResult);
+}else{
+  module.exports = {dumptree:(o)=>buildObjectTree(o,0,[])}
 }
-
-const jsonResult = JSON.stringify(objectTrees, null, 2);
-console_log(jsonResult);
-

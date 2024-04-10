@@ -32,7 +32,6 @@ var code=`
 import('').catch(_=>_).constructor.__proto__ = {
         set constructor(f) { f("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "");}
 }
-undefined;
 `;
        try{
          console_log(`${case_id} result=`,await jevalx(code,{console_log}));
@@ -42,7 +41,6 @@ undefined;
      console_log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
 
-//for no vm import but
   r5:async()=>{
 var case_id= 'r5';
 var code=`
