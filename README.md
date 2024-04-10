@@ -30,10 +30,9 @@ Great thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being ann
 
 * https://github.com/wanjo-tech/vm2/blob/main/en.md
 
-## Application
+## Used by
 
-* I use it in my kk project.
-* wait for you
+* I use jevalx() in my kk project.
 
 ## Docker/Podman/Container
 
