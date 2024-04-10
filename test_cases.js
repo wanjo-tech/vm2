@@ -56,4 +56,21 @@ import('').catch(_=>_).constructor.__proto__ = {
        }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
+
+  r5:async()=>{
+var case_id= 'r5';
+var code=`
+const i = import('');
+console_log(444)
+try { i.then() } catch (e) {}
+console_log(555,i.constructor+'')
+i.constructor.constructor("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "")
+`;
+       try{
+         console.log(`${case_id} result=`,await jevalx(code,{console_log:console.log}));
+       }catch(ex){
+         console.log(`${case_id} ex=`,ex);
+       }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise));
+  },
 }
