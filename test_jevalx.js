@@ -7,6 +7,8 @@ let assertWtf = require('assert');
 //let jevalx = jevalxModule.jevalx_core;
 let jevalx = jevalxModule.jevalx;
 
+let test_cases = require('./test_cases');
+
 (async()=>{
   console.log('--------- TEST START -----------');
 })().then(async()=>{
@@ -934,6 +936,8 @@ p.then();
   }
   console.log('R1 check=',typeof(process),typeof(Promise));
 
+}).then(async()=>{
+  await test_cases['r4']()
 }).then(async()=>{
   //console.log('--------- TEST END, to CHECK any pwned -----------');
   //normal case:

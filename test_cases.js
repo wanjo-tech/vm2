@@ -52,7 +52,7 @@ import('').catch(_=>_).constructor.__proto__ = {
        try{
          console.log(`${case_id} result=`,await jevalx(code,{console_log:console.log}));
        }catch(ex){
-         console.log(`$case_id} ex=`,ex);
+         console.log(`${case_id} ex=`,ex);
        }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
