@@ -1,4 +1,5 @@
 const vm = require('node:vm');
+const processWtf = require('process');
 
 //for dev/performance boost:
 const console_log = console.log;
@@ -8,14 +9,16 @@ const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
 const Object_assign = Object.assign;
 
 // for __proto__ Pollultion:
-function findEvilGetter(obj,maxdepth=3) {
+function findEvil(obj,maxdepth=3) {
   let currentObj = obj;
   let depth = 0;
   while (currentObj !== null && currentObj!==undefined && depth < maxdepth) {
+    //'constructor','toString','__proto__',
     const properties = ['then'];//Object_getOwnPropertyNames(currentObj);
     for (let i = 0; i < properties.length; i++) {
       const descriptor = Object_getOwnPropertyDescriptor(currentObj, properties[i]);
-      if (descriptor && typeof descriptor.get === 'function') {
+      if (descriptor && (typeof descriptor.get === 'function'/* || typeof descriptor.set == 'function'*/)) {
+//console.log('findEvil', properties[i]);
         return true;
       }
     }
@@ -26,11 +29,22 @@ function findEvilGetter(obj,maxdepth=3) {
 }
 
 // for Promise Pollultion:
+const PromiseWtf = Promise;
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
 const Promise_prototype_apply = Promise.prototype.apply;
-function resetPromise(){
+function resetPromise(seq=0){
+  console.log('resetPromise()',seq);
+
+//TMP SOLUTION for r5
+if (Function.prototype != Object.getPrototypeOf(Promise.prototype.constructor)) {
+  console.log('!!!!!!!! Promise compromised...');
+  Object.setPrototypeOf(Promise.prototype.constructor,Function.prototype);
+  console.log('after_9999_reset', Function.prototype == Object.getPrototypeOf(Promise.prototype.constructor))
+}
+
+  //Promise = PromiseWtf;
   Promise.__proto__.apply = Promise___proto___apply;
   Promise.prototype.catch = Promise_prototype_catch;
   Promise.prototype.apply= Promise_prototype_apply;
@@ -86,9 +100,36 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
 
 let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0;
-  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'EvilX',js} };
-  process.addListener('unhandledRejection',tmpHandler);
+  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'EvilX',js,uncaughtException:!!promise} };
   try{
+    processWtf.addListener('unhandledRejection',tmpHandler);
+    processWtf.addListener('uncaughtException',tmpHandler)
+    /* TODO
+    Promise.prototype.then = function() {
+      if (evil || err) {
+        console.log('777_then',evil,err)
+        resetPromise(1);
+        throw err;
+      }
+      return Promise_prototype_then.apply(this, arguments);
+    };
+    Promise.prototype.apply = function() {
+      if (evil || err) {
+        console.log('777 apply',evil,err);
+        resetPromise(2);
+        throw err;
+      }
+      return Promise_prototype_apply.apply(this, arguments);
+    };
+    Promise.prototype.catch = function() {
+      if (evil || err) {
+        console.log('777 catch',evil,err);
+        resetPromise(3);
+        throw err;// in v20 notworking...
+        //return Promise_prototype_catch.apply(this, arguments);
+      }
+      return Promise_prototype_catch.apply(this, arguments);
+    };*/
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       if (!evil && !err){
         if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
@@ -96,15 +137,19 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
       }
       evil++; err = {message:'EvilImport',js};
       Promise.prototype.then = function() {
-        if (evil || err) { resetPromise(); throw err; }
+        if (evil || err) {
+          console.log('778_then',evil,err);
+          resetPromise(3);
+          throw err;//
+        }
         return Promise_prototype_then.apply(this, arguments);
       };
       Promise.prototype.apply = function() {
-        if (evil || err) { resetPromise(); throw err; }
+        if (evil || err) { resetPromise(4); throw err; }
         return Promise_prototype_apply.apply(this, arguments);
       };
       Promise.prototype.catch = function() {
-        if (evil || err) { resetPromise(); throw err; }
+        if (evil || err) { resetPromise(5); throw err; }
         return Promise_prototype_catch.apply(this, arguments);
       };
       throw('EvilImport');
@@ -115,9 +160,9 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
         [ctxx,rst] = jevalx_ext(js,ctx,timeout,js_opts);
         let sandbox_level = 9;
         for (var i=0;i<sandbox_level;i++) {
-          ////console_log('debug',i,rst);
+          //console_log('debug',i,rst);
           if (evil || !rst || err) break;
-          if (findEvilGetter(rst)) throw {message:'EvilProto',js};
+          if (findEvil(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) {//run in the sandbox !
             ctxx['rst_tmp']=rst;
             [ctxx,rst] = jevalx_ext('(()=>rst_tmp())()',ctxx,timeout,js_opts);
@@ -128,16 +173,24 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
             });
           } else break;
         }
-        if (findEvilGetter(rst)) throw {message:'EvilProtoX',js};
+
+//TMP SOLUTION for r5
+if (Function.prototype != Object.getPrototypeOf(Promise.prototype.constructor)) {
+  console.log('Promise compromised...');
+  Object.setPrototypeOf(Promise.prototype.constructor,Function.prototype);
+  console.log('after_9999_reset', Function.prototype == Object.getPrototypeOf(Promise.prototype.constructor))
+}
+        if (findEvil(rst)) throw {message:'EvilProtoX',js};
         if (rst) delete rst['toString'];
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilXX',js}; }
   finally{
-    process.removeListener('unhandledRejection',tmpHandler);
-    resetPromise();
+  processWtf.removeListener('unhandledRejection',tmpHandler);
+  processWtf.removeListener('uncaughtException',tmpHandler)
   }
+  resetPromise(9);
   if (evil || err) throw err;
   return rst;
 }
