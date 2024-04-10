@@ -31,6 +31,17 @@ function findEvil(obj,maxdepth=3) {
 // for Promise Pollultion:
 const Promise_prototype_catch = Promise.prototype.catch;
 
+const Promise_prototype = Promise.prototype;
+const Promise_prototype_getPrototypeOf = Object_getPrototypeOf(Promise.prototype);
+const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
+const Promise_constructor = Promise.constructor;
+
+const Promise___proto___apply = Promise.__proto__.apply;
+const Promise_prototype_then = Promise.prototype.then;
+const Promise_prototype_apply = Promise.prototype.apply;
+
+
+
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
 //important to replace the inner Function which is danger!
@@ -108,6 +119,21 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
     });
   }catch(ex){ err = {message:ex?.message||'EvilXX',js}; }
   finally{
+
+    Promise.prototype.catch = Promise_prototype_catch;
+
+    //if (Function.prototype != Object.getPrototypeOf(Promise.prototype.constructor)) {
+    //  Object.setPrototypeOf(Promise.prototype.constructor,Function.prototype);
+    //  console.log('after_9999_reset', Function.prototype == Object.getPrototypeOf(Promise.prototype.constructor))
+    //}
+    //Object.setPrototypeOf(Promise.prototype,Promise_prototype_getPrototypeOf);
+
+    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
+
+    ////Promise.prototype.constructor=Promise;
+
+    Promise.__proto__.constructor=Function;//
+
     processWtf.removeListener('unhandledRejection',tmpHandler);
     processWtf.removeListener('uncaughtException',tmpHandler)
   }
