@@ -3,6 +3,7 @@ process.on('unhandledRejection', (reason, promise) => { console.error('!!!! DEBU
 let jevalxModule = require('./jevalx.js');
 let assertWtf = require('assert');
 
+//let jevalx = jevalxModule.jevalx_dev;
 //let jevalx = jevalxModule.jevalx_core;
 let jevalx = jevalxModule.jevalx;
 

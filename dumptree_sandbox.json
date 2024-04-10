@@ -9,15 +9,163 @@
     },
     "name": {
       "type": "string",
-      "value": "",
-      "str": "\"\""
+      "value": "Global",
+      "str": "\"Global\""
+    },
+    "arguments": {
+      "type": "object",
+      "value": null,
+      "str": "null"
+    },
+    "caller": {
+      "type": "object",
+      "value": null,
+      "str": "null"
     },
     "prototype": {
       "typeobj": "object",
       "constructor": {
         "type": "function",
         "value": "Function",
+        "str": "function Global(){if (!(this instanceof Global)){return new Global()}}"
+      },
+      "prototype_": {
+        "typeobj": "object",
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
+      }
+    },
+    "prototype_": {
+      "typeobj": "function",
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\""
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }"
+      },
+      "catch": {
+        "type": "undefined",
         "str": "Cannot convert to string"
+      },
+      "prototype_": {
+        "typeobj": "object",
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
       }
     }
   },
@@ -25,11 +173,6 @@
     "typeobj": "function",
     "prototype": {
       "typeobj": "object",
-      "constructor": {
-        "type": "function",
-        "value": "Function",
-        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
-      },
       "hasOwnProperty": {
         "type": "function",
         "value": "Function",
@@ -150,11 +293,6 @@
       },
       "prototype_": {
         "typeobj": "object",
-        "constructor": {
-          "type": "function",
-          "value": "Function",
-          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
-        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -394,11 +532,6 @@
       },
       "prototype_": {
         "typeobj": "object",
-        "constructor": {
-          "type": "function",
-          "value": "Function",
-          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
-        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -505,11 +638,6 @@
       },
       "prototype_": {
         "typeobj": "object",
-        "constructor": {
-          "type": "function",
-          "value": "Function",
-          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
-        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -614,11 +742,6 @@
       },
       "prototype_": {
         "typeobj": "object",
-        "constructor": {
-          "type": "function",
-          "value": "Function",
-          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
-        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -730,11 +853,6 @@
         },
         "prototype_": {
           "typeobj": "object",
-          "constructor": {
-            "type": "function",
-            "value": "Function",
-            "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
-          },
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -847,11 +965,6 @@
         },
         "prototype_": {
           "typeobj": "object",
-          "constructor": {
-            "type": "function",
-            "value": "Function",
-            "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
-          },
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
