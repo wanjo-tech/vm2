@@ -30,7 +30,7 @@ Great thanks to @j4k0xb and @XmiliaH keep sending wonderful cases even being ann
 
 ## docker/podman
 
-Even the codes are proven-of-concepts and running fine, we still recommend build the production and public-accessible application executed inside docker and remove danger modules such as process and fs in global scope.
+Even the codes are proven-of-concepts and running fine, we still recommend building the production and public-accessible application run inside docker with removing danger modules such as process and fs in global scope.
 
 ## contribution
 
