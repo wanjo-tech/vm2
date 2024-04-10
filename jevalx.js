@@ -74,10 +74,10 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
     //ctxx = vm.createContext(new Global);
     ctxx = vm.createContext(new function(){});
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
-    ctxx.console_log = console_log;
-    ctxx.console = console; //RC2 testing
+    //ctxx.console_log = console_log;
+    //ctxx.console = console; //RC2 testing
     //ctxx.setTimeout= setTimeout;//for dev test only
-    ctxx.getOwnPropertyNames = Object.getOwnPropertyNames;
+    //ctxx.getOwnPropertyNames = Object.getOwnPropertyNames;
     //ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//essential. but tried to apply the eval inside the sandbox (RC2)
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }

@@ -4,7 +4,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 var {jevalx,S_SETUP} = require('./jevalx');
 
-const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf,Object_getOwnPropertyDescriptor=Object.getOwnPropertyDescriptor;
+const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf,Object_getOwnPropertyDescriptor=Object.getOwnPropertyDescriptor,getOwnPropertyNames = Object_getOwnPropertyNames;
 
 var code=`
 
@@ -28,7 +28,7 @@ function buildObjectTree(obj, depth = 0, path = []) {
 
   if (obj!==null && obj!==undefined) {
     const tree = {typeobj:typeof(obj)};
-    Object.getOwnPropertyNames(obj).forEach(prop => {
+    getOwnPropertyNames(obj).forEach(prop => {
         const descriptor = Object_getOwnPropertyDescriptor(obj, prop);
         let propertyStr = 'Uninitialized';
         let danger = undefined;
@@ -113,6 +113,6 @@ console_log(jsonResult);
 
 (async()=>{
   await jevalx(`console_log('[')`,{console_log});
-  await jevalx(code,{console_log,Object_getOwnPropertyNames,Object_getPrototypeOf,Object_setPrototypeOf,Object_getOwnPropertyDescriptor});
+  await jevalx(code,{console_log,getOwnPropertyNames,Object_getPrototypeOf,Object_setPrototypeOf,Object_getOwnPropertyDescriptor});
   await jevalx(`console_log(']')`,{console_log});
 })()
