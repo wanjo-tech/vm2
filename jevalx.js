@@ -11,7 +11,7 @@ const Object_assign = Object.assign;
 function findEvilGetter(obj,maxdepth=3) {
   let currentObj = obj;
   let depth = 0;
-  while (currentObj !== null && depth < maxdepth) {
+  while (currentObj !== null && currentObj!==undefined && depth < maxdepth) {
     const properties = ['then'];//Object_getOwnPropertyNames(currentObj);
     for (let i = 0; i < properties.length; i++) {
       const descriptor = Object_getOwnPropertyDescriptor(currentObj, properties[i]);
@@ -26,9 +26,6 @@ function findEvilGetter(obj,maxdepth=3) {
 }
 
 // for Promise Pollultion:
-//const Promise___proto___ = Object.getPrototypeOf(Promise);
-//const Promise___proto___catch = Promise.__proto__.catch;
-//const Promise___proto___then = Promise.__proto__.then;
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
@@ -43,19 +40,26 @@ function resetPromise(){
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
-//for dev test:
 //function Global(){if (this instanceof Global){}else{return new Global()}};
 
 const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
-const S_SETUP = `
-//delete Object.prototype.constructor;//just the 'Object' itself in sandbox.
-//delete constructor.__proto__.__proto__.constructor;
-//delete constructor.__proto__.__proto__.__defineGetter__;
-//delete constructor.__proto__.__proto__.__defineSetter__;
+
+//quick test
+//O=constructor.__proto__.__proto__;getOwnPropertyNames(O)
+//O=[].__proto__.constructor;getOwnPropertyNames(O)
+//O=[].__proto__.__proto__.constructor;getOwnPropertyNames(O)
+//O=getOwnPropertyNames.__proto__.constructor;getOwnPropertyNames(O)
+const S_SETUP = `delete Object.prototype.constructor;//important: hide 'Object' itself in sandbox.
+
+//protect constructor.__proto__
+delete constructor.__proto__.__proto__.constructor;
+delete constructor.__proto__.__proto__.__defineGetter__;
+delete constructor.__proto__.__proto__.__defineSetter__;
+
 `+['eval','Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') 
 +`Object.__proto__.constructor=Function=${S_FUNCTION};
 for(let k of Object.getOwnPropertyNames(Object)){if(['fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k]}
-constructor.__proto__.constructor=Function;//important.
+constructor.__proto__.constructor=Function;//very important
 `;
 
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
@@ -67,7 +71,7 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
     ctxx.console_log = console_log;
     //ctxx.setTimeout= setTimeout;//for dev test only
-    ctxx.dev_getOwnPropertyNames = Object.getOwnPropertyNames;
+    ctxx.getOwnPropertyNames = Object.getOwnPropertyNames;
     ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//essential.
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
@@ -76,7 +80,7 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
 
 let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0;
-  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'EvilX',js};console.log(999,reason) };
+  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'EvilX',js} };
   process.addListener('unhandledRejection',tmpHandler);
   try{
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){

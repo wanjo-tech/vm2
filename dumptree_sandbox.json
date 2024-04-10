@@ -9,8 +9,8 @@
     },
     "name": {
       "type": "string",
-      "value": "Global",
-      "str": "\"Global\""
+      "value": "",
+      "str": "\"\""
     },
     "arguments": {
       "type": "object",
@@ -27,7 +27,7 @@
       "constructor": {
         "type": "function",
         "value": "Function",
-        "str": "function Global(){if (!(this instanceof Global)){return new Global()}}"
+        "str": "function(){}"
       },
       "prototype_": {
         "typeobj": "object",
@@ -119,10 +119,6 @@
         "type": "function",
         "value": "Function",
         "str": "function toString() { [native code] }"
-      },
-      "catch": {
-        "type": "undefined",
-        "str": "Cannot convert to string"
       },
       "prototype_": {
         "typeobj": "object",
