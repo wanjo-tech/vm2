@@ -606,7 +606,7 @@ var code=`
   try{
     var rst = await jevalx(code);
     console.log('Q15 result=',rst);
-    console.log('Q15 result=',await rst.toString());//will trigger evil?
+    //console.log('Q15 result=',await rst.toString());//will trigger evil?
   }catch(ex){
     console.log('Q15 ex=',ex.message,JSON.stringify(ex.js));
   }

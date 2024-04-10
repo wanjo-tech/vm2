@@ -56,7 +56,10 @@ delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
 
-`+['eval','Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') 
+`+[
+//'eval',//RC2 set it free for testing.
+'console',//no use at all, user can attach console from host.
+'Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') 
 +`Object.__proto__.constructor=Function=${S_FUNCTION};
 for(let k of Object.getOwnPropertyNames(Object)){if(['fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k]}
 constructor.__proto__.constructor=Function;//very important
@@ -70,9 +73,10 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
     ctxx = vm.createContext(new function(){});
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
     ctxx.console_log = console_log;
+    ctxx.console = console; //RC2 testing
     //ctxx.setTimeout= setTimeout;//for dev test only
     ctxx.getOwnPropertyNames = Object.getOwnPropertyNames;
-    ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//essential.
+    //ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//essential. but tried to apply the eval inside the sandbox (RC2)
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
@@ -123,6 +127,7 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
           } else break;
         }
         if (findEvilGetter(rst)) throw {message:'EvilProtoX',js};
+        if (rst) delete rst['toString'];
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
