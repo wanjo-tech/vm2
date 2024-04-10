@@ -40,7 +40,7 @@ function Global(){if (!(this instanceof Global)){return new Global()}};
 const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 const S_SETUP = `
 delete Object.prototype.constructor;
-delete constructor.getPrototypeOf;
+//delete constructor.getPrototypeOf;
 delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
@@ -67,32 +67,19 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
 }
 
 function resetPromise(){
+  Promise.__proto__.then = Promise___proto___then;
   Promise.__proto__.apply = Promise___proto___apply;
   Promise.__proto__.catch= Promise___proto___catch;
   Promise.prototype.catch = Promise_prototype_catch;
   Promise.prototype.apply= Promise_prototype_apply;
   Promise.prototype.then= Promise_prototype_then;
-  //Promise = PromiseWtf;
+  Promise = PromiseWtf;
 }
 
 let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0;
   let tmpHandler = (reason, promise)=>{ if (!err) err={message:'Evil',js};console.log(999,reason) };
   process.addListener('unhandledRejection',tmpHandler);
-  let check_Promise= (seq=0)=>{
-    if (Promise___proto___apply!=Promise.__proto__.apply){
-      evil++;err = {message:'EvilPromiseApply'+seq,js};
-      Promise.__proto__.apply = Promise___proto___apply
-    }
-    if (Promise___proto___catch!=Promise.__proto__.catch){
-      evil++;err = {message:'EvilPromiseCatch'+seq,js};
-      Promise.__proto__.catch = Promise___proto___catch
-    }
-    if (Promise___proto___then!=Promise.__proto__.then){
-      evil++;err = {message:'EvilPromiseThen'+seq,js};
-      Promise.__proto__.then = Promise___proto___then
-    }
-  };
   try{
     if (Promise.prototype.then != Promise_prototype_then)
     Promise.prototype.then = function() {
@@ -109,7 +96,6 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
     };
 
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
-      check_Promise();
       if (!evil && !err){
         if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
         if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
@@ -136,11 +122,9 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
             });
           } else break;
         }
-      check_Promise(1);
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
-    //check_Promise(2);
   }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
   process.removeListener('unhandledRejection',tmpHandler);
   resetPromise();
@@ -149,94 +133,5 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
 }
 var jevalx = jevalx_core;
 
-//for dev next only
-const jevalx_dev = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
-  let ctxx,rst,err,evil=0;
-  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'Evil',js};console.log(999,reason) };
-  process.addListener('unhandledRejection',tmpHandler);
-  try{
-
-await new Promise(async(r,j)=>{
-  setTimeout(()=>{j({message:'TimeoutX',js})},timeout+666)//FOR DEV ONLY...
-
-  let check_Promise= (seq=0)=>{
-    if (Promise___proto___apply!=Promise.__proto__.apply){
-      evil++;err = {message:'EvilPromiseApply'+seq,js};
-      Promise.__proto__.apply = Promise___proto___apply
-    }
-    if (Promise___proto___catch!=Promise.__proto__.catch){
-      evil++;err = {message:'EvilPromiseCatch'+seq,js};
-      Promise.__proto__.catch = Promise___proto___catch
-    }
-    if (Promise___proto___then!=Promise.__proto__.then){
-      evil++;err = {message:'EvilPromiseThen'+seq,js};
-      Promise.__proto__.then = Promise___proto___then
-    }
-  };
-
-    if (Promise.prototype.then != Promise_prototype_then)
-    Promise.prototype.then = function() {
-console.log('then',evil);
-      if (evil || err) {
-        resetPromise();
-        throw err;
-      }
-      return Promise_prototype_then.apply(this, arguments);
-    };
-    Promise.prototype.apply = function() {
-      if (evil || err) {
-        resetPromise();
-        throw err;
-      }
-      return Promise_prototype_apply.apply(this, arguments);
-    };
-    Promise.prototype.catch = function() {
-console.log('catch',evil);
-      if (evil || err) {
-        resetPromise();
-        throw err;
-      }
-      return Promise_prototype_catch.apply(this, arguments);
-    };
-
-var js_json = JSON.stringify(js);
-console.log('===>',js_json);
-
-    [ctxx,rst] = await jevalx_ext(`(async()=>{
-      var rst = eval(${js_json});
-      for(let i=0;i<9;i++){
-        if (typeof(rst)=='function') rst= await rst();
-        else if (rst.then) { //rst=await rst;
-            rst = await new Promise(async(r,j)=>{
-              setTimeout(()=>j({message:'Timeout'}),timeout=${timeout});//TODO
-              try{ r(await rst) } catch(ex) { j(ex) };
-            });
-        }
-        else break;
-      }
-      return rst;
-    })()`,ctx,timeout,{async importModuleDynamically(specifier, referrer, importAttributes){
-      if (user_import_handler) {
-        return user_import_handler({specifier, referrer, importAttributes})
-      }
-      if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
-      evil++; err = {message:'EvilImport',js};
-      //check_Promise();
-      throw('EvilImport');
-    }});
-
-    if (findEvilGetter(rst)) throw {message:'EvilProto',js};
-
-    setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
-});
-
-      //check_Promise(1);
-  }catch(ex){ err = {message:ex?.message||'EvilX',js}; }
-
-  process.removeListener('unhandledRejection',tmpHandler);
-  resetPromise();
-  if (evil || err) throw err;
-  return rst;
-}
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext,S_SETUP,jevalx_dev}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext,S_SETUP}
 
