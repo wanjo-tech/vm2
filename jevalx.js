@@ -59,8 +59,10 @@ delete constructor.__proto__.__proto__.__defineSetter__;
 `+[
 //'eval',//RC2 set it free for testing.
 'console',//no use at all, user can attach console from host.
-'Function','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') 
-+`Object.__proto__.constructor=Function=${S_FUNCTION};
+'Function',//very important to replace it with our.
+'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') 
++`
+Object.__proto__.constructor=Function=${S_FUNCTION};
 for(let k of Object.getOwnPropertyNames(Object)){if(['fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k]}
 constructor.__proto__.constructor=Function;//very important
 `;
