@@ -82,11 +82,33 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
 
 let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0;
-  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'EvilX',js,uncaughtException:!!promise} };
+  let tmpHandlerReject = (reason, promise)=>{ if (!err) err={message:'EvilX',js,uncaughtException:false} };
+  let tmpHandlerException = (reason, promise)=>{ if (!err) err={message:'EvilX',js,uncaughtException:true} };
+  processWtf.addListener('unhandledRejection',tmpHandlerReject);
+  processWtf.addListener('uncaughtException',tmpHandlerException)
   try{
-    processWtf.addListener('unhandledRejection',tmpHandler);
-    processWtf.addListener('uncaughtException',tmpHandler)
+
+//unexpected....
+if (Promise.__proto__.apply !== Promise___proto___apply) {
+console.log('!!!!!!!!!! reset Promise___proto___apply 111');
+  Promise.__proto__.apply = Promise___proto___apply;
+}
+
     Promise.prototype.catch = function(){
+
+if (Promise.__proto__.apply !== Promise___proto___apply) {
+  //compromised!
+  console.log('!!!!!!!!!! reset Promise___proto___apply 112');
+  Promise.__proto__.apply = Promise___proto___apply;
+}
+
+//console.log('777 catch',evil,err);
+      if (evil || err) {
+console.log('!!!777 catch2',evil,err);
+//reset...
+Promise.prototype.catch = Promise_prototype_catch;//
+        throw '777';
+      }
       return Promise_prototype_catch.call(this,error=>{
         console.log('777_catch','error',error, error.code);
         err = error;
@@ -119,6 +141,10 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
     });
   }catch(ex){ err = {message:ex?.message||'EvilXX',js}; }
   finally{
+if (Promise.__proto__.apply !== Promise___proto___apply) {
+console.log('reset Promise___proto___apply 113');
+  Promise.__proto__.apply = Promise___proto___apply;
+}
 
     Promise.prototype.catch = Promise_prototype_catch;
 
@@ -133,10 +159,13 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
     ////Promise.prototype.constructor=Promise;
 
     Promise.__proto__.constructor=Function;//
-
-    processWtf.removeListener('unhandledRejection',tmpHandler);
-    processWtf.removeListener('uncaughtException',tmpHandler)
   }
+  processWtf.removeListener('unhandledRejection',tmpHandlerReject);
+try{
+  processWtf.removeListener('uncaughtException',tmpHandlerException)
+}catch(ex){
+console.log('TODO removeListener uncaughtExceptionex',ex)
+}
   if (evil || err) throw err;
   return rst;
 }
