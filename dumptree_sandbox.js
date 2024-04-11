@@ -40,7 +40,9 @@ function buildObjectTree(obj, depth = 0, path = []) {
                 try {
                     const property = descriptor.value;
                     propertyStr = JSON.stringify(property) || property.toString();
-                    if (propertyStr.indexOf('Object(') >= 0) danger = 4;
+                    if (propertyStr.indexOf('Object(') >= 0) {
+		    	if (property != Object) danger = 4;
+		    }
                 } catch (error) {
                     propertyStr = 'Cannot convert to string';
                 }
@@ -54,7 +56,10 @@ function buildObjectTree(obj, depth = 0, path = []) {
                 if (propertyStr === undefined) {
                     propertyStr = property.toString();
                 }
-                if (propertyStr.indexOf('Object')>=0) danger=1;
+                if (propertyStr.indexOf('Object')>=0) {
+			if (property != Object) danger=1;
+			//else danger=0;
+		}
             } catch (error) {
                 propertyStr = 'Cannot convert to string';
             }

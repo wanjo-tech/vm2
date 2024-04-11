@@ -37,7 +37,6 @@ q7:async()=>{
          o(this);
          }
          const obj = {__proto__: { get then(){
-         console_log('inside __proto__ get then',u);
          if (u) { u = false; return undefined; } return t; } }};
          return obj
          })
