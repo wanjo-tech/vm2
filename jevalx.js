@@ -39,32 +39,28 @@ const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
-const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
+//const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
 const S_SETUP = `
 //delete Object.prototype.constructor;
 
 `+[
-//'eval',//RC2: set it free for testing...
-'Function',//L0
-//'Promise',//set free now.
 'console',//no use at all, user can attach console from host.
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'//L0
 ].map(v=>'delete '+v+';').join('') 
-+`Function=${S_FUNCTION};//L0
-
++`
 delete constructor.__proto__.__proto__.constructor;//L0
 delete constructor.__proto__.__proto__.__defineGetter__;//L0
 delete constructor.__proto__.__proto__.__defineSetter__;//L0
 delete constructor.__proto__.constructor;//L0
-//delete constructor.__proto__;
-Object.setPrototypeOf(constructor,null);//L0
-Object.freeze(constructor);//L0
-//delete constructor;//L0
-//constructor.__proto__.constructor=Function;//L1
-//constructor=Function;//L1
+////delete constructor.__proto__;
+Object.setPrototypeOf(constructor,null);//L0 for delete constructor;
+Object.freeze(constructor);//L0 for __proto__ alter
 
-//L0: remove vulnerable Object[at]sandbox methods
+Object.setPrototypeOf(toString,null);//L0 r8
+Object.freeze(Function.__proto__);//L0!
+
+//L0:
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
 
 //tools
@@ -76,8 +72,9 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
   if (!ctx || !vm.isContext(ctx)){
     ctxx = vm.createContext(new function(){});
-    ctxx.console_log = console.log;//for dev test only
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
+    //ctxx.console_log = console.log;//for dev test only
+    ctxx.console = {log:console.log,props:getOwnPropertyNames};//for dev test only
     //ctxx.setTimeout= setTimeout;//for dev test only
     //ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//rc2: seems no need anymore
     if (ctx) Object_assign(ctxx,ctx);
@@ -168,7 +165,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=
     Promise.prototype.catch = Promise_prototype_catch;//
 
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L0
-    Promise.__proto__.constructor=Function;//L0
+    Promise.__proto__.constructor=Function;//L0!!
     Object.prototype.constructor=Object;//L0!
 
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);

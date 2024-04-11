@@ -1099,6 +1099,34 @@ import('fs').catch();
        }
      console_log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
+/////////////////////////
+  r8:async function(){ let case_id = arguments.callee.name; var code=`
+const Function = (_=>_).constructor;
+toString.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r8', ''))"]));
+import('fs').catch();
+`;
+     try{
+       console_log(`${case_id} result(json)=`,await jevalx(code,{console_log},timeout=666,json_output=true));
+       console_log(`${case_id} result(raw)=`,await jevalx(code,{console_log},timeout=666,json_output=false));
+     }catch(ex){
+       console_log(`${case_id} ex=`,ex);
+     }
+     console_log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+  r9:async function(){ let case_id = arguments.callee.name; var code=`
+const Function = (_=>_).constructor;
+toString.__proto__ = {call: [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r9', ''))"]))};
+import('fs').catch();
+`;
+     try{
+       console_log(`${case_id} result(json)=`,await jevalx(code,{console_log},timeout=666,json_output=true));
+       console_log(`${case_id} result(raw)=`,await jevalx(code,{console_log},timeout=666,json_output=false));
+     }catch(ex){
+       console_log(`${case_id} ex=`,ex);
+     }
+     console_log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
 
 LAST:(async()=>{ //normal case:
@@ -1115,6 +1143,7 @@ LAST:(async()=>{ //normal case:
 
   //console.log('check "this"',await jevalx('[this,2**3]'));
   console.log("ASSERT object,function', typeof(process),typeof(Promise) =",typeof(process),typeof(Promise));
+  console.log('Object',Object);
   console.log('Promise',Promise);
   console.log('Proxy',Proxy);
   console.log('Error',Error);
