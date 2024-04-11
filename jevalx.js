@@ -57,9 +57,12 @@ delete constructor.__proto__.__proto__.constructor;//L0
 delete constructor.__proto__.__proto__.__defineGetter__;//L0
 delete constructor.__proto__.__proto__.__defineSetter__;//L0
 delete constructor.__proto__.constructor;//L0
-delete constructor;//L0
+//delete constructor.__proto__;
+Object.setPrototypeOf(constructor,null);//L0
+Object.freeze(constructor);//L0
+//delete constructor;//L0
 //constructor.__proto__.constructor=Function;//L1
-constructor=Function;//L1
+//constructor=Function;//L1
 
 //L0: remove vulnerable Object[at]sandbox methods
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}

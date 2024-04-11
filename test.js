@@ -26,7 +26,6 @@ async function searchFiles(directory, pattern) {
   }
 }
 
-
 module.exports = {
 
 AAAA:async function(){ let case_id = arguments.callee.name;
@@ -1071,7 +1070,7 @@ i.constructor.constructor("return process")().mainModule.require("fs").writeFile
      console_log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
 
-  r6:async()=>{
+  r6:async function(){
 let case_id = arguments.callee.name;
 var code=`
 const Function = (_=>_).constructor;
@@ -1079,7 +1078,22 @@ constructor.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.c
 import('fs').catch();
 `;
        try{
-         console_log(`${case_id} result=`,await jevalx(code,{console_log}));
+         console_log(`${case_id} result=`,await jevalx(code,{console_log},timeout=666,json_output=false));
+       }catch(ex){
+         console_log(`${case_id} ex=`,ex);
+       }
+     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
+  },
+  r7:async function(){
+let case_id = arguments.callee.name;
+var code=`
+delete constructor;
+const Function = (async _=>_).constructor;
+constructor.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_${case_id}', ''))"]));
+import('fs').catch();
+`;
+       try{
+         console_log(`${case_id} result=`,await jevalx(code,{console_log},timeout=666,json_output=false));
        }catch(ex){
          console_log(`${case_id} ex=`,ex);
        }
