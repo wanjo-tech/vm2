@@ -7,6 +7,8 @@
 - @XmiliaH, contributed numerous sandbox escape test cases, **and is of the view that this will never be secure**.
 - @j4k0xb, contributed sandbox escape cases
 
+## Introduction
+
 The critical importance of securely executing third-party or untrusted code in modern software development is undeniable. While JavaScript's dynamic and flexible nature boosts development efficiency, it also poses numerous security challenges. Node.js's `node:vm` module facilitates the creation of isolated execution environments, providing effective code segregation. However, security vulnerabilities reported historically have attracted significant community attention. Despite efforts like the `vm2` library to construct safer sandboxes over `node:vm`, foundational issues led to the eventual discontinuation of `vm2` [1].
 
 This paper aims to delve into extending the `node:vm` module to forge a new, secure sandbox environment, striving to fill the void left by the `vm2` library. The developed code is publicly accessible on GitHub [2].
@@ -91,3 +93,11 @@ Extending a new sandbox environment on top of `node:vm` not only effectively bri
 [3] Wanjo Chan, "KK Project," n.d. [Online]. Available: [https://github.com/wanjo-tech/kk].
 
 [4] "Pine Script® language reference manual," TradingView, n.d. [Online]. Available: [https://www.tradingview.com/pine-script-reference/v5/].
+
+## Appendix
+
+N/A
+
+## Acknowledgement
+
+N/A
