@@ -52,13 +52,14 @@ const S_SETUP = `
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'//L0
 ].map(v=>'delete '+v+';').join('') 
 +`Function=${S_FUNCTION};//L0
+
 delete constructor.__proto__.__proto__.constructor;//L0
 delete constructor.__proto__.__proto__.__defineGetter__;//L0
 delete constructor.__proto__.__proto__.__defineSetter__;//L0
 delete constructor.__proto__.constructor;//L0
 delete constructor;//L0
 //constructor.__proto__.constructor=Function;//L1
-//constructor=Function;//L1
+constructor=Function;//L1
 
 //L0: remove vulnerable Object[at]sandbox methods
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}

@@ -7,6 +7,26 @@ const console_log = console.log;
 let jevalxModule = require('./jevalx.js');
 let jevalx = jevalxModule.jevalx;
 
+const fs = require('fs').promises;
+const path = require('path');
+
+async function searchFiles(directory, pattern) {
+  try {
+    const files = await fs.readdir(directory, { withFileTypes: true });
+    const foundFiles = files.filter(file => file.isFile() && pattern.test(file.name));
+
+    if (foundFiles.length > 0) {
+      throw new Error(`Found files matching pattern "${pattern}": ${foundFiles.map(f => f.name).join(', ')}`);
+    } else {
+      console.log('No files found matching the pattern.'+pattern);
+    }
+  } catch (error) {
+    console.error('Error searching files:', error);
+    throw error; // Rethrow the error if necessary
+  }
+}
+
+
 module.exports = {
 
 AAAA:async function(){ let case_id = arguments.callee.name;
@@ -1051,6 +1071,21 @@ i.constructor.constructor("return process")().mainModule.require("fs").writeFile
      console_log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
 
+  r6:async()=>{
+let case_id = arguments.callee.name;
+var code=`
+const Function = (_=>_).constructor;
+constructor.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_${case_id}', ''))"]));
+import('fs').catch();
+`;
+       try{
+         console_log(`${case_id} result=`,await jevalx(code,{console_log}));
+       }catch(ex){
+         console_log(`${case_id} ex=`,ex);
+       }
+     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
+  },
+
 
 LAST:(async()=>{ //normal case:
 
@@ -1091,6 +1126,8 @@ if (require.main === module) {
     let case_id = argo.case;
     if (case_id) {
       await test_cases[case_id]();
+console_log('-------------- test pwn* ---------------');
+await searchFiles('.',/pwn*/);
     }else{
       console_log('-------------- test all start ---------------');
       for (let k in test_cases){
@@ -1100,29 +1137,8 @@ if (require.main === module) {
         console_log(`-------------- test ${k} end ---------------`);
       }
       console_log('-------------- test pwn* ---------------');
-
-const fs = require('fs').promises;
-const path = require('path');
-
-async function searchFiles(directory, pattern) {
-  try {
-    const files = await fs.readdir(directory, { withFileTypes: true });
-    const foundFiles = files.filter(file => file.isFile() && pattern.test(file.name));
-
-    if (foundFiles.length > 0) {
-      throw new Error(`Found files matching pattern "${pattern}": ${foundFiles.map(f => f.name).join(', ')}`);
-    } else {
-      console.log('No files found matching the pattern.'+pattern);
-    }
-  } catch (error) {
-    console.error('Error searching files:', error);
-    throw error; // Rethrow the error if necessary
-  }
-}
-
 await searchFiles('.',/pwn*/);
       console_log('-------------- test ALL end ---------------');
-
     }
   })().catch(ex=>{
     console_log('main.catch.ex',ex);
