@@ -29,18 +29,15 @@ function findEvil(obj,maxdepth=3) {
 }
 
 // for Promise Pollultion:
-const Promise_prototype_catch = Promise.prototype.catch;
-
-const Promise_prototype = Promise.prototype;
-const Promise_prototype_getPrototypeOf = Object_getPrototypeOf(Promise.prototype);
-const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
-const Promise_constructor = Promise.constructor;
-
 const Promise___proto___apply = Promise.__proto__.apply;
-const Promise_prototype_then = Promise.prototype.then;
-const Promise_prototype_apply = Promise.prototype.apply;
+const Promise_prototype_catch = Promise.prototype.catch;
+const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
 
-
+//const Promise_prototype = Promise.prototype;
+//const Promise_prototype_getPrototypeOf = Object_getPrototypeOf(Promise.prototype);
+//const Promise_constructor = Promise.constructor;
+//const Promise_prototype_then = Promise.prototype.then;
+//const Promise_prototype_apply = Promise.prototype.apply;
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
@@ -87,32 +84,17 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
   processWtf.addListener('unhandledRejection',tmpHandlerReject);
   processWtf.addListener('uncaughtException',tmpHandlerException)
   try{
-
-//unexpected....
-if (Promise.__proto__.apply !== Promise___proto___apply) {
-console.log('!!!!!!!!!! reset Promise___proto___apply 111');
-  Promise.__proto__.apply = Promise___proto___apply;
-}
-
     Promise.prototype.catch = function(){
-
-if (Promise.__proto__.apply !== Promise___proto___apply) {
-  //compromised!
-  console.log('!!!!!!!!!! reset Promise___proto___apply 112');
-  Promise.__proto__.apply = Promise___proto___apply;
-}
-
-//console.log('777 catch',evil,err);
-      if (evil || err) {
-console.log('!!!777 catch2',evil,err);
-//reset...
-Promise.prototype.catch = Promise_prototype_catch;//
-        throw '777';
+      if (Promise.__proto__.apply !== Promise___proto___apply) {
+        //console.log('!!!!!!!! 777 catch 110',evil,err);
+        //console.log('reset Promise___proto___apply 110');
+        Promise.__proto__.apply = Promise___proto___apply;
       }
-      return Promise_prototype_catch.call(this,error=>{
-        console.log('777_catch','error',error, error.code);
-        err = error;
-      });
+      if (evil || err) { //TODO already mean error?
+        console.log('!!!!!!!! 777 catch 111',evil,err);
+        Promise.prototype.catch = Promise_prototype_catch;//
+      }
+      return Promise_prototype_catch.call(this,error=>{ err = error; });
     };
     let js_opts=undefined;
     await new Promise(async(r,j)=>{
@@ -141,31 +123,16 @@ Promise.prototype.catch = Promise_prototype_catch;//
     });
   }catch(ex){ err = {message:ex?.message||'EvilXX',js}; }
   finally{
-if (Promise.__proto__.apply !== Promise___proto___apply) {
-console.log('reset Promise___proto___apply 113');
-  Promise.__proto__.apply = Promise___proto___apply;
-}
-
+    if (Promise.__proto__.apply !== Promise___proto___apply) {
+      //console.log('reset Promise___proto___apply 113');
+      Promise.__proto__.apply = Promise___proto___apply;
+    }
     Promise.prototype.catch = Promise_prototype_catch;
-
-    //if (Function.prototype != Object.getPrototypeOf(Promise.prototype.constructor)) {
-    //  Object.setPrototypeOf(Promise.prototype.constructor,Function.prototype);
-    //  console.log('after_9999_reset', Function.prototype == Object.getPrototypeOf(Promise.prototype.constructor))
-    //}
-    //Object.setPrototypeOf(Promise.prototype,Promise_prototype_getPrototypeOf);
-
-    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
-
-    ////Promise.prototype.constructor=Promise;
-
+    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//
     Promise.__proto__.constructor=Function;//
+    processWtf.removeListener('unhandledRejection',tmpHandlerReject);
+    processWtf.removeListener('uncaughtException',tmpHandlerException)
   }
-  processWtf.removeListener('unhandledRejection',tmpHandlerReject);
-try{
-  processWtf.removeListener('uncaughtException',tmpHandlerException)
-}catch(ex){
-console.log('TODO removeListener uncaughtExceptionex',ex)
-}
   if (evil || err) throw err;
   return rst;
 }
