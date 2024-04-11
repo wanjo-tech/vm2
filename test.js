@@ -1,7 +1,6 @@
 //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
-const console_log = console.log;
 //let assertWtf = require('assert');
 
 let jevalxModule = require('./jevalx.js');
@@ -61,11 +60,11 @@ q7:async()=>{
          })
      `
        try{
-         console_log('Q7 result=',await jevalx(code,{console_log}));
+         console.log('Q7 result=',await jevalx(code,));
        }catch(ex){
-         console_log('Q7 ex=',ex);
+         console.log('Q7 ex=',ex);
        }
-     console_log('Q7 check=',typeof(process),typeof(Promise));
+     console.log('Q7 check=',typeof(process),typeof(Promise));
    },
 BBBB:async()=>{
 ////https://gist.github.com/leesh3288/e4aa7b90417b0b0ac7bcd5b09ac7d3bd
@@ -106,11 +105,11 @@ var case_id='BBB2';
     }
   `;
   try{
-    console_log('BBB2 result=',await jevalx(code));
+    console.log('BBB2 result=',await jevalx(code));
   }catch(ex){
-    console_log('BBB2 ex=',ex.message);
+    console.log('BBB2 ex=',ex.message);
   }
-  console_log('BBB2 check=',typeof(process),typeof(Promise));
+  console.log('BBB2 check=',typeof(process),typeof(Promise));
 },
 
 CCCC:async()=>{
@@ -947,11 +946,11 @@ Object.__proto__ = {
 false
 `
   try{
-    console_log('Q31 result=',await jevalx(code,{console_log}));
+    console.log('Q31 result=',await jevalx(code,));
   }catch(ex){
-    console_log('Q31 ex=',ex.message,JSON.stringify(ex.js));
+    console.log('Q31 ex=',ex.message,JSON.stringify(ex.js));
   }
-  console_log('Q31 check=',typeof(process),typeof(Promise));
+  console.log('Q31 check=',typeof(process),typeof(Promise));
 
 },
 q32:async()=>{
@@ -962,7 +961,7 @@ import('').catch();
 1
 `
   try{
-    console.log('Q32 result=',await jevalx(code,{console_log}));
+    console.log('Q32 result=',await jevalx(code,));
   }catch(ex){
     console.log('Q32 ex=',ex.message,JSON.stringify(ex.js));
   }
@@ -974,7 +973,7 @@ Q33:(async()=>{
 var code=`
 const Function = (async _=>_).constructor;
 const Object = constructor.prototype.__proto__.constructor;
-console_log(999,''+Object.defineProperty);
+console.log(999,''+Object.defineProperty);
 Object.defineProperty(Object.__proto__, 'catch', {
 	set: [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_q33', ''))"])),
 	get: ()=>1
@@ -1043,16 +1042,19 @@ p.then();
   r4:async()=>{
 var case_id= 'r4';
 var code=`
-import('').catch(_=>_).constructor.__proto__ = {
+let pc=import('').catch(_=>_).constructor;
+console.log('pc1='+pc.__proto__)
+pc.__proto__ = {
         set constructor(f) { f("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "");}
-}
+};
+console.log('pc2='+pc.__proto__)
 `;
        try{
-         console_log(`${case_id} result=`,await jevalx(code,{console_log}));
+         console.log(`${case_id} result=`,await jevalx(code,));
        }catch(ex){
-         console_log(`${case_id} ex=`,ex);
+         console.log(`${case_id} ex=`,ex);
        }
-     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
 
   r5:async()=>{
@@ -1063,11 +1065,11 @@ try { i.then() } catch (e) {}
 i.constructor.constructor("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "")
 `;
        try{
-         console_log(`${case_id} result=`,await jevalx(code,{console_log}));
+         console.log(`${case_id} result=`,await jevalx(code,));
        }catch(ex){
-         console_log(`${case_id} ex=`,ex);
+         console.log(`${case_id} ex=`,ex);
        }
-     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
 
   r6:async function(){
@@ -1078,11 +1080,11 @@ constructor.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.c
 import('fs').catch();
 `;
        try{
-         console_log(`${case_id} result=`,await jevalx(code,{console_log},timeout=666,json_output=false));
+         console.log(`${case_id} result=`,await jevalx(code,{},timeout=666,json_output=false));
        }catch(ex){
-         console_log(`${case_id} ex=`,ex);
+         console.log(`${case_id} ex=`,ex);
        }
-     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
   r7:async function(){
 let case_id = arguments.callee.name;
@@ -1093,11 +1095,11 @@ constructor.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.c
 import('fs').catch();
 `;
        try{
-         console_log(`${case_id} result=`,await jevalx(code,{console_log},timeout=666,json_output=false));
+         console.log(`${case_id} result=`,await jevalx(code,{},timeout=666,json_output=false));
        }catch(ex){
-         console_log(`${case_id} ex=`,ex);
+         console.log(`${case_id} ex=`,ex);
        }
-     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise));
   },
 /////////////////////////
   r8:async function(){ let case_id = arguments.callee.name; var code=`
@@ -1106,12 +1108,12 @@ toString.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call
 import('fs').catch();
 `;
      try{
-       console_log(`${case_id} result(json)=`,await jevalx(code,{console_log},timeout=666,json_output=true));
-       console_log(`${case_id} result(raw)=`,await jevalx(code,{console_log},timeout=666,json_output=false));
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
      }catch(ex){
-       console_log(`${case_id} ex=`,ex);
+       console.log(`${case_id} ex=`,ex);
      }
-     console_log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
   r9:async function(){ let case_id = arguments.callee.name; var code=`
 const Function = (_=>_).constructor;
@@ -1119,12 +1121,12 @@ toString.__proto__ = {call: [].reduce.bind([1,2], Function.call.bind(Function.ca
 import('fs').catch();
 `;
      try{
-       console_log(`${case_id} result(json)=`,await jevalx(code,{console_log},timeout=666,json_output=true));
-       console_log(`${case_id} result(raw)=`,await jevalx(code,{console_log},timeout=666,json_output=false));
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
      }catch(ex){
-       console_log(`${case_id} ex=`,ex);
+       console.log(`${case_id} ex=`,ex);
      }
-     console_log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
 
@@ -1162,29 +1164,29 @@ LAST:(async()=>{ //normal case:
 
 if (require.main === module) {
   let argo = argv2o();
-  console_log(argo);
+  console.log(argo);
   (async()=>{
     let test_cases = require('./test');
-    //console_log('test_cases',test_cases);
+    //console.log('test_cases',test_cases);
     let case_id = argo.case;
     if (case_id) {
       await test_cases[case_id]();
-console_log('-------------- test pwn* ---------------');
+console.log('-------------- test pwn* ---------------');
 await searchFiles('.',/pwn*/);
     }else{
-      console_log('-------------- test all start ---------------');
+      console.log('-------------- test all start ---------------');
       for (let k in test_cases){
-        console_log(`-------------- test ${k} start---------------`);
+        console.log(`-------------- test ${k} start---------------`);
 //
         await test_cases[k]();
-        console_log(`-------------- test ${k} end ---------------`);
+        console.log(`-------------- test ${k} end ---------------`);
       }
-      console_log('-------------- test pwn* ---------------');
+      console.log('-------------- test pwn* ---------------');
 await searchFiles('.',/pwn*/);
-      console_log('-------------- test ALL end ---------------');
+      console.log('-------------- test ALL end ---------------');
     }
   })().catch(ex=>{
-    console_log('main.catch.ex',ex);
+    console.log('main.catch.ex',ex);
   });
 }
 /**
