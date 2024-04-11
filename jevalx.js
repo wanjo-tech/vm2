@@ -54,13 +54,11 @@ const S_SETUP = `
 +`
 Function=${S_FUNCTION};//very important.
 
-//L0 protect constructor:
+//L0 protect constructor!!!:
 delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
 constructor.__proto__.constructor=Function;
-
-//Object.__proto__.constructor=Function;//L1
 
 //L0 remove vulnerable Object[at]sandbox methods
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
@@ -164,8 +162,6 @@ typeof(ex)!='string' && ex?.message && console.log('999c=>\n',ex,'\n<=',JSON.str
 
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L0
     Promise.__proto__.constructor=Function;//L0
-
-    //Object.__proto__.constructor=Function;//L1
     Object.prototype.constructor=Object;//L0!
 
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
