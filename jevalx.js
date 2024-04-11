@@ -82,25 +82,26 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
 }
 
 let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=undefined)=>{
-  let ctxx,rst,err,evil=0;
-  let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js,uncaughtException:false};
-    err.message!='EvilXb' && console.log('999b=>\n',ex,'\n<=',JSON.stringify(js))
+  let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
+  let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
+    err.message!='EvilXb' && console.log('EvilXb=>',ex,'<=',jss)
   };
-  let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js,uncaughtException:true};
-    err.message!='EvilXa' && console.log('999a=>\n',ex,'\n<=',JSON.stringify(js))
+  let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
+    err.message!='EvilXa' && console.log('EvilXa=>',ex,'<=',jss)
   };
   try{
     processWtf.addListener('unhandledRejection',tmpHandlerReject);
     processWtf.addListener('uncaughtException',tmpHandlerException)
     Promise.prototype.catch = function(){
       if (Promise.__proto__.apply !== Promise___proto___apply) {
-        console.log('EvilDebug 777 catch 110',evil,err);
+        console.log('reset Promise___proto___apply 110');
         Promise.__proto__.apply = Promise___proto___apply;//L0
       }
-      if (evil || err) { //TODO already error?
-        console.log('EvilDebug 777 catch 111',evil,err);
-      }
-      return Promise_prototype_catch.call(this,error=>{ err = error; });
+      //if (evil || err) { //TODO already error?
+      //  console.log('EvilDebug 777 catch 111',evil,err);
+      //}
+      //return Promise_prototype_catch.call(this,error=>{ err = error; });
+      return Promise_prototype_catch.call(this);
     };
     //support the user_import_handler()
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
@@ -136,19 +137,19 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=
             rst = jevalx_ext('JSON.stringify(rst==this?{}:rst)',ctxx,timeout,js_opts)[1]; //do inside...
             rst = JSON.parse(rst);
           }else{
-            delete rst['toString'];
-            delete rst['__proto__'];
-            delete rst['constructor'];
             if (findEvil(rst)) throw {message:'EvilProtoX',js};
+            //delete rst['toString'];
+            //delete rst['__proto__'];
+            //delete rst['constructor'];
           }
         }
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
-        err.message=='EvilXc' && console.log('999c=>\n',ex,'\n<=',JSON.stringify(js))
+        err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
       }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilXd',js};
-    err.message=='EvilXd' && console.log('999d=>\n',ex,'\n<=',JSON.stringify(js))
+    err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss)
   }
   finally{
     /* reset Promise for pollution */
