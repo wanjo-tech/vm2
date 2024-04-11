@@ -29,6 +29,7 @@ function findEvil(obj,maxdepth=3) {
 }
 
 // for Promise Pollultion:
+const Promise___proto__ = Promise.__proto__;
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_catch = Promise.prototype.catch;
@@ -134,7 +135,7 @@ typeof(ex)!='string' && ex?.message && console.log('999a=>\n',ex,'\n<=',JSON.str
         if (rst) {
           if (json_output){
             ctxx['rst'] = rst;
-            rst = jevalx_ext('JSON.stringify(rst)',ctxx,timeout,js_opts)[1]; //do inside...
+            rst = jevalx_ext('JSON.stringify(rst==this?{}:rst)',ctxx,timeout,js_opts)[1]; //do inside...
             rst = JSON.parse(rst);
           }else{
             delete rst['toString'];
@@ -160,8 +161,20 @@ typeof(ex)!='string' && ex?.message && console.log('999c=>\n',ex,'\n<=',JSON.str
       Promise.__proto__.apply = Promise___proto___apply;
     }
     Promise.prototype.catch = Promise_prototype_catch;//
+    //Promise.__proto__ = Promise___proto__;
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//important for the __proto__ polution.
+
+    //if (Function != Promise.__proto__.constructor)
     Promise.__proto__.constructor=Function;//
+
+    //TODO find the name back...
+
+    //delete Object.prototype;
+
+    //if (Function !== Object.)
+    //Object.__proto__.constructor=Function;//
+    //delete Promise.__proto__.__proto__.name;//...
+    //delete Object.__proto__.__proto__.name;//...
 
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
