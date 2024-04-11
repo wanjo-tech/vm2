@@ -51,16 +51,16 @@ const S_SETUP = `
 'console',//no use at all, user can attach console from host.
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'//L0
 ].map(v=>'delete '+v+';').join('') 
-+`
-Function=${S_FUNCTION};//very important.
++`Function=${S_FUNCTION};//L0
+delete constructor.__proto__.__proto__.constructor;//L0
+delete constructor.__proto__.__proto__.__defineGetter__;//L0
+delete constructor.__proto__.__proto__.__defineSetter__;//L0
+delete constructor.__proto__.constructor;//L0
+delete constructor;//L0
+//constructor.__proto__.constructor=Function;//L1
+//constructor=Function;//L1
 
-//L0 protect constructor!!!:
-delete constructor.__proto__.__proto__.constructor;
-delete constructor.__proto__.__proto__.__defineGetter__;
-delete constructor.__proto__.__proto__.__defineSetter__;
-constructor.__proto__.constructor=Function;
-
-//L0 remove vulnerable Object[at]sandbox methods
+//L0: remove vulnerable Object[at]sandbox methods
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
 
 //tools
@@ -84,18 +84,18 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
 let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0;
   let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js,uncaughtException:false};
-typeof(ex)!='string' && ex?.message && console.log('999b=>\n',ex,'\n<=',JSON.stringify(js))
-};
+    err.message!='EvilXb' && console.log('999b=>\n',ex,'\n<=',JSON.stringify(js))
+  };
   let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js,uncaughtException:true};
-typeof(ex)!='string' && ex?.message && console.log('999a=>\n',ex,'\n<=',JSON.stringify(js))
-};
-  processWtf.addListener('unhandledRejection',tmpHandlerReject);
-  processWtf.addListener('uncaughtException',tmpHandlerException)
+    err.message!='EvilXa' && console.log('999a=>\n',ex,'\n<=',JSON.stringify(js))
+  };
   try{
+    processWtf.addListener('unhandledRejection',tmpHandlerReject);
+    processWtf.addListener('uncaughtException',tmpHandlerException)
     Promise.prototype.catch = function(){
       if (Promise.__proto__.apply !== Promise___proto___apply) {
         console.log('EvilDebug 777 catch 110',evil,err);
-        Promise.__proto__.apply = Promise___proto___apply;
+        Promise.__proto__.apply = Promise___proto___apply;//L0
       }
       if (evil || err) { //TODO already error?
         console.log('EvilDebug 777 catch 111',evil,err);
@@ -142,12 +142,14 @@ typeof(ex)!='string' && ex?.message && console.log('999a=>\n',ex,'\n<=',JSON.str
             if (findEvil(rst)) throw {message:'EvilProtoX',js};
           }
         }
-      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js};
-typeof(ex)!='string' && ex?.message && console.log('999c=>\n',ex,'\n<=',JSON.stringify(js))
-}
+      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
+        err.message=='EvilXc' && console.log('999c=>\n',ex,'\n<=',JSON.stringify(js))
+      }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
-  }catch(ex){ err = {message:ex?.message||'EvilXX',js}; }
+  }catch(ex){ err = {message:ex?.message||'EvilXd',js};
+    err.message=='EvilXd' && console.log('999d=>\n',ex,'\n<=',JSON.stringify(js))
+  }
   finally{
     /* reset Promise for pollution */
     if (Promise___proto___then != Promise.__proto__.then){
