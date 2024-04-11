@@ -96,7 +96,15 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
       }
       return Promise_prototype_catch.call(this,error=>{ err = error; });
     };
-    let js_opts=undefined;
+    //support the user_import_handler()
+    let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
+      if (!evil && !err){
+        if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
+        if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
+      }
+      evil++; err = {message:'EvilImport',js};
+      throw('EvilImport');
+    }});
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
       try{

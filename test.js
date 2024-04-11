@@ -49,35 +49,6 @@ q7:async()=>{
        }
      console_log('Q7 check=',typeof(process),typeof(Promise));
    },
-  r4:async()=>{
-var case_id= 'r4';
-var code=`
-import('').catch(_=>_).constructor.__proto__ = {
-        set constructor(f) { f("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "");}
-}
-`;
-       try{
-         console_log(`${case_id} result=`,await jevalx(code,{console_log}));
-       }catch(ex){
-         console_log(`${case_id} ex=`,ex);
-       }
-     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
-  },
-
-  r5:async()=>{
-var case_id= 'r5';
-var code=`
-const i = import('');
-try { i.then() } catch (e) {}
-i.constructor.constructor("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "")
-`;
-       try{
-         console_log(`${case_id} result=`,await jevalx(code,{console_log}));
-       }catch(ex){
-         console_log(`${case_id} ex=`,ex);
-       }
-     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
-  },
 BBBB:async()=>{
 ////https://gist.github.com/leesh3288/e4aa7b90417b0b0ac7bcd5b09ac7d3bd
   var code=`
@@ -1019,7 +990,7 @@ false
 
 }),
 
-Q33:(async()=>{
+R1:(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
 //Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
@@ -1050,6 +1021,37 @@ p.then();
   console.log('R1 check=',typeof(process),typeof(Promise));
 
 }),
+
+  r4:async()=>{
+var case_id= 'r4';
+var code=`
+import('').catch(_=>_).constructor.__proto__ = {
+        set constructor(f) { f("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "");}
+}
+`;
+       try{
+         console_log(`${case_id} result=`,await jevalx(code,{console_log}));
+       }catch(ex){
+         console_log(`${case_id} ex=`,ex);
+       }
+     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
+  },
+
+  r5:async()=>{
+var case_id= 'r5';
+var code=`
+const i = import('');
+try { i.then() } catch (e) {}
+i.constructor.constructor("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "")
+`;
+       try{
+         console_log(`${case_id} result=`,await jevalx(code,{console_log}));
+       }catch(ex){
+         console_log(`${case_id} ex=`,ex);
+       }
+     console_log(`${case_id} check=`,typeof(process),typeof(Promise));
+  },
+
 
 LAST:(async()=>{ //normal case:
 
