@@ -1,78 +1,78 @@
+[
+test constructor.__proto__.constructor
 {
   "_Constructor": {
     "typeobj": "function",
+    "length": {
+      "type": "number",
+      "value": 0,
+      "str": "0"
+    },
+    "name": {
+      "type": "string",
+      "value": "",
+      "str": "\"\""
+    },
+    "arguments": {
+      "type": "object",
+      "value": null,
+      "str": "null"
+    },
+    "caller": {
+      "type": "object",
+      "value": null,
+      "str": "null"
+    },
     "prototype": {
       "typeobj": "object",
-      "hasOwnProperty": {
+      "constructor": {
         "type": "function",
         "value": "Function",
-        "str": "function hasOwnProperty() { [native code] }"
+        "str": "function(){}"
       },
-      "__lookupGetter__": {
-        "type": "function",
-        "value": "Function",
-        "str": "function __lookupGetter__() { [native code] }"
-      },
-      "__lookupSetter__": {
-        "type": "function",
-        "value": "Function",
-        "str": "function __lookupSetter__() { [native code] }"
-      },
-      "isPrototypeOf": {
-        "type": "function",
-        "value": "Function",
-        "str": "function isPrototypeOf() { [native code] }"
-      },
-      "propertyIsEnumerable": {
-        "type": "function",
-        "value": "Function",
-        "str": "function propertyIsEnumerable() { [native code] }"
-      },
-      "toString": {
-        "type": "function",
-        "value": "Function",
-        "str": "function toString() { [native code] }"
-      },
-      "valueOf": {
-        "type": "function",
-        "value": "Function",
-        "str": "function valueOf() { [native code] }"
-      },
-      "toLocaleString": {
-        "type": "function",
-        "value": "Function",
-        "str": "function toLocaleString() { [native code] }"
+      "prototype_": {
+        "typeobj": "object",
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toString() { [native code] }"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }"
+        }
       }
-    },
-    "getOwnPropertyNames": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertyNames() { [native code] }"
-    },
-    "is": {
-      "type": "function",
-      "value": "Function",
-      "str": "function is() { [native code] }"
-    },
-    "keys": {
-      "type": "function",
-      "value": "Function",
-      "str": "function keys() { [native code] }"
-    },
-    "entries": {
-      "type": "function",
-      "value": "Function",
-      "str": "function entries() { [native code] }"
-    },
-    "fromEntries": {
-      "type": "function",
-      "value": "Function",
-      "str": "function fromEntries() { [native code] }"
-    },
-    "values": {
-      "type": "function",
-      "value": "Function",
-      "str": "function values() { [native code] }"
     },
     "prototype_": {
       "typeobj": "function",
@@ -99,7 +99,7 @@
       "constructor": {
         "type": "function",
         "value": "Function",
-        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        "str": "function Function() { [native code] }"
       },
       "apply": {
         "type": "function",
@@ -170,6 +170,12 @@
     "typeobj": "function",
     "prototype": {
       "typeobj": "object",
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Object() { [native code] }",
+        "danger": 1
+      },
       "hasOwnProperty": {
         "type": "function",
         "value": "Function",
@@ -266,7 +272,7 @@
       "constructor": {
         "type": "function",
         "value": "Function",
-        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        "str": "function Function() { [native code] }"
       },
       "apply": {
         "type": "function",
@@ -290,6 +296,12 @@
       },
       "prototype_": {
         "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "danger": 1
+        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -357,11 +369,6 @@
         "value": "Function",
         "str": "function Array() { [native code] }"
       },
-      "at": {
-        "type": "function",
-        "value": "Function",
-        "str": "function at() { [native code] }"
-      },
       "concat": {
         "type": "function",
         "value": "Function",
@@ -386,16 +393,6 @@
         "type": "function",
         "value": "Function",
         "str": "function findIndex() { [native code] }"
-      },
-      "findLast": {
-        "type": "function",
-        "value": "Function",
-        "str": "function findLast() { [native code] }"
-      },
-      "findLastIndex": {
-        "type": "function",
-        "value": "Function",
-        "str": "function findLastIndex() { [native code] }"
       },
       "lastIndexOf": {
         "type": "function",
@@ -527,28 +524,29 @@
         "value": "Function",
         "str": "function toString() { [native code] }"
       },
-      "toReversed": {
+      "at": {
         "type": "function",
         "value": "Function",
-        "str": "function toReversed() { [native code] }"
+        "str": "function at() { [native code] }"
       },
-      "toSorted": {
+      "findLast": {
         "type": "function",
         "value": "Function",
-        "str": "function toSorted() { [native code] }"
+        "str": "function findLast() { [native code] }"
       },
-      "toSpliced": {
+      "findLastIndex": {
         "type": "function",
         "value": "Function",
-        "str": "function toSpliced() { [native code] }"
-      },
-      "with": {
-        "type": "function",
-        "value": "Function",
-        "str": "function with() { [native code] }"
+        "str": "function findLastIndex() { [native code] }"
       },
       "prototype_": {
         "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "danger": 1
+        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -631,7 +629,7 @@
       "constructor": {
         "type": "function",
         "value": "Function",
-        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        "str": "function Function() { [native code] }"
       },
       "apply": {
         "type": "function",
@@ -655,6 +653,12 @@
       },
       "prototype_": {
         "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "danger": 1
+        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -740,7 +744,7 @@
       "constructor": {
         "type": "function",
         "value": "Function",
-        "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+        "str": "function Function() { [native code] }"
       },
       "apply": {
         "type": "function",
@@ -764,6 +768,12 @@
       },
       "prototype_": {
         "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "danger": 1
+        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -851,7 +861,7 @@
         "constructor": {
           "type": "function",
           "value": "Function",
-          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+          "str": "function Function() { [native code] }"
         },
         "apply": {
           "type": "function",
@@ -875,6 +885,12 @@
         },
         "prototype_": {
           "typeobj": "object",
+          "constructor": {
+            "type": "function",
+            "value": "Function",
+            "str": "function Object() { [native code] }",
+            "danger": 1
+          },
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -963,7 +979,7 @@
         "constructor": {
           "type": "function",
           "value": "Function",
-          "str": "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)"
+          "str": "function Function() { [native code] }"
         },
         "apply": {
           "type": "function",
@@ -987,6 +1003,12 @@
         },
         "prototype_": {
           "typeobj": "object",
+          "constructor": {
+            "type": "function",
+            "value": "Function",
+            "str": "function Object() { [native code] }",
+            "danger": 1
+          },
           "hasOwnProperty": {
             "type": "function",
             "value": "Function",
@@ -1032,3 +1054,4 @@
     }
   }
 }
+]
