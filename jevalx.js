@@ -82,10 +82,14 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   return jevalx_raw(js,ctxx,timeout,js_opts)
 }
 
-let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
+let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0;
-  let tmpHandlerReject = (reason, promise)=>{ if (!err) err={message:'EvilX',js,uncaughtException:false} };
-  let tmpHandlerException = (reason, promise)=>{ if (!err) err={message:'EvilX',js,uncaughtException:true} };
+  let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js,uncaughtException:false};
+typeof(ex)!='string' && ex?.message && console.log('999b=>\n',ex,'\n<=',JSON.stringify(js))
+};
+  let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js,uncaughtException:true};
+typeof(ex)!='string' && ex?.message && console.log('999a=>\n',ex,'\n<=',JSON.stringify(js))
+};
   processWtf.addListener('unhandledRejection',tmpHandlerReject);
   processWtf.addListener('uncaughtException',tmpHandlerException)
   try{
@@ -118,8 +122,8 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
           if (evil || !rst || err) break;
           //if (findEvil(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) {//run in the sandbox !
-            ctxx['rst_tmp']=rst;
-            [ctxx,rst] = jevalx_ext('(()=>rst_tmp())()',ctxx,timeout,js_opts);
+            ctxx['rst']=rst;
+            [ctxx,rst] = jevalx_ext('(()=>rst())()',ctxx,timeout,js_opts);
           }else if (rst.then){
             rst = await new Promise(async(r,j)=>{
               setTimeout(()=>j({message:'Timeout',js}),timeout);
@@ -128,12 +132,20 @@ let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
           } else break;
         }
         if (rst) {
-          delete rst['toString'];
-          delete rst['__proto__'];
-          delete rst['constructor'];
+          if (json_output){
+            ctxx['rst'] = rst;
+            rst = jevalx_ext('JSON.stringify(rst)',ctxx,timeout,js_opts)[1]; //do inside...
+            rst = JSON.parse(rst);
+          }else{
+            delete rst['toString'];
+            delete rst['__proto__'];
+            delete rst['constructor'];
+            if (findEvil(rst)) throw {message:'EvilProtoX',js};
+          }
         }
-        if (findEvil(rst)) throw {message:'EvilProtoX',js};
-      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
+      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js};
+typeof(ex)!='string' && ex?.message && console.log('999c=>\n',ex,'\n<=',JSON.stringify(js))
+}
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilXX',js}; }
