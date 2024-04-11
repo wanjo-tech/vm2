@@ -60,7 +60,7 @@ delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
 constructor.__proto__.constructor=Function;
 
-Object.__proto__.constructor=Function;//L1
+//Object.__proto__.constructor=Function;//L1
 
 //L0 remove vulnerable Object[at]sandbox methods
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
@@ -161,20 +161,12 @@ typeof(ex)!='string' && ex?.message && console.log('999c=>\n',ex,'\n<=',JSON.str
       Promise.__proto__.apply = Promise___proto___apply;
     }
     Promise.prototype.catch = Promise_prototype_catch;//
-    //Promise.__proto__ = Promise___proto__;
-    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//important for the __proto__ polution.
 
-    //if (Function != Promise.__proto__.constructor)
-    Promise.__proto__.constructor=Function;//
+    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L0
+    Promise.__proto__.constructor=Function;//L0
 
-    //TODO find the name back...
-
-    //delete Object.prototype;
-
-    //if (Function !== Object.)
-    //Object.__proto__.constructor=Function;//
-    //delete Promise.__proto__.__proto__.name;//...
-    //delete Object.__proto__.__proto__.name;//...
+    //Object.__proto__.constructor=Function;//L1
+    Object.prototype.constructor=Object;//L0!
 
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
