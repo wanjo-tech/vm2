@@ -17,12 +17,12 @@ if (constructor && Object && Object.__proto__ && constructor.__proto__ && Object
 
 const property_tocheck = [Object];
 
-function buildObjectTree(obj, depth = 0, path = []) {
+function buildObjectTree(obj, depth = 0, patha = [], pathb=[]) {
     const MAX_DEPTH = 7;
     if (depth > MAX_DEPTH) {
         return { note: 'Maximum depth reached' };
     }
-    if (path.includes(obj)) {
+    if (patha.includes(obj)) {
         return { note: 'Circular reference detected' };
     }
 
@@ -41,7 +41,10 @@ function buildObjectTree(obj, depth = 0, path = []) {
                     const property = descriptor.value;
                     propertyStr = JSON.stringify(property) || property.toString();
                     if (propertyStr.indexOf('Object(') >= 0) {
-		    	if (property != Object) danger = 4;
+		    	if (property != Object) danger = 1;
+		    }
+                    if (propertyStr.indexOf(' Function(') >= 0) {
+		    	if (property != Function) danger = 2;
 		    }
                 } catch (error) {
                     propertyStr = 'Cannot convert to string';
@@ -57,7 +60,11 @@ function buildObjectTree(obj, depth = 0, path = []) {
                     propertyStr = property.toString();
                 }
                 if (propertyStr.indexOf('Object')>=0) {
-			if (property != Object) danger=1;
+			if (property != Object && typeof property!='string') danger=5;
+			//else danger=0;
+		}
+                if (propertyStr.indexOf(' Function')>=0) {
+			if (property != Function) danger=6;
 			//else danger=0;
 		}
             } catch (error) {
@@ -68,7 +75,7 @@ function buildObjectTree(obj, depth = 0, path = []) {
                 if (prop === 'global' && depth > 0) {
                     tree[prop] = { type: 'object', value: 'Global Object', str: 'Global Object' };
                 } else {
-                    tree[prop] = buildObjectTree(property, depth + 1, [...path, obj]);
+                    tree[prop] = buildObjectTree(property, depth + 1, [...patha, obj],[...pathb,prop]);
                 }
             } else {
                 tree[prop] = { 
@@ -86,30 +93,31 @@ function buildObjectTree(obj, depth = 0, path = []) {
         } catch (error) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }
+        tree[prop]['pathb'] = [...pathb,prop].join('.');
     });
     const proto = Object_getPrototypeOf(obj);
     if (proto) {
-        tree['prototype_'] = buildObjectTree(proto, depth + 1, [...path, obj]);
+        tree['prototype_'] = buildObjectTree(proto, depth + 1, [...patha, obj],[...pathb,'getPrototypeOf()']);
     }
     if (proto !== obj.__proto__ && obj.__proto__) {
-        tree['__proto'] = buildObjectTree(obj.__proto__, depth + 1, [...path, obj]);
+        tree['__proto'] = buildObjectTree(obj.__proto__, depth + 1, [...patha, obj],[...pathb,'__proto__']);
     }
     return tree;
   }
 }
 
 const rootObjects = {
-    _Constructor: constructor,
-    root_Object: Object,
-    root_Array: Array,
-    root_Function: (()=>_).constructor,
-    root_AsyncFunction: async () => {},
-    root_Promise: (async () => {}),
+    constructor: constructor,
+    Object: Object,
+    Array: Array,
+    Function: (()=>_).constructor,
+    AsyncFunction: async () => {},
+    Promise: (async () => {}),
 };
 
 const objectTrees = {};
 for (const key in rootObjects) {
-    objectTrees[key] = buildObjectTree(rootObjects[key], 0, []);
+    objectTrees[key] = buildObjectTree(rootObjects[key], 0, [],[key]);
 }
 
 const jsonResult = JSON.stringify(objectTrees, null, 2);
