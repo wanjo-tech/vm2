@@ -42,6 +42,22 @@ The sandbox environment's core expansion implementation is demonstrated through 
 - `jevalx_ext`: The extended execution function, tasked with creating and initializing the sandbox environment, meticulously managing global variables.
 - `jevalx_core`: The core asynchronous execution function, enhancing control over asynchronous operations by capturing unhandled Promise rejections and avoiding security vulnerabilities from asynchronous operations.
 
+## Updated Security Features
+
+To enhance the sandbox environment's security against prototype pollution attacks, we've implemented an improved detection mechanism, `findEvil`, which meticulously scans the prototype chain for malicious accessor properties. This is a critical update aimed at identifying and mitigating potential threats more efficiently.
+
+Additionally, our sandbox now includes robust measures to secure `Promise` and `Object` prototypes from being tampered with. We've also introduced a controlled environment for dynamic module imports using the `importModuleDynamically` function, ensuring only safe and approved modules are loaded, further safeguarding against unauthorized code execution.
+
+## Performance Optimization
+
+Recognizing the importance of maintaining optimal performance while ensuring security, we've deployed several optimizations. These include streamlining the execution process and minimizing overhead associated with security checks. These enhancements not only improve the execution speed but also ensure that the sandbox remains lightweight and efficient.
+
+## Practical Use Cases
+
+One notable application of our sandbox environment is in the development of secure, isolated testing environments for evaluating third-party scripts. By leveraging our enhanced security features, developers can safely execute and test external code, minimizing risks to their own systems.
+
+For instance, our sandbox has been utilized in a project aimed at analyzing and sandboxing user-generated scripts in real-time, demonstrating its capability to provide both security and flexibility.
+
 ## Applications and Limitations of the Sandbox
 
 Designed not as a full-fledged virtual machine but as a tool for running JavaScript code within a predefined secure context, the sandbox provides a level of code isolation and execution control without the full features of traditional virtual machines, such as complete OS emulation or hardware virtualization.
