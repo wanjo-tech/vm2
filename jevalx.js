@@ -61,6 +61,8 @@ Object.freeze(constructor);//L0 for __proto__ alter
 Object.setPrototypeOf(toString,null);//L0 r8
 Object.freeze(Function.__proto__);//L0!
 
+Object.freeze(Function);//testing...
+
 //Object.freeze(Promise.prototype.constructor.__proto__)
 //Object.freeze(Promise.prototype.constructor)
 //Object.freeze(Promise.prototype);
