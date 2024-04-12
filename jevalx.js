@@ -62,22 +62,15 @@ delete constructor.__proto__.__proto__.__defineSetter__;//L0
 delete constructor.__proto__.constructor;//L0
 Object.setPrototypeOf(constructor,null);//L0
 Object.freeze(constructor);//L0
-
-Object.setPrototypeOf(toString,null);//L0 r8
-Object.freeze(Function.__proto__);//L0!
-
-Object.freeze(Function);//L1
-
-//HostPromise = import('').catch(_=>_).constructor
-//Object.freeze(HostPromise.__proto__);
-//Object.freeze(HostPromise);
-
 //tools
 AsyncFunction=(async()=>0).constructor;
-
+//
+Object.setPrototypeOf(toString,null);//L0 r8
+Object.freeze(Function.__proto__);//L0!
+Object.freeze(Function);//L1
 //L0:
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
-
+//
 Promise
 `;
 
@@ -106,7 +99,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
     processWtf.addListener('unhandledRejection',tmpHandlerReject);
     processWtf.addListener('uncaughtException',tmpHandlerException)
     //support the user_import_handler()
-    let SandboxPromise;
+    let _Promise;
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       if (!evil && !err){
         if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
@@ -118,28 +111,17 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
       try{
-        if (!ctx || !vm.isContext(ctx)){ //GENESIS
-          ctxx = vm.createContext(new function(){});//BIGBANG
-          [ctxx,SandboxPromise] = jevalx_raw(S_SETUP,ctxx);
-          ctxx.console = {log:console.log,props:getOwnPropertyNames};//for dev test
-          //ctxx.setTimeout= setTimeout;//for dev test only
-          if (ctx) Object_assign(ctxx,ctx);//
-        }else{ ctxx = ctx; }
-/*
-    Promise.prototype.catch = function(){
-        console.log('777_catch',this,'SandboxPromise',SandboxPromise);
-return SandboxPromise.reject(777);
-//return SandboxPromise.prototype.catch.apply(this,arguments);//?
-
-//      return Promise_prototype_catch.call(this,error=>{
-//        console.log('777_catch_error',error, error.code);
-//return SandboxPromise.reject(error);
-//        //err = error;
-////SandboxPromise//
-//      });
-//      //return Promise_prototype_catch.apply(this, arguments);
-    };
-*/
+        //GENESIS
+        ctxx = vm.createContext(new function(){});//BIGBANG
+        [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//
+        ctxx.console = {log:console.log,props:getOwnPropertyNames};//for dev test
+        ctxx.setTimeout= setTimeout;//for dev test only
+        if (ctx) Object_assign(ctxx,ctx);//
+        //OVERRIDE
+        Promise.prototype.catch = function(){
+          return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
+        };
+        //VM
         [ctxx,rst] = jevalx_ext(js,ctx,timeout,js_opts);
         let sandbox_level = 9;
         for (var i=0;i<sandbox_level;i++) {
@@ -177,25 +159,9 @@ return SandboxPromise.reject(777);
     err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss)
   }
   finally{
-    /* reset Promise for pollution */
-    //if (Promise___proto___then != Promise.__proto__.then){
-    //  console.log('reset Promise___proto___then 114');
-    //  Promise.__proto__.then = Promise___proto___then;
-    //}
-    // TODO:
-    if (Promise.__proto__.apply !== Promise___proto___apply) {
-      console.log('reset Promise___proto___apply 113', Promise.__proto__.apply+'',Promise___proto___apply+'');
-      Promise.__proto__.apply = Promise___proto___apply;
-    }
-    //if (Promise.prototype.catch != Promise_prototype_catch){
-    //  console.log('reset Promise_prototype_catch 115');
-    //  Promise.prototype.catch = Promise_prototype_catch;//
-    //}
-
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L0
     Promise.__proto__.constructor=Function;//L0!!
     Object.prototype.constructor=Object;//L0!
-
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
   }
