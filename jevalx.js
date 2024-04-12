@@ -86,7 +86,7 @@ let sandbox_safe_method = function(m){
 //  ].map(v=>'Object.setPrototypeOf(rt.'+v+',null);delete rt.'+v+';').join(''))
 Object.setPrototypeOf(rt,null);
 Object.freeze(rt);
-console.log('sandbox_safe_method',rt);
+//console.log('sandbox_safe_method',rt);
   return rt;
 };
 
