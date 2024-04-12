@@ -1043,18 +1043,16 @@ p.then();
 var case_id= 'r4';
 var code=`
 let pc=import('').catch(_=>_).constructor;
-console.log('pc1='+pc.__proto__)
 pc.__proto__ = {
         set constructor(f) { f("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "");}
 };
-console.log('pc2='+pc.__proto__)
 `;
        try{
          console.log(`${case_id} result=`,await jevalx(code,));
        }catch(ex){
          console.log(`${case_id} ex=`,ex);
        }
-     console.log(`${case_id} check=`,typeof(process),typeof(Promise));
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
   r5:async()=>{

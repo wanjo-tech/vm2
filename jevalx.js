@@ -34,6 +34,7 @@ const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
+
 //const Promise_prototype = Promise.prototype;
 //const Promise_prototype_getPrototypeOf = Object_getPrototypeOf(Promise.prototype);
 
@@ -60,11 +61,22 @@ Object.freeze(constructor);//L0 for __proto__ alter
 Object.setPrototypeOf(toString,null);//L0 r8
 Object.freeze(Function.__proto__);//L0!
 
-//L0:
-for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
+//Object.freeze(Promise.prototype.constructor.__proto__)
+//Object.freeze(Promise.prototype.constructor)
+//Object.freeze(Promise.prototype);
+//Object.freeze(Promise);
 
 //tools
 AsyncFunction=(async()=>0).constructor;
+
+//TODO debug. (since case-r4)
+HostPromise = import('').catch(_=>_).constructor
+//Object.freeze(HostPromise.__proto__);
+Object.freeze(HostPromise);
+
+//L0:
+for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
+
 `;
 
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
@@ -73,10 +85,8 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   if (!ctx || !vm.isContext(ctx)){
     ctxx = vm.createContext(new function(){});
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
-    //ctxx.console_log = console.log;//for dev test only
-    ctxx.console = {log:console.log,props:getOwnPropertyNames};//for dev test only
+    ctxx.console = {log:console.log,props:getOwnPropertyNames};//for dev test
     //ctxx.setTimeout= setTimeout;//for dev test only
-    //ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//rc2: seems no need anymore
     if (ctx) Object_assign(ctxx,ctx);
   }else{ ctxx = ctx; }
   return jevalx_raw(js,ctxx,timeout,js_opts)
@@ -93,17 +103,6 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=
   try{
     processWtf.addListener('unhandledRejection',tmpHandlerReject);
     processWtf.addListener('uncaughtException',tmpHandlerException)
-    Promise.prototype.catch = function(){
-      if (Promise.__proto__.apply !== Promise___proto___apply) {
-        console.log('reset Promise___proto___apply 110');
-        Promise.__proto__.apply = Promise___proto___apply;//L0
-      }
-      //if (evil || err) { //TODO already error?
-      //  console.log('EvilDebug 777 catch 111',evil,err);
-      //}
-      //return Promise_prototype_catch.call(this,error=>{ err = error; });
-      return Promise_prototype_catch.call(this);
-    };
     //support the user_import_handler()
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       if (!evil && !err){
@@ -154,15 +153,19 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=
   }
   finally{
     /* reset Promise for pollution */
-    if (Promise___proto___then != Promise.__proto__.then){
-      console.log('reset Promise___proto___then 114');
-      Promise.__proto__.then = Promise___proto___then;
-    }
+    //if (Promise___proto___then != Promise.__proto__.then){
+    //  console.log('reset Promise___proto___then 114');
+    //  Promise.__proto__.then = Promise___proto___then;
+    //}
+    // TODO:
     if (Promise.__proto__.apply !== Promise___proto___apply) {
-      console.log('reset Promise___proto___apply 113');
+      console.log('reset Promise___proto___apply 113', Promise.__proto__.apply+'',Promise___proto___apply+'');
       Promise.__proto__.apply = Promise___proto___apply;
     }
-    Promise.prototype.catch = Promise_prototype_catch;//
+    //if (Promise.prototype.catch != Promise_prototype_catch){
+    //  console.log('reset Promise_prototype_catch 115');
+    //  Promise.prototype.catch = Promise_prototype_catch;//
+    //}
 
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L0
     Promise.__proto__.constructor=Function;//L0!!
