@@ -39,6 +39,12 @@
   },
   "Object": {
     "typeobj": "function",
+    "length": {
+      "type": "number",
+      "value": 1,
+      "str": "1",
+      "pathb": "Object.length"
+    },
     "name": {
       "type": "string",
       "value": "Object",
@@ -103,17 +109,113 @@
       },
       "pathb": "Object.prototype"
     },
+    "assign": {
+      "type": "function",
+      "value": "Function",
+      "str": "function assign() { [native code] }",
+      "pathb": "Object.assign"
+    },
+    "getOwnPropertyDescriptor": {
+      "type": "function",
+      "value": "Function",
+      "str": "function getOwnPropertyDescriptor() { [native code] }",
+      "pathb": "Object.getOwnPropertyDescriptor"
+    },
+    "getOwnPropertyDescriptors": {
+      "type": "function",
+      "value": "Function",
+      "str": "function getOwnPropertyDescriptors() { [native code] }",
+      "pathb": "Object.getOwnPropertyDescriptors"
+    },
     "getOwnPropertyNames": {
       "type": "function",
       "value": "Function",
       "str": "function getOwnPropertyNames() { [native code] }",
       "pathb": "Object.getOwnPropertyNames"
     },
+    "getOwnPropertySymbols": {
+      "type": "function",
+      "value": "Function",
+      "str": "function getOwnPropertySymbols() { [native code] }",
+      "pathb": "Object.getOwnPropertySymbols"
+    },
+    "hasOwn": {
+      "type": "function",
+      "value": "Function",
+      "str": "function hasOwn() { [native code] }",
+      "pathb": "Object.hasOwn"
+    },
     "is": {
       "type": "function",
       "value": "Function",
       "str": "function is() { [native code] }",
       "pathb": "Object.is"
+    },
+    "preventExtensions": {
+      "type": "function",
+      "value": "Function",
+      "str": "function preventExtensions() { [native code] }",
+      "pathb": "Object.preventExtensions"
+    },
+    "seal": {
+      "type": "function",
+      "value": "Function",
+      "str": "function seal() { [native code] }",
+      "pathb": "Object.seal"
+    },
+    "create": {
+      "type": "function",
+      "value": "Function",
+      "str": "function create() { [native code] }",
+      "pathb": "Object.create"
+    },
+    "defineProperties": {
+      "type": "function",
+      "value": "Function",
+      "str": "function defineProperties() { [native code] }",
+      "pathb": "Object.defineProperties"
+    },
+    "defineProperty": {
+      "type": "function",
+      "value": "Function",
+      "str": "function defineProperty() { [native code] }",
+      "pathb": "Object.defineProperty"
+    },
+    "freeze": {
+      "type": "function",
+      "value": "Function",
+      "str": "function freeze() { [native code] }",
+      "pathb": "Object.freeze"
+    },
+    "getPrototypeOf": {
+      "type": "function",
+      "value": "Function",
+      "str": "function getPrototypeOf() { [native code] }",
+      "pathb": "Object.getPrototypeOf"
+    },
+    "setPrototypeOf": {
+      "type": "function",
+      "value": "Function",
+      "str": "function setPrototypeOf() { [native code] }",
+      "pathb": "Object.setPrototypeOf"
+    },
+    "isExtensible": {
+      "type": "function",
+      "value": "Function",
+      "str": "function isExtensible() { [native code] }",
+      "pathb": "Object.isExtensible"
+    },
+    "isFrozen": {
+      "type": "function",
+      "value": "Function",
+      "str": "function isFrozen() { [native code] }",
+      "pathb": "Object.isFrozen"
+    },
+    "isSealed": {
+      "type": "function",
+      "value": "Function",
+      "str": "function isSealed() { [native code] }",
+      "pathb": "Object.isSealed"
     },
     "keys": {
       "type": "function",

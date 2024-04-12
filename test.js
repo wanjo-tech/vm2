@@ -1169,6 +1169,19 @@ import('fs').catch();
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
+//need run full test to find
+  r13:async function(){ let case_id = arguments.callee.name; var code=`
+const t = setTimeout(_=>t.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r13", ""), 1000);
+`;
+     try{
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
 LAST:(async()=>{ //normal case:
 

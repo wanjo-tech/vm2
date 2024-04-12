@@ -70,8 +70,8 @@ Promise
 `;
 
 //tmp for __proto__ attach, clean later..
-let sandbox_safe_method = function(m){
-  let rt = function(...args){ return m(...args) }
+let sandbox_safe_method = function(m,do_return=false){
+  let rt = function(...args){ let rt = m(...args); if (do_return) return rt }
 //  eval([
 //  //  '__defineGetter__',
 //  //  '__defineSetter__',
@@ -201,18 +201,22 @@ let jevalx_dev = async(js,ctx,timeout=666,json_output=false,return_ctx=false,use
         [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//INIT
         //ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
 
-//NOETS: everyhing came from ctx will have a protential attack, need to improve solution later.
+        //NOETS: everyhing came from ctx will have a protential attack, need to improve solution later.
         //ctxx.console = {log:sandbox_safe_method(console.log),props:sandbox_safe_method(getOwnPropertyNames)};//DEV
-        let console_tmp = Object.create(null);
-        console_tmp['log']=sandbox_safe_method(console.log);
-        ctxx.setTimeout= sandbox_safe_method(setTimeout);//DEV
+        let console_dev = Object.create(null);
+        console_dev['log']=sandbox_safe_method(console.log);
+        ctxx.console = console_dev;
+
+        //NOTES:
+        //If asynchronous scheduling functions such as process.nextTick(), queueMicrotask(), setTimeout(), setImmediate(), etc. are made available inside a vm.Context, functions passed to them will be added to global queues, which are shared by all contexts. Therefore, callbacks passed to those functions are not controllable through the timeout either.
+        //ctxx.setTimeout= sandbox_safe_method(setTimeout);//DEV
+        ctxx.delay = sandbox_safe_method((t,rt)=>new _Promise((r,j)=>setTimeout(()=>r(rt),t)),true);//
 
         if (ctx) Object_assign(ctxx,ctx);//CTX
         //PROTECT
         Promise.prototype.catch = function(){ return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))}); };
         //WORLD
-        [ctxx,rst] = await jevalx_raw(`new Promise(async(resolve,reject)=>{ try{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (!rst) break; if (rst instanceof Promise) { setTimeout(()=>reject('EvilLoop'),${timeout}); rst = await rst; } else if (typeof rst=='function') rst = await rst(); else break; } if (rst instanceof Promise || typeof rst=='function') { return reject('EvilCall'); } resolve( ${json_output}?JSON.stringify(rst):rst); }catch(ex){ reject(ex) } })`,ctxx,timeout,js_opts);
-      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
+        [ctxx,rst] = await jevalx_raw(`new Promise(async(resolve,reject)=>{ try{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (!rst) break; if (rst instanceof Promise) { rst = await Promise.race([delay(${timeout},{message:'Timeout${timeout}'}),rst]); } else if (typeof rst=='function') rst = await rst(); else break; } if (rst instanceof Promise || typeof rst=='function') { return reject('EvilCall'); } resolve( ${json_output}?JSON.stringify(rst):rst); }catch(ex){ reject(ex) } })`,ctxx,timeout,js_opts); }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
         //err.message=='EvilXc' &&
         console.log('EvilXc=>',ex,'<=',jss)
       }
