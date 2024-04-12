@@ -9,6 +9,8 @@ const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
 const getOwnPropertyNames = Object_getOwnPropertyNames;
 const Object_assign = Object.assign;
 
+const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
+
 // for __proto__ Pollultion:
 function findEvil(obj,maxdepth=3) {
   let currentObj = obj;
@@ -33,6 +35,7 @@ const Promise___proto__ = Promise.__proto__;
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_catch = Promise.prototype.catch;
+const Promise_prototype_then = Promise.prototype.then;
 const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
@@ -90,91 +93,93 @@ Object.freeze(rt);
   return rt;
 };
 
-//let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
-//  let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
-//  let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
-//    err.message!='EvilXb' && console.log('EvilXb=>',ex,'<=',jss)
-//  };
-//  let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
-//    err.message!='EvilXa' && console.log('EvilXa=>',ex,'<=',jss)
-//  };
-//  try{
-//    processWtf.addListener('unhandledRejection',tmpHandlerReject);
-//    processWtf.addListener('uncaughtException',tmpHandlerException)
-//    //support the user_import_handler()
-//    let _Promise;
-//    let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
-//      if (!evil && !err){
-//        if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
-//        if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
-//      }
-//      evil++; err = {message:'EvilImport',js};
-//      throw('EvilImport');
-//    }});
-//    await new Promise(async(r,j)=>{
-//      setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
-//      try{
-//        //GENESIS
-//        ctxx = vm.createContext(new function(){});//BIGBANG
-//        [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//INIT
-//        ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
-//        ctxx.setTimeout= setTimeout;//DEV
-//        if (ctx) Object_assign(ctxx,ctx);//CTX
-//        //OVERRIDE
-//        Promise.prototype.catch = function(){
-//          return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
-//        };
-//        //WORLD
-//        [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
-//        let sandbox_level = 9;
-//        for (var i=0;i<sandbox_level;i++) {
-//          //console_log('debug',i,rst);
-//          if (evil || !rst || err) break;
-//          //if (findEvil(rst)) throw {message:'EvilProto',js};
-//          if ('function'==typeof rst) {//run in the sandbox !
-//            ctxx['rst']=rst;
-//            [ctxx,rst] = jevalx_raw('(()=>rst())()',ctxx,timeout,js_opts);
-//          }else if (rst.then){
-//            rst = await new Promise(async(r,j)=>{
-//              setTimeout(()=>j({message:'Timeout',js}),timeout);
-//              try{ r(await rst) } catch(ex) { j(ex) };
-//            });
-//          } else break;
-//        }
-//        if (rst) {
-//          if (json_output){
-//            ctxx['rst'] = rst;
-//            rst = jevalx_raw('JSON.stringify(rst==this?{}:rst)',ctxx,timeout,js_opts)[1]; //do inside...
-//            rst = JSON.parse(rst);
-//          }else{
-//            if (findEvil(rst)) throw {message:'EvilProtoX',js};
-//            //delete rst['toString']; //delete rst['__proto__']; //delete rst['constructor'];
-//          }
-//        }
-//      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
-//        err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
-//      }
-//      setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
-//    });
-//  }catch(ex){ err = {message:ex?.message||'EvilXd',js};
-//    err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss)
-//  }
-//  finally{
-//    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
-//    Promise.__proto__.constructor=Function;
-//    Object.prototype.constructor=Object;
-//    processWtf.removeListener('unhandledRejection',tmpHandlerReject);
-//    processWtf.removeListener('uncaughtException',tmpHandlerException)
-//  }
-//  if (evil || err) throw err;
-//  if (return_ctx) return [ctxx,rst];
-//  return rst;
-//}
+let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
+  let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
+  let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
+    err.message!='EvilXb' && console.log('EvilXb=>',ex,'<=',jss)
+  };
+  let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
+    err.message!='EvilXa' && console.log('EvilXa=>',ex,'<=',jss)
+  };
+  try{
+    processWtf.addListener('unhandledRejection',tmpHandlerReject);
+    processWtf.addListener('uncaughtException',tmpHandlerException)
+    //support the user_import_handler()
+    let _Promise;
+    let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
+      if (!evil && !err){
+        if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
+        if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
+      }
+      evil++; err = {message:'EvilImport',js};
+      throw('EvilImport');
+    }});
+    await new Promise(async(r,j)=>{
+      setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
+      try{
+        //GENESIS
+        ctxx = vm.createContext(new function(){});//BIGBANG
+        [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//INIT
+        //ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
+        let console_dev = Object.create(null);
+        console_dev['log']=sandbox_safe_method(console.log);
+        ctxx.console = console_dev;
+
+        if (ctx) Object_assign(ctxx,ctx);//CTX
+        //OVERRIDE
+        //Promise.prototype.catch = function(){
+        //  return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
+        //};
+        //WORLD
+        [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
+        let sandbox_level = 9;
+        for (var i=0;i<sandbox_level;i++) {
+          //console_log('debug',i,rst);
+          if (evil || !rst || err) break;
+          //if (findEvil(rst)) throw {message:'EvilProto',js};
+          if ('function'==typeof rst) {//run in the sandbox !
+            ctxx['rst']=rst;
+            [ctxx,rst] = jevalx_raw('(()=>rst())()',ctxx,timeout,js_opts);
+          }else if (rst.then){
+            rst = await new Promise(async(r,j)=>{
+              setTimeout(()=>j({message:'Timeout',js}),timeout);
+              try{ r(await rst) } catch(ex) { j(ex) };
+            });
+          } else break;
+        }
+        if (rst) {
+          if (json_output){
+            ctxx['rst'] = rst;
+            rst = jevalx_raw('JSON.stringify(rst==this?{}:rst)',ctxx,timeout,js_opts)[1]; //do inside...
+            rst = JSON.parse(rst);
+          }else{
+            if (findEvil(rst)) throw {message:'EvilProtoX',js};
+            //delete rst['toString']; //delete rst['__proto__']; //delete rst['constructor'];
+          }
+        }
+      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
+        err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
+      }
+      setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
+    });
+  }catch(ex){ err = {message:ex?.message||'EvilXd',js};
+    err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss)
+  }
+  finally{
+    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
+    Promise.__proto__.constructor=Function;
+    Object.prototype.constructor=Object;
+    processWtf.removeListener('unhandledRejection',tmpHandlerReject);
+    processWtf.removeListener('uncaughtException',tmpHandlerException)
+  }
+  if (evil || err) throw err;
+  if (return_ctx) return [ctxx,rst];
+  return rst;
+}
 let jevalx_dev = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
   let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
-    //err.message!='EvilXb' &&
-    console.log('EvilXb=>',ex,'<=',jss)
+    //err.message!='EvilXb' && console.log('EvilXb=>',ex,'<=',jss)
   };
   let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
     //err.message!='EvilXa' &&
@@ -210,13 +215,44 @@ let jevalx_dev = async(js,ctx,timeout=666,json_output=false,return_ctx=false,use
         //NOTES:
         //If asynchronous scheduling functions such as process.nextTick(), queueMicrotask(), setTimeout(), setImmediate(), etc. are made available inside a vm.Context, functions passed to them will be added to global queues, which are shared by all contexts. Therefore, callbacks passed to those functions are not controllable through the timeout either.
         //ctxx.setTimeout= sandbox_safe_method(setTimeout);//DEV (vulnerable)
-        _Promise.delay = sandbox_safe_method((t,rt)=>new _Promise((r,j)=>setTimeout(()=>r(rt),t)),true);
+
+        //TODO
+        //_Promise.delay = sandbox_safe_method((t,rt)=>new _Promise((r,j)=>setTimeout(()=>r(rt),t)),true);
 
         if (ctx) Object_assign(ctxx,ctx);//CTX
+
         //PROTECT
-        Promise.prototype.catch = function(){ return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))}); };
+//        Promise.prototype.then = function(){
+//console.log('!!!! host then',this instanceof _Promise);
+//return Promise_prototype_then.call(this,error=>{
+//  console.log('!!!! host then2',typeof error);
+//  //j(error)
+//})};
+//
+//        Promise.prototype.catch = function(){
+//console.log('!!!! host catch',this instanceof _Promise);
+//return Promise_prototype_catch.call(this,error=>{
+//  console.log('!!!! host catch2',error);
+//  j(error)
+//})};
         //WORLD
-        [ctxx,rst] = await jevalx_raw(`new Promise(async(resolve,reject)=>{ try{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (!rst) break; if (rst instanceof Promise) { rst = await Promise.race([Promise.delay(${timeout},{message:'Timeout${timeout}'}),rst]); } else if (typeof rst=='function') rst = await rst(); else break; } if (rst instanceof Promise || typeof rst=='function') { return reject('EvilCall'); } resolve( ${json_output}?JSON.stringify(rst):rst); }catch(ex){ reject(ex) } })`,ctxx,timeout,js_opts); }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
+await Promise.race([
+  delay(666,{message:'Timeout',js}),
+  (async()=>{
+        [ctxx,rst] = await jevalx_raw(`(async()=>{
+  var rst = eval(${jss});
+  for (let i=0;i<9;i++){
+    if (!rst) break;
+    if (rst instanceof Promise) {
+      rst = await rst;
+    } else if (typeof rst=='function') rst = await rst();
+    else break;
+  }
+  //if (rst instanceof Promise || typeof rst=='function') { return reject('EvilCall'); }
+  return( ${json_output}?JSON.stringify(rst):rst );
+})()`,ctxx,timeout,js_opts);
+})()]);
+      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
         //err.message=='EvilXc' &&
         console.log('EvilXc=>',ex,'<=',jss)
       }
@@ -237,8 +273,7 @@ let jevalx_dev = async(js,ctx,timeout=666,json_output=false,return_ctx=false,use
   if (return_ctx) return [ctxx,rst];
   return rst;
 }
-let jevalx = jevalx_dev;
-let jevalx_core = jevalx_dev;
+let jevalx = jevalx_core;
 
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,jevalx_dev}
 

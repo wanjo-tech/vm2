@@ -4,8 +4,8 @@ var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(
 //let assertWtf = require('assert');
 
 let jevalxModule = require('./jevalx.js');
-//let jevalx = jevalxModule.jevalx;
-let jevalx = jevalxModule.jevalx_dev;
+let jevalx = jevalxModule.jevalx;
+//let jevalx = jevalxModule.jevalx_dev;
 
 const fs = require('fs').promises;
 const path = require('path');
@@ -536,6 +536,7 @@ return obj
 },
 
 Q7x:async()=>{
+//return;//TODO
   //await jevalx(`(async()=>{ return ({ then:()=>{} }) })() `)
   //var code=`(async()=>{ return ({ then:()=>{} }) })() `
   var code=`(async()=>({ then:()=>{} }))() `
@@ -1182,6 +1183,29 @@ const t = setTimeout(_=>t.constructor.constructor('return process')().mainModule
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
+  r14:async function(){ let case_id = arguments.callee.name; var code=`
+Promise.delay(1000).then(_=>import('').constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r14", ""))
+`;
+     try{
+       //console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+/*
+  r15:async function(){ let case_id = arguments.callee.name; var code=`
+Promise.delay(1000).then(_=>import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r15", ""))
+`;
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+*/
 
 LAST:(async()=>{ //normal case:
 
@@ -1222,8 +1246,10 @@ if (require.main === module) {
     //console.log('test_cases',test_cases);
     let case_id = argo.case;
     if (case_id) {
+      console.log(`-------------- test case ${case_id} ---------------`);
+      if (!test_cases[case_id]) throw 'not has '+case_id;
       await test_cases[case_id]();
-console.log('-------------- test pwn* ---------------');
+console.log('-------------- test pwn* after sleep ---------------');
 await searchFiles('.',/pwn*/);
     }else{
       console.log('-------------- test all start ---------------');
@@ -1233,12 +1259,12 @@ await searchFiles('.',/pwn*/);
         await test_cases[k]();
         console.log(`-------------- test ${k} end ---------------`);
       }
-      console.log('-------------- test pwn* ---------------');
+      console.log('-------------- test pwn* after sleep---------------');
 await searchFiles('.',/pwn*/);
       console.log('-------------- test ALL end ---------------');
     }
   })().catch(ex=>{
-    console.log('main.catch.ex',ex);
+    console.log('!!!!!!!!!!! main.catch.ex',ex);
   });
 }
 /**
