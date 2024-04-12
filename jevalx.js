@@ -97,10 +97,12 @@ Object.freeze(rt);
 let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
   let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
-    err.message!='EvilXb' && console.log('EvilXb=>',ex,'<=',jss)
+    //err.message!='EvilXb' &&
+    console.log('EvilXb=>',ex,'<=',jss)
   };
   let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
-    err.message!='EvilXa' && console.log('EvilXa=>',ex,'<=',jss)
+    //err.message!='EvilXa' &&
+    console.log('EvilXa=>',ex,'<=',jss)
   };
   try{
     processWtf.addListener('unhandledRejection',tmpHandlerReject);
@@ -159,12 +161,14 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           }
         }
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
-        err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
+        //err.message=='EvilXc' &&
+        console.log('EvilXc=>',ex,'<=',jss)
       }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ err = {message:ex?.message||'EvilXd',js};
-    err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss)
+    //err.message=='EvilXd' &&
+    console.log('EvilXd=>',ex,'<=',jss)
   }
   finally{
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);

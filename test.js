@@ -2,10 +2,11 @@
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
 //let assertWtf = require('assert');
+let argo = argv2o();
 
 let jevalxModule = require('./jevalx.js');
 let jevalx = jevalxModule.jevalx;
-//let jevalx = jevalxModule.jevalx_dev;
+if (argo.dev) jevalx = jevalxModule.jevalx_dev;
 
 const fs = require('fs').promises;
 const path = require('path');
@@ -1239,7 +1240,6 @@ LAST:(async()=>{ //normal case:
 }
 
 if (require.main === module) {
-  let argo = argv2o();
   console.log(argo);
   (async()=>{
     let test_cases = require('./test');
