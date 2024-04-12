@@ -202,7 +202,9 @@ let jevalx_dev = async(js,ctx,timeout=666,json_output=false,return_ctx=false,use
         //ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
 
 //NOETS: everyhing came from ctx will have a protential attack, need to improve solution later.
-        ctxx.console = {log:sandbox_safe_method(console.log),props:sandbox_safe_method(getOwnPropertyNames)};//DEV
+        //ctxx.console = {log:sandbox_safe_method(console.log),props:sandbox_safe_method(getOwnPropertyNames)};//DEV
+        let console_tmp = Object.create(null);
+        console_tmp['log']=sandbox_safe_method(console.log);
         ctxx.setTimeout= sandbox_safe_method(setTimeout);//DEV
 
         if (ctx) Object_assign(ctxx,ctx);//CTX
