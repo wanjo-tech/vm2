@@ -4,7 +4,8 @@ var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(
 //let assertWtf = require('assert');
 
 let jevalxModule = require('./jevalx.js');
-let jevalx = jevalxModule.jevalx;
+//let jevalx = jevalxModule.jevalx;
+let jevalx = jevalxModule.jevalx_dev;
 
 const fs = require('fs').promises;
 const path = require('path');
@@ -85,7 +86,7 @@ BBBB:async()=>{
   try{
     console.log('BBBB result=',await jevalx(code));
   }catch(ex){
-    console.log('BBBB ex=',ex.message);
+    console.log('BBBB ex=',ex);
   }
   console.log('BBBB check=',typeof(process),typeof(Promise));
 },

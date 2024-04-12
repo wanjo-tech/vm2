@@ -55,7 +55,7 @@ for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys'
 Promise
 `;
 
-let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,user_import_handler=undefined)=>{
+let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
   let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
     err.message!='EvilXb' && console.log('EvilXb=>',ex,'<=',jss)
@@ -81,10 +81,10 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
       try{
         //GENESIS
         ctxx = vm.createContext(new function(){});//BIGBANG
-        [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//
-        ctxx.console = {log:console.log,props:getOwnPropertyNames};//for dev test
-        ctxx.setTimeout= setTimeout;//for dev test only
-        if (ctx) Object_assign(ctxx,ctx);//
+        [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//INIT
+        ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
+        ctxx.setTimeout= setTimeout;//DEV
+        if (ctx) Object_assign(ctxx,ctx);//CTX
         //OVERRIDE
         Promise.prototype.catch = function(){
           return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
@@ -136,6 +136,61 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
   return rst;
 }
 var jevalx = jevalx_core;
+let jevalx_dev = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
+  let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
+  let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
+    //err.message!='EvilXb' &&
+    console.log('EvilXb=>',ex,'<=',jss)
+  };
+  let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
+    err.message!='EvilXa' && console.log('EvilXa=>',ex,'<=',jss)
+  };
+  try{
+    processWtf.addListener('unhandledRejection',tmpHandlerReject);
+    processWtf.addListener('uncaughtException',tmpHandlerException)
+    //support the user_import_handler()
+    let _Promise;
+    let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
+      if (!evil && !err){
+        if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
+        if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
+      }
+      evil++; err = {message:'EvilImport',js};
+      throw('EvilImport');
+    }});
+    await new Promise(async(r,j)=>{
+      setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
+      try{
+        //GENESIS
+        ctxx = vm.createContext(new function(){});//BIGBANG
+        [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//INIT
+        ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
+        ctxx.setTimeout= setTimeout;//DEV
+        if (ctx) Object_assign(ctxx,ctx);//CTX
+        //PROTECT Host Promise
+        Promise.prototype.catch = function(){ return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))}); };
+        //WORLD
+        [ctxx,rst] = await jevalx_raw(`new Promise(async(resolve,reject)=>{ try{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (!rst) break; if (rst instanceof Promise) { setTimeout(()=>reject('EvilLoop'),${timeout}); rst = await rst; } else if (typeof rst=='function') rst = await rst(); else break; } if (rst instanceof Promise) { return reject('EvilLoopX'); } resolve( ${json_output}?JSON.stringify(rst):rst); }catch(ex){ reject(ex) } })`,ctxx,timeout,js_opts);
+      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
+        err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
+      }
+      setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
+    });
+  }catch(ex){ err = {message:ex?.message||'EvilXd',js};
+    err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss)
+  }
+  finally{
+    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
+    Promise.__proto__.constructor=Function;
+    Object.prototype.constructor=Object;
+    processWtf.removeListener('unhandledRejection',tmpHandlerReject);
+    processWtf.removeListener('uncaughtException',tmpHandlerException)
+  }
+  if (evil || err) throw err;
+  if (return_ctx) return [ctxx,rst];
+  return rst;
+}
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP}
+
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,jevalx_dev}
 
