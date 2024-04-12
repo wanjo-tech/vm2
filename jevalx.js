@@ -35,6 +35,8 @@ const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
 
+Object.freeze(Promise);
+
 //const Promise_prototype = Promise.prototype;
 //const Promise_prototype_getPrototypeOf = Object_getPrototypeOf(Promise.prototype);
 
@@ -61,20 +63,15 @@ Object.freeze(constructor);//L0 for __proto__ alter
 Object.setPrototypeOf(toString,null);//L0 r8
 Object.freeze(Function.__proto__);//L0!
 
-Object.freeze(Function);//testing...
-
-//Object.freeze(Promise.prototype.constructor.__proto__)
-//Object.freeze(Promise.prototype.constructor)
-//Object.freeze(Promise.prototype);
-//Object.freeze(Promise);
+Object.freeze(Function);//L1
 
 //tools
 AsyncFunction=(async()=>0).constructor;
 
-//TODO debug. (since case-r4)
-HostPromise = import('').catch(_=>_).constructor
+//TODO check HostPromise (the last piece host stuff introduced by import()...)
+//HostPromise = import('').catch(_=>_).constructor
 //Object.freeze(HostPromise.__proto__);
-Object.freeze(HostPromise);
+//Object.freeze(HostPromise);
 
 //L0:
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
