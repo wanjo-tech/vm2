@@ -209,14 +209,14 @@ let jevalx_dev = async(js,ctx,timeout=666,json_output=false,return_ctx=false,use
 
         //NOTES:
         //If asynchronous scheduling functions such as process.nextTick(), queueMicrotask(), setTimeout(), setImmediate(), etc. are made available inside a vm.Context, functions passed to them will be added to global queues, which are shared by all contexts. Therefore, callbacks passed to those functions are not controllable through the timeout either.
-        //ctxx.setTimeout= sandbox_safe_method(setTimeout);//DEV
-        ctxx.delay = sandbox_safe_method((t,rt)=>new _Promise((r,j)=>setTimeout(()=>r(rt),t)),true);//
+        //ctxx.setTimeout= sandbox_safe_method(setTimeout);//DEV (vulnerable)
+        _Promise.delay = sandbox_safe_method((t,rt)=>new _Promise((r,j)=>setTimeout(()=>r(rt),t)),true);
 
         if (ctx) Object_assign(ctxx,ctx);//CTX
         //PROTECT
         Promise.prototype.catch = function(){ return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))}); };
         //WORLD
-        [ctxx,rst] = await jevalx_raw(`new Promise(async(resolve,reject)=>{ try{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (!rst) break; if (rst instanceof Promise) { rst = await Promise.race([delay(${timeout},{message:'Timeout${timeout}'}),rst]); } else if (typeof rst=='function') rst = await rst(); else break; } if (rst instanceof Promise || typeof rst=='function') { return reject('EvilCall'); } resolve( ${json_output}?JSON.stringify(rst):rst); }catch(ex){ reject(ex) } })`,ctxx,timeout,js_opts); }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
+        [ctxx,rst] = await jevalx_raw(`new Promise(async(resolve,reject)=>{ try{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (!rst) break; if (rst instanceof Promise) { rst = await Promise.race([Promise.delay(${timeout},{message:'Timeout${timeout}'}),rst]); } else if (typeof rst=='function') rst = await rst(); else break; } if (rst instanceof Promise || typeof rst=='function') { return reject('EvilCall'); } resolve( ${json_output}?JSON.stringify(rst):rst); }catch(ex){ reject(ex) } })`,ctxx,timeout,js_opts); }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
         //err.message=='EvilXc' &&
         console.log('EvilXc=>',ex,'<=',jss)
       }
