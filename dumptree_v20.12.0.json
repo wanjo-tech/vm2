@@ -1201,5 +1201,237 @@
         }
       }
     }
+  },
+  "HostPromise": {
+    "typeobj": "function",
+    "length": {
+      "type": "number",
+      "value": 1,
+      "str": "1",
+      "pathb": "HostPromise.length"
+    },
+    "name": {
+      "type": "string",
+      "value": "Promise",
+      "str": "\"Promise\"",
+      "pathb": "HostPromise.name"
+    },
+    "prototype": {
+      "typeobj": "object",
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Promise() { [native code] }",
+        "pathb": "HostPromise.prototype.constructor"
+      },
+      "then": {
+        "type": "function",
+        "value": "Function",
+        "str": "function then() { [native code] }",
+        "pathb": "HostPromise.prototype.then"
+      },
+      "catch": {
+        "type": "function",
+        "value": "Function",
+        "str": "function catch() { [native code] }",
+        "pathb": "HostPromise.prototype.catch"
+      },
+      "finally": {
+        "type": "function",
+        "value": "Function",
+        "str": "function finally() { [native code] }",
+        "pathb": "HostPromise.prototype.finally"
+      },
+      "prototype_": {
+        "typeobj": "object",
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }",
+          "pathb": "HostPromise.prototype.getPrototypeOf().hasOwnProperty"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }",
+          "pathb": "HostPromise.prototype.getPrototypeOf().__lookupGetter__"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }",
+          "pathb": "HostPromise.prototype.getPrototypeOf().__lookupSetter__"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }",
+          "pathb": "HostPromise.prototype.getPrototypeOf().isPrototypeOf"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }",
+          "pathb": "HostPromise.prototype.getPrototypeOf().propertyIsEnumerable"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "HostPromise.prototype.getPrototypeOf().toString"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }",
+          "pathb": "HostPromise.prototype.getPrototypeOf().valueOf"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }",
+          "pathb": "HostPromise.prototype.getPrototypeOf().toLocaleString"
+        }
+      },
+      "pathb": "HostPromise.prototype"
+    },
+    "all": {
+      "type": "function",
+      "value": "Function",
+      "str": "function all() { [native code] }",
+      "pathb": "HostPromise.all"
+    },
+    "allSettled": {
+      "type": "function",
+      "value": "Function",
+      "str": "function allSettled() { [native code] }",
+      "pathb": "HostPromise.allSettled"
+    },
+    "any": {
+      "type": "function",
+      "value": "Function",
+      "str": "function any() { [native code] }",
+      "pathb": "HostPromise.any"
+    },
+    "race": {
+      "type": "function",
+      "value": "Function",
+      "str": "function race() { [native code] }",
+      "pathb": "HostPromise.race"
+    },
+    "resolve": {
+      "type": "function",
+      "value": "Function",
+      "str": "function resolve() { [native code] }",
+      "pathb": "HostPromise.resolve"
+    },
+    "reject": {
+      "type": "function",
+      "value": "Function",
+      "str": "function reject() { [native code] }",
+      "pathb": "HostPromise.reject"
+    },
+    "prototype_": {
+      "typeobj": "function",
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0",
+        "pathb": "HostPromise.getPrototypeOf().length"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\"",
+        "pathb": "HostPromise.getPrototypeOf().name"
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error",
+        "pathb": "HostPromise.getPrototypeOf().arguments"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error",
+        "pathb": "HostPromise.getPrototypeOf().caller"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }",
+        "pathb": "HostPromise.getPrototypeOf().apply"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }",
+        "pathb": "HostPromise.getPrototypeOf().bind"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }",
+        "pathb": "HostPromise.getPrototypeOf().call"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }",
+        "pathb": "HostPromise.getPrototypeOf().toString"
+      },
+      "prototype_": {
+        "typeobj": "object",
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "function hasOwnProperty() { [native code] }",
+          "pathb": "HostPromise.getPrototypeOf().getPrototypeOf().hasOwnProperty"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupGetter__() { [native code] }",
+          "pathb": "HostPromise.getPrototypeOf().getPrototypeOf().__lookupGetter__"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "function __lookupSetter__() { [native code] }",
+          "pathb": "HostPromise.getPrototypeOf().getPrototypeOf().__lookupSetter__"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function isPrototypeOf() { [native code] }",
+          "pathb": "HostPromise.getPrototypeOf().getPrototypeOf().isPrototypeOf"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "function propertyIsEnumerable() { [native code] }",
+          "pathb": "HostPromise.getPrototypeOf().getPrototypeOf().propertyIsEnumerable"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "HostPromise.getPrototypeOf().getPrototypeOf().toString"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "function valueOf() { [native code] }",
+          "pathb": "HostPromise.getPrototypeOf().getPrototypeOf().valueOf"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "function toLocaleString() { [native code] }",
+          "pathb": "HostPromise.getPrototypeOf().getPrototypeOf().toLocaleString"
+        }
+      }
+    }
   }
 }
