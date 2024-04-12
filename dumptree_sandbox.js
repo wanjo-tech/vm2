@@ -113,7 +113,7 @@ const rootObjects = {
     Function: (()=>_).constructor,
     AsyncFunction: async () => {},
     Promise: (async () => {}),
-    HostPromise: import('').catch(_=>_).constructor,//
+    //HostPromise: import('').catch(_=>_).constructor,//
 };
 
 const objectTrees = {};

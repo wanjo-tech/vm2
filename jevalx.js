@@ -35,15 +35,6 @@ const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
 
-//TODO
-//https://github.com/nodejs/node/blob/bb7d7487f5e9202960bfddd3f0d938dbcb86200c/lib/internal/modules/esm/utils.js#L43
-//https://github.com/nodejs/node/blob/28d68f3d974b24aa2433582b1df3352b1edeb5a0/lib/internal/per_context/primordials.js#L315
-//setImportModuleDynamicallyCallback() is called by internalBinding('module_wrap')  ...damn
-//Object.freeze(Promise);
-
-//const Promise_prototype = Promise.prototype;
-//const Promise_prototype_getPrototypeOf = Object_getPrototypeOf(Promise.prototype);
-
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
 //const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
@@ -73,19 +64,6 @@ for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys'
 //
 Promise
 `;
-
-const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
-  let rst,ctxx;
-  //fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
-  if (!ctx || !vm.isContext(ctx)){
-    ctxx = vm.createContext(new function(){});
-    [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
-    ctxx.console = {log:console.log,props:getOwnPropertyNames};//for dev test
-    //ctxx.setTimeout= setTimeout;//for dev test only
-    if (ctx) Object_assign(ctxx,ctx);
-  }else{ ctxx = ctx; }
-  return jevalx_raw(js,ctxx,timeout,js_opts)
-}
 
 let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
@@ -121,8 +99,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
         Promise.prototype.catch = function(){
           return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
         };
-        //VM
-        [ctxx,rst] = jevalx_ext(js,ctx,timeout,js_opts);
+        //WORLD
+        [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
         let sandbox_level = 9;
         for (var i=0;i<sandbox_level;i++) {
           //console_log('debug',i,rst);
@@ -130,7 +108,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
           //if (findEvil(rst)) throw {message:'EvilProto',js};
           if ('function'==typeof rst) {//run in the sandbox !
             ctxx['rst']=rst;
-            [ctxx,rst] = jevalx_ext('(()=>rst())()',ctxx,timeout,js_opts);
+            [ctxx,rst] = jevalx_raw('(()=>rst())()',ctxx,timeout,js_opts);
           }else if (rst.then){
             rst = await new Promise(async(r,j)=>{
               setTimeout(()=>j({message:'Timeout',js}),timeout);
@@ -141,13 +119,11 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
         if (rst) {
           if (json_output){
             ctxx['rst'] = rst;
-            rst = jevalx_ext('JSON.stringify(rst==this?{}:rst)',ctxx,timeout,js_opts)[1]; //do inside...
+            rst = jevalx_raw('JSON.stringify(rst==this?{}:rst)',ctxx,timeout,js_opts)[1]; //do inside...
             rst = JSON.parse(rst);
           }else{
             if (findEvil(rst)) throw {message:'EvilProtoX',js};
-            //delete rst['toString'];
-            //delete rst['__proto__'];
-            //delete rst['constructor'];
+            //delete rst['toString']; //delete rst['__proto__']; //delete rst['constructor'];
           }
         }
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
@@ -171,5 +147,5 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
 }
 var jevalx = jevalx_core;
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext,S_SETUP}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP}
 
