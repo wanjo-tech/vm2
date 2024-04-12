@@ -41,14 +41,26 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 
 const S_SETUP = [
   'console','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'
-].map(v=>'delete '+v+';').join('')+`
+].map(v=>'delete '+v+';').join('')
++[
+//  '__defineGetter__',
+//  '__defineSetter__',
+  '__lookupGetter__',
+  '__lookupSetter__',
+  'hasOwnProperty',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'toLocaleString',
+  'toString',
+  'valueOf'
+].map(v=>'Object.setPrototypeOf('+v+',null);delete constructor.'+v+';').join('')
++`
 delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
 delete constructor.__proto__.constructor;
 Object.setPrototypeOf(constructor,null);
 Object.freeze(constructor);
-Object.setPrototypeOf(toString,null);
 Object.freeze(Function.__proto__);
 //Object.freeze(Function);
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
@@ -197,3 +209,18 @@ let jevalx_core = jevalx_dev;
 
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,jevalx_dev}
 
+/**
+NOTES: list hidden method of obj
+function getAllPrototypeMethods(obj) {
+    let props = [];
+    let currentObj = obj;
+    do {
+        props = props.concat(Object.getOwnPropertyNames(currentObj));
+    } while ((currentObj = Object.getPrototypeOf(currentObj)));
+
+    return props.sort().filter(function(e, i, arr) { 
+       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
+    });
+}
+console.log(getAllPrototypeMethods({}));
+*/

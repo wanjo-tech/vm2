@@ -1127,6 +1127,19 @@ import('fs').catch();
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+  r10:async function(){ let case_id = arguments.callee.name; var code=`
+const Function = (_=>_).constructor;
+valueOf.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r10', ''))"]));
+import('fs').catch();
+`;
+     try{
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
