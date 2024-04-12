@@ -129,37 +129,38 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         ctxx.console = console_dev;
 
         if (ctx) Object_assign(ctxx,ctx);//CTX
-        //OVERRIDE (return the sandbox Promise for the import().catch()
-        Promise.prototype.catch = function(){
-          return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
-        };
+
+        //PROTECT
+//        Promise.prototype.then = function(){
+//console.log('!!!! host then',this instanceof _Promise);
+//return Promise_prototype_then.call(this,error=>{
+//  console.log('!!!! host then2',typeof error);
+//  //j(error)
+//})};
+//
+//        Promise.prototype.catch = function(){
+//console.log('!!!! host catch',this instanceof _Promise);
+//return Promise_prototype_catch.call(this,error=>{
+//  console.log('!!!! host catch2',error);
+//  j(error)
+//})};
         //WORLD
-        [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
-        let sandbox_level = 9;
-        for (var i=0;i<sandbox_level;i++) {
-          //console_log('debug',i,rst);
-          if (evil || !rst || err) break;
-          //if (findEvil(rst)) throw {message:'EvilProto',js};
-          if ('function'==typeof rst) {//run in the sandbox !
-            ctxx['rst']=rst;
-            [ctxx,rst] = jevalx_raw('(()=>rst())()',ctxx,timeout,js_opts);
-          }else if (rst.then){
-            rst = await new Promise(async(r,j)=>{
-              setTimeout(()=>j({message:'Timeout',js}),timeout);
-              try{ r(await rst) } catch(ex) { j(ex) };
-            });
-          } else break;
-        }
-        if (rst) {
-          if (json_output){
-            ctxx['rst'] = rst;
-            rst = jevalx_raw('JSON.stringify(rst==this?{}:rst)',ctxx,timeout,js_opts)[1]; //do inside...
-            rst = JSON.parse(rst);
-          }else{
-            if (findEvil(rst)) throw {message:'EvilProtoX',js};
-            //delete rst['toString']; //delete rst['__proto__']; //delete rst['constructor'];
-          }
-        }
+await Promise.race([
+  delay(666,{message:'Timeout',js}),
+  (async()=>{
+        [ctxx,rst] = await jevalx_raw(`(async()=>{
+  var rst = eval(${jss});
+  for (let i=0;i<9;i++){
+    if (!rst) break;
+    if (rst instanceof Promise) {
+      rst = await rst;
+    } else if (typeof rst=='function') rst = await rst();
+    else break;
+  }
+  //if (rst instanceof Promise || typeof rst=='function') { return reject('EvilCall'); }
+  return( ${json_output}?JSON.stringify(rst):rst );
+})()`,ctxx,timeout,js_opts);
+})()]);
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
         //err.message=='EvilXc' &&
         console.log('EvilXc=>',ex,'<=',jss)
@@ -185,3 +186,18 @@ let jevalx = jevalx_core;
 
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay}
 
+/**
+NOTES: list hidden method of ...
+function getAllPrototypeMethods(obj) {
+    let props = [];
+    let currentObj = obj;
+    do {
+        props = props.concat(Object.getOwnPropertyNames(currentObj));
+    } while ((currentObj = Object.getPrototypeOf(currentObj)));
+
+    return props.sort().filter(function(e, i, arr) { 
+       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
+    });
+}
+console.log(getAllPrototypeMethods(constructor));
+*/

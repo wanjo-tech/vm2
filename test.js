@@ -4,9 +4,14 @@ var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(
 //let assertWtf = require('assert');
 let argo = argv2o();
 
-let jevalxModule = require('./jevalx.js');
+let jevalxModule;
+
+if (argo.dev){
+  jevalxModule = require('./jevalx_dev.js');
+}else{
+  jevalxModule = require('./jevalx.js');
+}
 let jevalx = jevalxModule.jevalx;
-if (argo.dev) jevalx = jevalxModule.jevalx_dev;
 
 const fs = require('fs').promises;
 const path = require('path');
@@ -1263,9 +1268,11 @@ await searchFiles('.',/pwn*/);
 await searchFiles('.',/pwn*/);
       console.log('-------------- test ALL end ---------------');
     }
-  })().catch(ex=>{
+  })().then(()=>{
+    console.log('-------- ',argo);
+  }).catch(ex=>{
     console.log('!!!!!!!!!!! main.catch.ex',ex);
-  });
+  })
 }
 /**
 e.g..
