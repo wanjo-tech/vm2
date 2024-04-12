@@ -39,29 +39,19 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 
 //const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
-const S_SETUP = `
-//delete Object.prototype.constructor;
-
-`+[
-'console',//using host.console
-'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'//L0
-].map(v=>'delete '+v+';').join('') 
-+`
-delete constructor.__proto__.__proto__.constructor;//L0
-delete constructor.__proto__.__proto__.__defineGetter__;//L0
-delete constructor.__proto__.__proto__.__defineSetter__;//L0
-delete constructor.__proto__.constructor;//L0
-Object.setPrototypeOf(constructor,null);//L0
-Object.freeze(constructor);//L0
-//tools
-AsyncFunction=(async()=>0).constructor;
-//
-Object.setPrototypeOf(toString,null);//L0 r8
-Object.freeze(Function.__proto__);//L0!
-Object.freeze(Function);//L1
-//L0:
+const S_SETUP = [
+  'console','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'
+].map(v=>'delete '+v+';').join('')+`
+delete constructor.__proto__.__proto__.constructor;
+delete constructor.__proto__.__proto__.__defineGetter__;
+delete constructor.__proto__.__proto__.__defineSetter__;
+delete constructor.__proto__.constructor;
+Object.setPrototypeOf(constructor,null);
+Object.freeze(constructor);
+Object.setPrototypeOf(toString,null);
+Object.freeze(Function.__proto__);
+//Object.freeze(Function);
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
-//
 Promise
 `;
 
@@ -135,9 +125,9 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
     err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss)
   }
   finally{
-    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L0
-    Promise.__proto__.constructor=Function;//L0!!
-    Object.prototype.constructor=Object;//L0!
+    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
+    Promise.__proto__.constructor=Function;
+    Object.prototype.constructor=Object;
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
   }
