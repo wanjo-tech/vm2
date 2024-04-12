@@ -37,6 +37,7 @@ const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
 const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
+//Object.setPrototypeOf(Promise,null);///tmp protect Host Promise
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
@@ -126,10 +127,10 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         ctxx.console = console_dev;
 
         if (ctx) Object_assign(ctxx,ctx);//CTX
-        //OVERRIDE
-        //Promise.prototype.catch = function(){
-        //  return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
-        //};
+        //OVERRIDE (return the sandbox Promise for the import().catch()
+        Promise.prototype.catch = function(){
+          return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
+        };
         //WORLD
         [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
         let sandbox_level = 9;
@@ -275,7 +276,7 @@ await Promise.race([
 }
 let jevalx = jevalx_core;
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,jevalx_dev}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,jevalx_dev,delay}
 
 /**
 NOTES: list hidden method of ...
