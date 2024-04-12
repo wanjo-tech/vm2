@@ -35,7 +35,11 @@ const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
 
-Object.freeze(Promise);
+//TODO
+//https://github.com/nodejs/node/blob/bb7d7487f5e9202960bfddd3f0d938dbcb86200c/lib/internal/modules/esm/utils.js#L43
+//https://github.com/nodejs/node/blob/28d68f3d974b24aa2433582b1df3352b1edeb5a0/lib/internal/per_context/primordials.js#L315
+//setImportModuleDynamicallyCallback() is called by internalBinding('module_wrap')  ...damn
+//Object.freeze(Promise);
 
 //const Promise_prototype = Promise.prototype;
 //const Promise_prototype_getPrototypeOf = Object_getPrototypeOf(Promise.prototype);
@@ -48,7 +52,7 @@ const S_SETUP = `
 //delete Object.prototype.constructor;
 
 `+[
-'console',//no use at all, user can attach console from host.
+'console',//using host.console
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'//L0
 ].map(v=>'delete '+v+';').join('') 
 +`
@@ -56,31 +60,30 @@ delete constructor.__proto__.__proto__.constructor;//L0
 delete constructor.__proto__.__proto__.__defineGetter__;//L0
 delete constructor.__proto__.__proto__.__defineSetter__;//L0
 delete constructor.__proto__.constructor;//L0
-////delete constructor.__proto__;
-Object.setPrototypeOf(constructor,null);//L0 for delete constructor;
-Object.freeze(constructor);//L0 for __proto__ alter
+Object.setPrototypeOf(constructor,null);//L0
+Object.freeze(constructor);//L0
 
 Object.setPrototypeOf(toString,null);//L0 r8
 Object.freeze(Function.__proto__);//L0!
 
 Object.freeze(Function);//L1
 
-//tools
-AsyncFunction=(async()=>0).constructor;
-
-//TODO check HostPromise (the last piece host stuff introduced by import()...)
 //HostPromise = import('').catch(_=>_).constructor
 //Object.freeze(HostPromise.__proto__);
 //Object.freeze(HostPromise);
 
+//tools
+AsyncFunction=(async()=>0).constructor;
+
 //L0:
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
 
+Promise
 `;
 
 const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   let rst,ctxx;
-  fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
+  //fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
   if (!ctx || !vm.isContext(ctx)){
     ctxx = vm.createContext(new function(){});
     [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
@@ -91,7 +94,7 @@ const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
   return jevalx_raw(js,ctxx,timeout,js_opts)
 }
 
-let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=undefined)=>{
+let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
   let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
     err.message!='EvilXb' && console.log('EvilXb=>',ex,'<=',jss)
@@ -103,6 +106,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=
     processWtf.addListener('unhandledRejection',tmpHandlerReject);
     processWtf.addListener('uncaughtException',tmpHandlerException)
     //support the user_import_handler()
+    let SandboxPromise;
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       if (!evil && !err){
         if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
@@ -114,6 +118,28 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=
     await new Promise(async(r,j)=>{
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
       try{
+        if (!ctx || !vm.isContext(ctx)){ //GENESIS
+          ctxx = vm.createContext(new function(){});//BIGBANG
+          [ctxx,SandboxPromise] = jevalx_raw(S_SETUP,ctxx);
+          ctxx.console = {log:console.log,props:getOwnPropertyNames};//for dev test
+          //ctxx.setTimeout= setTimeout;//for dev test only
+          if (ctx) Object_assign(ctxx,ctx);//
+        }else{ ctxx = ctx; }
+/*
+    Promise.prototype.catch = function(){
+        console.log('777_catch',this,'SandboxPromise',SandboxPromise);
+return SandboxPromise.reject(777);
+//return SandboxPromise.prototype.catch.apply(this,arguments);//?
+
+//      return Promise_prototype_catch.call(this,error=>{
+//        console.log('777_catch_error',error, error.code);
+//return SandboxPromise.reject(error);
+//        //err = error;
+////SandboxPromise//
+//      });
+//      //return Promise_prototype_catch.apply(this, arguments);
+    };
+*/
         [ctxx,rst] = jevalx_ext(js,ctx,timeout,js_opts);
         let sandbox_level = 9;
         for (var i=0;i<sandbox_level;i++) {
@@ -174,6 +200,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,user_import_handler=
     processWtf.removeListener('uncaughtException',tmpHandlerException)
   }
   if (evil || err) throw err;
+  if (return_ctx) return [ctxx,rst];
   return rst;
 }
 var jevalx = jevalx_core;
