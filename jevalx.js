@@ -59,6 +59,8 @@ delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
 delete constructor.__proto__.constructor;
+Object.setPrototypeOf(constructor.prototype,null);
+delete constructor.prototype;
 Object.setPrototypeOf(constructor,null);
 Object.freeze(constructor);
 Object.freeze(Function.__proto__);
@@ -66,6 +68,27 @@ Object.freeze(Function.__proto__);
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
 Promise
 `;
+
+//tmp for __proto__ attach, clean later..
+let sandbox_safe_method = function(m){
+  let rt = function(...args){ return m(...args) }
+//  eval([
+//  //  '__defineGetter__',
+//  //  '__defineSetter__',
+//    '__lookupGetter__',
+//    '__lookupSetter__',
+//    'hasOwnProperty',
+//    'isPrototypeOf',
+//    'propertyIsEnumerable',
+//    'toLocaleString',
+//    'toString',
+//    'valueOf'
+//  ].map(v=>'Object.setPrototypeOf(rt.'+v+',null);delete rt.'+v+';').join(''))
+Object.setPrototypeOf(rt,null);
+Object.freeze(rt);
+console.log('sandbox_safe_method',rt);
+  return rt;
+};
 
 //let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
 //  let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
@@ -176,8 +199,12 @@ let jevalx_dev = async(js,ctx,timeout=666,json_output=false,return_ctx=false,use
         //GENESIS
         ctxx = vm.createContext(new function(){});//BIGBANG
         [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//INIT
-        ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
-        ctxx.setTimeout= setTimeout;//DEV
+        //ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
+
+//NOETS: everyhing came from ctx will have a protential attack, need to improve solution later.
+        ctxx.console = {log:sandbox_safe_method(console.log),props:sandbox_safe_method(getOwnPropertyNames)};//DEV
+        ctxx.setTimeout= sandbox_safe_method(setTimeout);//DEV
+
         if (ctx) Object_assign(ctxx,ctx);//CTX
         //PROTECT
         Promise.prototype.catch = function(){ return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))}); };
@@ -210,7 +237,7 @@ let jevalx_core = jevalx_dev;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,jevalx_dev}
 
 /**
-NOTES: list hidden method of obj
+NOTES: list hidden method of ...
 function getAllPrototypeMethods(obj) {
     let props = [];
     let currentObj = obj;
@@ -222,5 +249,5 @@ function getAllPrototypeMethods(obj) {
        if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
     });
 }
-console.log(getAllPrototypeMethods({}));
+console.log(getAllPrototypeMethods(constructor));
 */

@@ -34,57 +34,6 @@
         "str": "Cannot convert to string",
         "pathb": "constructor.prototype.constructor"
       },
-      "prototype_": {
-        "typeobj": "object",
-        "hasOwnProperty": {
-          "type": "function",
-          "value": "Function",
-          "str": "function hasOwnProperty() { [native code] }",
-          "pathb": "constructor.prototype.getPrototypeOf().hasOwnProperty"
-        },
-        "__lookupGetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupGetter__() { [native code] }",
-          "pathb": "constructor.prototype.getPrototypeOf().__lookupGetter__"
-        },
-        "__lookupSetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupSetter__() { [native code] }",
-          "pathb": "constructor.prototype.getPrototypeOf().__lookupSetter__"
-        },
-        "isPrototypeOf": {
-          "type": "function",
-          "value": "Function",
-          "str": "function isPrototypeOf() { [native code] }",
-          "pathb": "constructor.prototype.getPrototypeOf().isPrototypeOf"
-        },
-        "propertyIsEnumerable": {
-          "type": "function",
-          "value": "Function",
-          "str": "function propertyIsEnumerable() { [native code] }",
-          "pathb": "constructor.prototype.getPrototypeOf().propertyIsEnumerable"
-        },
-        "toString": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "constructor.prototype.getPrototypeOf().toString"
-        },
-        "valueOf": {
-          "type": "function",
-          "value": "Function",
-          "str": "function valueOf() { [native code] }",
-          "pathb": "constructor.prototype.getPrototypeOf().valueOf"
-        },
-        "toLocaleString": {
-          "type": "function",
-          "value": "Function",
-          "str": "function toLocaleString() { [native code] }",
-          "pathb": "constructor.prototype.getPrototypeOf().toLocaleString"
-        }
-      },
       "pathb": "constructor.prototype"
     }
   },
