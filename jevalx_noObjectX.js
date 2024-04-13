@@ -37,8 +37,9 @@ const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_finally = Promise.prototype.finally;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
-const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
-//Object.setPrototypeOf(Promise,null);///tmp protect Host Promise
+
+const Promise_getPrototypeOf = Object.getPrototypeOf(Promise);
+Object.setPrototypeOf(Promise,null);///protect Host Promise
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
@@ -145,6 +146,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Object.freeze(Promise.prototype.finally);
         Object.setPrototypeOf(Promise.prototype.then,null);
         Object.freeze(Promise.prototype.then);
+        //Object.setPrototypeOf(Promise.prototype.constructor,null);
+        Promise.prototype.constructor=ObjectX;//...
         Object.setPrototypeOf(Promise.prototype,null);
         Object.freeze(Promise.prototype);
 
@@ -192,7 +195,10 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
     Promise.prototype.catch = Promise.prototype.catch;//
     Promise.prototype.then = Promise_prototype_then;//
     Promise.prototype.finally = Promise_prototype_finally;//
-    Promise.__proto__.constructor=Function;
+    //Promise.prototype.constructor = Promise;
+    if (Promise.__proto__){
+      Promise.__proto__.constructor=Function;
+    }
     Object.prototype.constructor=Object;
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
