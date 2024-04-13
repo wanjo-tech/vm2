@@ -133,6 +133,9 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Promise.prototype.catch = function(){
           return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
         };
+//r16
+Object.setPrototypeOf(Promise.prototype.catch,null);
+Object.freeze(Promise.prototype.catch);
         //WORLD
         [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
         let sandbox_level = 9;
@@ -172,6 +175,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
   }
   finally{
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
+    //Promise.prototype.catch = Promise_prototype_catch;
+    //Promise.prototype.then = Promise_prototype_then;
     Promise.__proto__.constructor=Function;
     Object.prototype.constructor=Object;
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);

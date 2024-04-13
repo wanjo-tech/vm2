@@ -1212,12 +1212,25 @@ Promise.delay(1000).then(_=>import('').catch(_=>_).constructor.constructor('retu
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 */
+  r16:async function(){ let case_id = arguments.callee.name; var code=`
+const i = import('');
+i.catch.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r16', ''))"]));
+i.catch();
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
 LAST:(async()=>{ //normal case:
 
   console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
   //assertWtf.equal( 8 , await jevalx('x**y',{x:2,y:3}) );
-  console.log('ASSERT 81 == x**y',await jevalx('(async()=>x**y)()',{x:3,y:4}));
+  console.log('ASSERT 81 == x**y',await jevalx('(async()=>(x**y))()',{x:3,y:4}));
   //assertWtf.equal( 81 , await jevalx('x**y',{x:3,y:4}) );
   console.log('ASSERT 8, ()=>x**y',await jevalx('()=>x**y',{x:2,y:3}));
 
@@ -1269,7 +1282,7 @@ await searchFiles('.',/pwn*/);
       console.log('-------------- test ALL end ---------------');
     }
   })().then(()=>{
-    console.log('-------- ',argo);
+    console.log('-------- argo',argo);
   }).catch(ex=>{
     console.log('!!!!!!!!!!! main.catch.ex',ex);
   })
