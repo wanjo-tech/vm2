@@ -1,20 +1,20 @@
 {
   "constructor": {
     "typeobj": "function",
-    "length": {
-      "type": "number",
-      "value": 1,
-      "str": "1",
-      "pathb": "constructor.length"
-    },
     "name": {
       "type": "string",
       "value": "Object",
-      "str": "Cannot convert to string",
+      "str": "\"Object\"",
       "pathb": "constructor.name"
     },
     "prototype": {
       "typeobj": "object",
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Object() { [native code] }",
+        "pathb": "constructor.prototype.constructor"
+      },
       "hasOwnProperty": {
         "type": "function",
         "value": "Function",
@@ -65,113 +65,17 @@
       },
       "pathb": "constructor.prototype"
     },
-    "assign": {
-      "type": "function",
-      "value": "Function",
-      "str": "function assign() { [native code] }",
-      "pathb": "constructor.assign"
-    },
-    "getOwnPropertyDescriptor": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertyDescriptor() { [native code] }",
-      "pathb": "constructor.getOwnPropertyDescriptor"
-    },
-    "getOwnPropertyDescriptors": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertyDescriptors() { [native code] }",
-      "pathb": "constructor.getOwnPropertyDescriptors"
-    },
     "getOwnPropertyNames": {
       "type": "function",
       "value": "Function",
       "str": "function getOwnPropertyNames() { [native code] }",
       "pathb": "constructor.getOwnPropertyNames"
     },
-    "getOwnPropertySymbols": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertySymbols() { [native code] }",
-      "pathb": "constructor.getOwnPropertySymbols"
-    },
-    "hasOwn": {
-      "type": "function",
-      "value": "Function",
-      "str": "function hasOwn() { [native code] }",
-      "pathb": "constructor.hasOwn"
-    },
     "is": {
       "type": "function",
       "value": "Function",
       "str": "function is() { [native code] }",
       "pathb": "constructor.is"
-    },
-    "preventExtensions": {
-      "type": "function",
-      "value": "Function",
-      "str": "function preventExtensions() { [native code] }",
-      "pathb": "constructor.preventExtensions"
-    },
-    "seal": {
-      "type": "function",
-      "value": "Function",
-      "str": "function seal() { [native code] }",
-      "pathb": "constructor.seal"
-    },
-    "create": {
-      "type": "function",
-      "value": "Function",
-      "str": "function create() { [native code] }",
-      "pathb": "constructor.create"
-    },
-    "defineProperties": {
-      "type": "function",
-      "value": "Function",
-      "str": "function defineProperties() { [native code] }",
-      "pathb": "constructor.defineProperties"
-    },
-    "defineProperty": {
-      "type": "function",
-      "value": "Function",
-      "str": "function defineProperty() { [native code] }",
-      "pathb": "constructor.defineProperty"
-    },
-    "freeze": {
-      "type": "function",
-      "value": "Function",
-      "str": "function freeze() { [native code] }",
-      "pathb": "constructor.freeze"
-    },
-    "getPrototypeOf": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getPrototypeOf() { [native code] }",
-      "pathb": "constructor.getPrototypeOf"
-    },
-    "setPrototypeOf": {
-      "type": "function",
-      "value": "Function",
-      "str": "function setPrototypeOf() { [native code] }",
-      "pathb": "constructor.setPrototypeOf"
-    },
-    "isExtensible": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isExtensible() { [native code] }",
-      "pathb": "constructor.isExtensible"
-    },
-    "isFrozen": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isFrozen() { [native code] }",
-      "pathb": "constructor.isFrozen"
-    },
-    "isSealed": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isSealed() { [native code] }",
-      "pathb": "constructor.isSealed"
     },
     "keys": {
       "type": "function",
@@ -196,24 +100,81 @@
       "value": "Function",
       "str": "function values() { [native code] }",
       "pathb": "constructor.values"
+    },
+    "prototype_": {
+      "typeobj": "function",
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0",
+        "pathb": "constructor.getPrototypeOf().length"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\"",
+        "pathb": "constructor.getPrototypeOf().name"
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error",
+        "pathb": "constructor.getPrototypeOf().arguments"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error",
+        "pathb": "constructor.getPrototypeOf().caller"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Function() { [native code] }",
+        "pathb": "constructor.getPrototypeOf().constructor"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }",
+        "pathb": "constructor.getPrototypeOf().apply"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }",
+        "pathb": "constructor.getPrototypeOf().bind"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }",
+        "pathb": "constructor.getPrototypeOf().call"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }",
+        "pathb": "constructor.getPrototypeOf().toString"
+      }
     }
   },
   "Object": {
     "typeobj": "function",
-    "length": {
-      "type": "number",
-      "value": 1,
-      "str": "1",
-      "pathb": "Object.length"
-    },
     "name": {
       "type": "string",
       "value": "Object",
-      "str": "Cannot convert to string",
+      "str": "\"Object\"",
       "pathb": "Object.name"
     },
     "prototype": {
       "typeobj": "object",
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Object() { [native code] }",
+        "pathb": "Object.prototype.constructor"
+      },
       "hasOwnProperty": {
         "type": "function",
         "value": "Function",
@@ -264,113 +225,17 @@
       },
       "pathb": "Object.prototype"
     },
-    "assign": {
-      "type": "function",
-      "value": "Function",
-      "str": "function assign() { [native code] }",
-      "pathb": "Object.assign"
-    },
-    "getOwnPropertyDescriptor": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertyDescriptor() { [native code] }",
-      "pathb": "Object.getOwnPropertyDescriptor"
-    },
-    "getOwnPropertyDescriptors": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertyDescriptors() { [native code] }",
-      "pathb": "Object.getOwnPropertyDescriptors"
-    },
     "getOwnPropertyNames": {
       "type": "function",
       "value": "Function",
       "str": "function getOwnPropertyNames() { [native code] }",
       "pathb": "Object.getOwnPropertyNames"
     },
-    "getOwnPropertySymbols": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getOwnPropertySymbols() { [native code] }",
-      "pathb": "Object.getOwnPropertySymbols"
-    },
-    "hasOwn": {
-      "type": "function",
-      "value": "Function",
-      "str": "function hasOwn() { [native code] }",
-      "pathb": "Object.hasOwn"
-    },
     "is": {
       "type": "function",
       "value": "Function",
       "str": "function is() { [native code] }",
       "pathb": "Object.is"
-    },
-    "preventExtensions": {
-      "type": "function",
-      "value": "Function",
-      "str": "function preventExtensions() { [native code] }",
-      "pathb": "Object.preventExtensions"
-    },
-    "seal": {
-      "type": "function",
-      "value": "Function",
-      "str": "function seal() { [native code] }",
-      "pathb": "Object.seal"
-    },
-    "create": {
-      "type": "function",
-      "value": "Function",
-      "str": "function create() { [native code] }",
-      "pathb": "Object.create"
-    },
-    "defineProperties": {
-      "type": "function",
-      "value": "Function",
-      "str": "function defineProperties() { [native code] }",
-      "pathb": "Object.defineProperties"
-    },
-    "defineProperty": {
-      "type": "function",
-      "value": "Function",
-      "str": "function defineProperty() { [native code] }",
-      "pathb": "Object.defineProperty"
-    },
-    "freeze": {
-      "type": "function",
-      "value": "Function",
-      "str": "function freeze() { [native code] }",
-      "pathb": "Object.freeze"
-    },
-    "getPrototypeOf": {
-      "type": "function",
-      "value": "Function",
-      "str": "function getPrototypeOf() { [native code] }",
-      "pathb": "Object.getPrototypeOf"
-    },
-    "setPrototypeOf": {
-      "type": "function",
-      "value": "Function",
-      "str": "function setPrototypeOf() { [native code] }",
-      "pathb": "Object.setPrototypeOf"
-    },
-    "isExtensible": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isExtensible() { [native code] }",
-      "pathb": "Object.isExtensible"
-    },
-    "isFrozen": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isFrozen() { [native code] }",
-      "pathb": "Object.isFrozen"
-    },
-    "isSealed": {
-      "type": "function",
-      "value": "Function",
-      "str": "function isSealed() { [native code] }",
-      "pathb": "Object.isSealed"
     },
     "keys": {
       "type": "function",
@@ -395,6 +260,63 @@
       "value": "Function",
       "str": "function values() { [native code] }",
       "pathb": "Object.values"
+    },
+    "prototype_": {
+      "typeobj": "function",
+      "length": {
+        "type": "number",
+        "value": 0,
+        "str": "0",
+        "pathb": "Object.getPrototypeOf().length"
+      },
+      "name": {
+        "type": "string",
+        "value": "",
+        "str": "\"\"",
+        "pathb": "Object.getPrototypeOf().name"
+      },
+      "arguments": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error",
+        "pathb": "Object.getPrototypeOf().arguments"
+      },
+      "caller": {
+        "type": "error",
+        "value": "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them",
+        "str": "Error",
+        "pathb": "Object.getPrototypeOf().caller"
+      },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Function() { [native code] }",
+        "pathb": "Object.getPrototypeOf().constructor"
+      },
+      "apply": {
+        "type": "function",
+        "value": "Function",
+        "str": "function apply() { [native code] }",
+        "pathb": "Object.getPrototypeOf().apply"
+      },
+      "bind": {
+        "type": "function",
+        "value": "Function",
+        "str": "function bind() { [native code] }",
+        "pathb": "Object.getPrototypeOf().bind"
+      },
+      "call": {
+        "type": "function",
+        "value": "Function",
+        "str": "function call() { [native code] }",
+        "pathb": "Object.getPrototypeOf().call"
+      },
+      "toString": {
+        "type": "function",
+        "value": "Function",
+        "str": "function toString() { [native code] }",
+        "pathb": "Object.getPrototypeOf().toString"
+      }
     }
   },
   "Array": {
@@ -655,6 +577,12 @@
       },
       "prototype_": {
         "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "pathb": "Array.prototype.getPrototypeOf().constructor"
+        },
         "hasOwnProperty": {
           "type": "function",
           "value": "Function",
@@ -750,6 +678,12 @@
         "str": "Error",
         "pathb": "Array.getPrototypeOf().caller"
       },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Function() { [native code] }",
+        "pathb": "Array.getPrototypeOf().constructor"
+      },
       "apply": {
         "type": "function",
         "value": "Function",
@@ -773,57 +707,6 @@
         "value": "Function",
         "str": "function toString() { [native code] }",
         "pathb": "Array.getPrototypeOf().toString"
-      },
-      "prototype_": {
-        "typeobj": "object",
-        "hasOwnProperty": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().hasOwnProperty"
-        },
-        "__lookupGetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().__lookupGetter__"
-        },
-        "__lookupSetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().__lookupSetter__"
-        },
-        "isPrototypeOf": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().isPrototypeOf"
-        },
-        "propertyIsEnumerable": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().propertyIsEnumerable"
-        },
-        "toString": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().toString"
-        },
-        "valueOf": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().valueOf"
-        },
-        "toLocaleString": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().toLocaleString"
-        }
       }
     }
   },
@@ -873,6 +756,12 @@
         "str": "Error",
         "pathb": "Function.getPrototypeOf().caller"
       },
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Function() { [native code] }",
+        "pathb": "Function.getPrototypeOf().constructor"
+      },
       "apply": {
         "type": "function",
         "value": "Function",
@@ -896,57 +785,6 @@
         "value": "Function",
         "str": "function toString() { [native code] }",
         "pathb": "Function.getPrototypeOf().toString"
-      },
-      "prototype_": {
-        "typeobj": "object",
-        "hasOwnProperty": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().hasOwnProperty"
-        },
-        "__lookupGetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().__lookupGetter__"
-        },
-        "__lookupSetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().__lookupSetter__"
-        },
-        "isPrototypeOf": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().isPrototypeOf"
-        },
-        "propertyIsEnumerable": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().propertyIsEnumerable"
-        },
-        "toString": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().toString"
-        },
-        "valueOf": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().valueOf"
-        },
-        "toLocaleString": {
-          "type": "function",
-          "value": "Function",
-          "str": "Cannot convert to string",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().toLocaleString"
-        }
       }
     }
   },
@@ -998,6 +836,12 @@
           "str": "Error",
           "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().caller"
         },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Function() { [native code] }",
+          "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().constructor"
+        },
         "apply": {
           "type": "function",
           "value": "Function",
@@ -1021,57 +865,6 @@
           "value": "Function",
           "str": "function toString() { [native code] }",
           "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().toString"
-        },
-        "prototype_": {
-          "typeobj": "object",
-          "hasOwnProperty": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().hasOwnProperty"
-          },
-          "__lookupGetter__": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().__lookupGetter__"
-          },
-          "__lookupSetter__": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().__lookupSetter__"
-          },
-          "isPrototypeOf": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().isPrototypeOf"
-          },
-          "propertyIsEnumerable": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().propertyIsEnumerable"
-          },
-          "toString": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().toString"
-          },
-          "valueOf": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().valueOf"
-          },
-          "toLocaleString": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().toLocaleString"
-          }
         }
       }
     }
@@ -1124,6 +917,12 @@
           "str": "Error",
           "pathb": "Promise.getPrototypeOf().getPrototypeOf().caller"
         },
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Function() { [native code] }",
+          "pathb": "Promise.getPrototypeOf().getPrototypeOf().constructor"
+        },
         "apply": {
           "type": "function",
           "value": "Function",
@@ -1147,57 +946,6 @@
           "value": "Function",
           "str": "function toString() { [native code] }",
           "pathb": "Promise.getPrototypeOf().getPrototypeOf().toString"
-        },
-        "prototype_": {
-          "typeobj": "object",
-          "hasOwnProperty": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().hasOwnProperty"
-          },
-          "__lookupGetter__": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().__lookupGetter__"
-          },
-          "__lookupSetter__": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().__lookupSetter__"
-          },
-          "isPrototypeOf": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().isPrototypeOf"
-          },
-          "propertyIsEnumerable": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().propertyIsEnumerable"
-          },
-          "toString": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().toString"
-          },
-          "valueOf": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().valueOf"
-          },
-          "toLocaleString": {
-            "type": "function",
-            "value": "Function",
-            "str": "Cannot convert to string",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().toLocaleString"
-          }
         }
       }
     }
