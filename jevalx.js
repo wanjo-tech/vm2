@@ -131,12 +131,12 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 
         //PRECAUTION
         Promise.prototype.catch = function(){
-          return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
+          return new _Promise((rr,jj)=>{ Promise_prototype_catch.call(this,error=>jj(error))});
         };
         Object.setPrototypeOf(Promise.prototype.catch,null);
         Object.freeze(Promise.prototype.catch);
 
-        //SIMULATION
+        //SIMULATION{{{
         [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
         let sandbox_level = 9;
         for (var i=0;i<sandbox_level;i++) {
@@ -154,6 +154,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           } else break;
         }
 
+        //SIMULATION}}}
         //HOUSEWEEP
         if (rst) {
           if (json_output){
