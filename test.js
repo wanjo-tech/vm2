@@ -1051,7 +1051,9 @@ p.then();
   r4:async()=>{
 var case_id= 'r4';
 var code=`
-let pc=import('').catch(_=>_).constructor;
+let i=import('').catch(_=>_);
+delete i.constructor;
+let pc=i.constructor;
 pc.__proto__ = {
         set constructor(f) { f("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "");}
 };
@@ -1266,6 +1268,29 @@ i.catch();
   r20:async function(){ let case_id = arguments.callee.name; var code=`
 const i = import('');
 i.constructor.race.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r20', ''))"]));
+i.catch();
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
+
+
+  x1:async function(){ let case_id = arguments.callee.name; var code=`
+const i = import('');
+//console.log('i='+typeof i);
+//delete i.prototype;
+//console.log('i.prototype='+typeof i.prototype);
+//console.log('i.constructor='+i.constructor);
+//console.log('i.constructor.race='+i.constructor.race);
+//delete i.constructor;
+console.log('i.constructor='+typeof (i.constructor));
+i.constructor.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_x1', ''))"]));
+console.log('i.constructor.__proto__'+i.constructor.__proto__)
 i.catch();
 `
      try{

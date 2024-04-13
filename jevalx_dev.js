@@ -142,22 +142,16 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         if (ctx) Object_assign(ctxx,ctx);//CTX: TODO, need to protect the outer stuff for the __proto__ pollution.
 
         //PRECAUTION
-        //Promise.prototype.catch = function(){
-        //  return new _Promise((rr,jj)=>{ Promise_prototype_catch.call(this,error=>jj(error))});
-        //};
-        //TO IMPROVE LATER:
+        ////Host Promise
         Object.setPrototypeOf(Promise.prototype.catch,null);
         Object.freeze(Promise.prototype.catch);
         Object.setPrototypeOf(Promise.prototype.finally,null);
         Object.freeze(Promise.prototype.finally);
         Object.setPrototypeOf(Promise.prototype.then,null);
         Object.freeze(Promise.prototype.then);
-
-        //Object.setPrototypeOf(Promise.prototype.constructor,null);//
-        Promise.prototype.constructor=X;//...testing...
-
-        Object.setPrototypeOf(Promise.prototype,null);//
-        Object.freeze(Promise.prototype);
+        Promise.prototype.constructor=X;//L0
+        Object.setPrototypeOf(Promise.prototype,null);//L0 for cleariing the __proto__
+        Object.freeze(Promise.prototype);//L0 for the import("").catch()
 
         //SIMULATION{{{
         [ctxx,rst] = jevalx_raw(`(async()=>{let rst=(()=>eval(${jss}))();while(rst){if(rst instanceof Promise){rst=await rst}else if(typeof rst=='function'){rst=rst()}else break}return ${!!json_output}?JSON.stringify(rst):rst})()`,ctxx,timeout,js_opts);
@@ -185,7 +179,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
     Promise.prototype.catch = Promise.prototype.catch;//
     Promise.prototype.then = Promise_prototype_then;//
     Promise.prototype.finally = Promise_prototype_finally;//
-    //Promise.prototype.constructor = Promise;
+    Promise.prototype.constructor = Promise;
     if (Promise.__proto__){ Promise.__proto__.constructor=Function; }
     //Object.prototype.constructor=Object;//no need any more now?
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
