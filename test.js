@@ -1290,6 +1290,7 @@ LAST:(async()=>{ //normal case:
   //console.log('ASSERT undefined == process:',await jevalx('[].constructor.constructor("return typeof(process)")()'));
 
   //console.log('check "this"',await jevalx('[this,2**3]'));
+  console.log('ASSERT 3 == await jevalx(`++this.rst`,{rst:2},666)',await jevalx(`this.rst++`,{rst:2}));
   console.log("ASSERT object,function', typeof(process),typeof(Promise) =",typeof(process),typeof(Promise));
   console.log('Object',Object);
   console.log('Promise',Promise);
