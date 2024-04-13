@@ -1307,7 +1307,6 @@ try {
         stack();
     })();
 } catch (e) {
-console.log('typeof e',e,'e.constructor'+e.constructor);
 e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r22", ""); }
 `
      try{
