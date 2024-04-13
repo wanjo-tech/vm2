@@ -8,6 +8,7 @@ let jevalxModule;
 
 if (argo.dev){
   jevalxModule = require('./jevalx_dev.js');
+  //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
 }else{
   jevalxModule = require('./jevalx.js');
 }

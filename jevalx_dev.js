@@ -96,19 +96,20 @@ Object.freeze(rt);
 
 let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
-  let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
-    //err.message!='EvilXb' &&
-    console.log('EvilXb=>',ex,'<=',jss)
-  };
-  let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
-    //err.message!='EvilXa' &&
-    console.log('EvilXa=>',ex,'<=',jss)
-  };
+  let last_resolve,last_reject;//for quicker return.
+    let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
+      //err.message!='EvilXb' &&
+      console.log('EvilXb=>',ex,'<=',jss)
+      if (last_reject) last_reject(err);
+    };
+    let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
+      //err.message!='EvilXa' &&
+      console.log('EvilXa=>',ex,'<=',jss)
+      if (last_reject) last_reject(err);
+    };
   try{
-    processWtf.addListener('unhandledRejection',tmpHandlerReject);
-    processWtf.addListener('uncaughtException',tmpHandlerException)
-    //support the user_import_handler()
-    let _Promise;
+        processWtf.addListener('unhandledRejection',tmpHandlerReject);
+        processWtf.addListener('uncaughtException',tmpHandlerException)
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       if (!evil && !err){
         if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
@@ -118,8 +119,11 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
       throw('EvilImport');
     }});
     await new Promise(async(r,j)=>{
+      last_resolve = r, last_reject = j;
+      //support the user_import_handler()
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
       try{
+        let _Promise;
         //GENESIS
         ctxx = vm.createContext(new function(){});//BIGBANG
         [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//INIT
@@ -143,14 +147,17 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,use
     for (let i=0;i<9;i++){
       if (rst==null || rst==undefined) break;
       if (rst instanceof Promise) {
-        rst = await (async()=>rst)();//hang here for Q7x
+        //rst = await rst;//hanged for Q7x
+      rst = await new Promise((rrr,jjj)=>{
+          try{ rrr(rst.then()) }catch(ex){ jjj(ex) }
+      });
       } else if (typeof rst=='function') {
-        rst = await rst();
+        rst = rst();
       }
       else { break; }
     }
-if (rst instanceof Promise) //sandbox Promise...
-rst = await rst;
+//if (rst instanceof Promise) //sandbox Promise...
+//rst = await rst;
     //resolve(rst)
     //if (rst instanceof Promise || typeof rst=='function') { return reject('EvilCall'); }
     //return( ${json_output}?JSON.stringify(rst):rst );
