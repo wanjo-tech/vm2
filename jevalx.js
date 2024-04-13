@@ -158,10 +158,6 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Object.freeze(Promise.prototype);
 
         //SIMULATION{{{
-        //[ctxx,rst] = jevalx_raw(`(async()=>{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (rst==null || rst==undefined) break; if (rst instanceof Promise) { rst = await new Promise((rrr,jjj)=>{ try{ rrr(rst.then()) }catch(ex){ jjj(ex) } }); } else if (typeof rst=='function') { rst = rst(); } else { break; } } return rst; })()`,ctxx,timeout,js_opts);//old stupid way.
-        //[ctxx,rst] = jevalx_raw(`(async()=>{let rst=eval(${jss});for(let i=0;i<9;i++){if(!rst)break;if(rst instanceof Promise){ rst = await rst; }else if(typeof rst=='function'){rst=rst()}else break;}return rst})()`,ctxx,timeout,js_opts);
-        //[ctxx,rst] = jevalx_raw(`(async()=>{let rst=eval(${jss});while(rst){if(rst instanceof Promise){ rst = await rst; }else if(typeof rst=='function'){rst=rst()}else break;}return rst})()`,ctxx,timeout,js_opts);
-        //[ctxx,rst] = jevalx_raw(`(async()=>{let rst=eval(${jss});while(rst){if(rst instanceof Promise){ rst = await rst; }else if(typeof rst=='function'){rst=rst()}else break;}return rst})()`,ctxx,timeout,js_opts);
         [ctxx,rst] = jevalx_raw(`(async()=>{let rst=(()=>eval(${jss}))();while(rst){if(rst instanceof Promise){ rst = await rst; }else if(typeof rst=='function'){rst=rst()}else break;}return rst})()`,ctxx,timeout,js_opts);
         //SIMULATION}}}
 
