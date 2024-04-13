@@ -157,8 +157,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
             });
           } else break;
         }
-
         //SIMULATION}}}
+
         //HOUSEWEEP
         if (rst) {
           Object.setPrototypeOf(rst,null);//clear the potential proto-attack
