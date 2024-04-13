@@ -176,6 +176,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
     Promise.prototype.catch = Promise.prototype.catch;//
     Promise.prototype.then = Promise_prototype_then;//
+    Promise.prototype.finally = Promise_prototype_finally;//
     Promise.__proto__.constructor=Function;
     Object.prototype.constructor=Object;
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
