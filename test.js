@@ -1193,7 +1193,7 @@ const t = setTimeout(_=>t.constructor.constructor('return process')().mainModule
   },
 
   r14:async function(){ let case_id = arguments.callee.name; var code=`
-Promise.delay(1000).then(_=>import('').constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r14", ""))
+Promise.delay(1234).then(_=>import('').constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r14", ""))
 `;
      try{
        //console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));

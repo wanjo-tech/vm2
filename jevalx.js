@@ -53,6 +53,8 @@ Object.freeze(X.prototype);
 Object.setPrototypeOf(X,null);//L0
 Object.freeze(X);//L0
 
+//for dev/debug e.g. jevalx(`dump(this)`,{console:{log:console.log},props:Object.getOwnPropertyNames,dump})
+//TODO dumptree()
 function dump(obj) {
     let props = [];
     let currentObj = obj;
@@ -136,10 +138,15 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           //ctxx = vm.createContext(new function(){});//OLD BIGBANG
           ctxx = vm.createContext(new X);//BIGBANG FROM X
           [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);
+
+          let fake_delay = async function(t,r){ await delay(t); return _Promise.resolve(r) }
+          Object.setPrototypeOf(fake_delay,null);
+          Object.freeze(fake_delay);
+          _Promise.delay = fake_delay;
+
           let console_dev = Object.create(null);
           console_dev['log']=sandbox_safe_method(console.log);
           ctxx.console = console_dev;
-          //ctxx.console = {log:console.log,props:Object.getOwnPropertyNames,dump};//FOR QUICK DEV
           if (ctx) Object_assign(ctxx,ctx);//CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
         }
 
@@ -192,5 +199,5 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 }
 let jevalx = jevalx_core;
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X,dump}
 
