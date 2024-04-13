@@ -1263,6 +1263,18 @@ i.catch();
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+  r20:async function(){ let case_id = arguments.callee.name; var code=`
+const i = import('');
+i.constructor.race.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r20', ''))"]));
+i.catch();
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 LAST:(async()=>{ //normal case:

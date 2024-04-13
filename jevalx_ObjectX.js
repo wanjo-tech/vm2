@@ -56,6 +56,7 @@ Object.freeze(ObjectX);
 const S_SETUP = [
   'console','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'
 ].map(v=>'delete '+v+';').join('')
+//IMPORTANT: still need to lock the danger functions of 'this'
 +[
 //  '__defineGetter__',
 //  '__defineSetter__',
@@ -67,25 +68,27 @@ const S_SETUP = [
   'toLocaleString',
   'toString',
   'valueOf'
-].map(v=>'Object.setPrototypeOf('+v+',null);delete constructor.'+v+';').join('')
+].map(v=>'Object.setPrototypeOf('+v+',null);Object.freeze('+v+');delete constructor.'+v+';').join('')
 +`
-if (constructor.__proto__){
-if (constructor.__proto__.__proto__){
-delete constructor.__proto__.__proto__.constructor;
-delete constructor.__proto__.__proto__.__defineGetter__;
-delete constructor.__proto__.__proto__.__defineSetter__;
-}
-delete constructor.__proto__.constructor;
-}
-Object.setPrototypeOf(constructor.prototype,null);
-delete constructor.prototype;
-Object.setPrototypeOf(constructor,null);
-Object.freeze(constructor);
-
-Object.freeze(Function.__proto__);
-//Object.freeze(Function);
-
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
+//for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames','getPrototypeOf'].indexOf(k)<0){delete Object[k]}}
+
+//TOOLS
+//AsyncFunction = (async()=>{}).constuctor;
+//for debug:
+//function getAllPrototypeMethods(obj) {
+//    let props = [];
+//    let currentObj = obj;
+//    do {
+//        props = props.concat(Object.getOwnPropertyNames(currentObj));
+//    } while ((currentObj = Object.getPrototypeOf(currentObj)));
+//
+//    return props.sort().filter(function(e, i, arr) { 
+//       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
+//    });
+//}
+//console.log(getAllPrototypeMethods(constructor));
+
 Promise
 `;
 
