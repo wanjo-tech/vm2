@@ -8,7 +8,22 @@ const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
 const Object_assign = Object.assign;
 
+//Host tools
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
+//for dev/debug e.g. jevalx(`dump(this)`,{console:{log:console.log},props:Object.getOwnPropertyNames,dump})
+//TODO dumptree()
+function dump(obj) {
+    let props = [];
+    let currentObj = obj;
+    do {
+        props = props.concat(Object_getOwnPropertyNames(currentObj));
+    } while ((currentObj = Object.getPrototypeOf(currentObj)));
+
+    return props.sort().filter(function(e, i, arr) { 
+       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
+    });
+}
+
 
 // for __proto__ Pollultion:
 function findEvil(obj,maxdepth=3) {
@@ -36,7 +51,6 @@ const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_finally = Promise.prototype.finally;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
-
 const Promise_getPrototypeOf = Object.getPrototypeOf(Promise);
 Object.setPrototypeOf(Promise,null);///protect Host Promise
 
@@ -52,20 +66,6 @@ Object.freeze(X.prototype);
 //if (X.__proto__) Object.setPrototypeOf(X.__proto__,null);//L1
 Object.setPrototypeOf(X,null);//L0
 Object.freeze(X);//L0
-
-//for dev/debug e.g. jevalx(`dump(this)`,{console:{log:console.log},props:Object.getOwnPropertyNames,dump})
-//TODO dumptree()
-function dump(obj) {
-    let props = [];
-    let currentObj = obj;
-    do {
-        props = props.concat(Object_getOwnPropertyNames(currentObj));
-    } while ((currentObj = Object.getPrototypeOf(currentObj)));
-
-    return props.sort().filter(function(e, i, arr) { 
-       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
-    });
-}
 
 const S_SETUP = [
 'console',//it is not working
@@ -98,7 +98,7 @@ for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys'
 Promise
 `;
 
-//tmp for __proto__ attach, clean later..
+//tmp for __proto__ attach, clean later.. TODO...
 let sandbox_safe_method = function(m,do_return=false){
   let rt = function(...args){ let rt = m(...args); if (do_return) return rt }
   Object.setPrototypeOf(rt,null);
@@ -174,7 +174,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         //HOUSEWEEP
         rst = await rst;
         if (rst) {
-          if (findEvil(rst)) throw {message:'EvilProtoX',js};//seem sno need now.
+          if (findEvil(rst)) throw {message:'EvilProtoX',js};//seem no need now?
           delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//not sure, TODO?
         }
       }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc'};
