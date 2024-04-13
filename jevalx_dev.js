@@ -56,18 +56,19 @@ Object.freeze(ObjectX);
 const S_SETUP = [
   'console','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'
 ].map(v=>'delete '+v+';').join('')
-//+[
-////  '__defineGetter__',
-////  '__defineSetter__',
-//  '__lookupGetter__',
-//  '__lookupSetter__',
-//  'hasOwnProperty',
-//  'isPrototypeOf',
-//  'propertyIsEnumerable',
-//  'toLocaleString',
-//  'toString',
-//  'valueOf'
-//].map(v=>'Object.setPrototypeOf('+v+',null);delete constructor.'+v+';').join('')
+//IMPORTANT: still need to lock the danger functions of 'this'
++[
+//  '__defineGetter__',
+//  '__defineSetter__',
+  '__lookupGetter__',
+  '__lookupSetter__',
+  'hasOwnProperty',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'toLocaleString',
+  'toString',
+  'valueOf'
+].map(v=>'Object.setPrototypeOf('+v+',null);Object.freeze('+v+');delete constructor.'+v+';').join('')
 +`
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
 //for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames','getPrototypeOf'].indexOf(k)<0){delete Object[k]}}

@@ -158,7 +158,22 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Object.freeze(Promise.prototype);
 
         //SIMULATION{{{
-        [ctxx,rst] = jevalx_raw(`(async()=>{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (rst==null || rst==undefined) break; if (rst instanceof Promise) { rst = await new Promise((rrr,jjj)=>{ try{ rrr(rst.then()) }catch(ex){ jjj(ex) } }); } else if (typeof rst=='function') { rst = rst(); } else { break; } } return rst; })()`,ctxx,timeout,js_opts);
+        [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
+        let sandbox_level = 9;
+        for (var i=0;i<sandbox_level;i++) {
+          //console_log('debug',i,rst);
+          if (evil || !rst || err) break;
+          //if (findEvil(rst)) throw {message:'EvilProto',js};
+          if ('function'==typeof rst) {//run in the sandbox !
+            ctxx['rst']=rst;
+            [ctxx,rst] = jevalx_raw('(()=>rst())()',ctxx,timeout,js_opts);
+          }else if (rst.then){
+            rst = await new Promise(async(r,j)=>{
+              setTimeout(()=>j({message:'Timeout',js}),timeout);
+              try{ r(await rst) } catch(ex) { j(ex) };
+            });
+          } else break;
+        }
         //SIMULATION}}}
 
         //HOUSEWEEP
