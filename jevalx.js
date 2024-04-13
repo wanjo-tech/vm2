@@ -142,9 +142,9 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         if (ctx) Object_assign(ctxx,ctx);//CTX: TODO, need to protect the outer stuff for the __proto__ pollution.
 
         //PRECAUTION
-        Promise.prototype.catch = function(){
-          return new _Promise((rr,jj)=>{ Promise_prototype_catch.call(this,error=>jj(error))});
-        };
+        //Promise.prototype.catch = function(){
+        //  return new _Promise((rr,jj)=>{ Promise_prototype_catch.call(this,error=>jj(error))});
+        //};
         //TO IMPROVE LATER:
         Object.setPrototypeOf(Promise.prototype.catch,null);
         Object.freeze(Promise.prototype.catch);
@@ -158,21 +158,15 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Object.freeze(Promise.prototype);
 
         //SIMULATION{{{
-        [ctxx,rst] = jevalx_raw(`(async()=>{let rst=(()=>eval(${jss}))();while(rst){if(rst instanceof Promise){ rst = await rst; }else if(typeof rst=='function'){rst=rst()}else break;}return rst})()`,ctxx,timeout,js_opts);
+        [ctxx,rst] = jevalx_raw(`(async()=>{let rst=(()=>eval(${jss}))();while(rst){if(rst instanceof Promise){rst=await rst}else if(typeof rst=='function'){rst=rst()}else break}return ${!!json_output}?JSON.stringify(rst):rst})()`,ctxx,timeout,js_opts);
         //SIMULATION}}}
 
         //HOUSEWEEP
+        rst = await rst;
         if (rst) {
-          rst = await rst;
-          if (rst) {
-            Object.setPrototypeOf(rst,null);//clear the potential proto-attack
-            if (findEvil(rst)) throw {message:'EvilProtoX',js};
-            delete rst['toString']; delete rst['constructor'];
-            if (json_output){
-              ctxx['rst'] = rst;
-              rst = jevalx_raw('JSON.stringify(rst)',ctxx,timeout,js_opts)[1]; //do inside...
-            }
-          }
+          Object.setPrototypeOf(rst,null);//clear the potential proto-attack
+          if (findEvil(rst)) throw {message:'EvilProtoX',js};
+          delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//...maybe no need anymore? TODO
         }
       }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
         //err.message=='EvilXc' &&
