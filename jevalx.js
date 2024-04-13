@@ -37,16 +37,26 @@ const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_finally = Promise.prototype.finally;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
-const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
-//Object.setPrototypeOf(Promise,null);///tmp protect Host Promise
+
+const Promise_getPrototypeOf = Object.getPrototypeOf(Promise);
+Object.setPrototypeOf(Promise,null);///protect Host Promise
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
 //const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
+function ObjectX(){ if (this instanceof ObjectX){ }else{ return new ObjectX() } }
+ObjectX.prototype.constructor = ObjectX;
+Object.setPrototypeOf(ObjectX.prototype,null);
+Object.freeze(ObjectX.prototype);
+Object.setPrototypeOf(ObjectX.__proto__,null);
+Object.setPrototypeOf(ObjectX,null);
+Object.freeze(ObjectX);
+
 const S_SETUP = [
   'console','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'
 ].map(v=>'delete '+v+';').join('')
+//IMPORTANT: still need to lock the danger functions of 'this'
 +[
 //  '__defineGetter__',
 //  '__defineSetter__',
@@ -58,40 +68,36 @@ const S_SETUP = [
   'toLocaleString',
   'toString',
   'valueOf'
-].map(v=>'Object.setPrototypeOf('+v+',null);delete constructor.'+v+';').join('')
+].map(v=>'Object.setPrototypeOf('+v+',null);Object.freeze('+v+');delete constructor.'+v+';').join('')
 +`
-delete constructor.__proto__.__proto__.constructor;
-delete constructor.__proto__.__proto__.__defineGetter__;
-delete constructor.__proto__.__proto__.__defineSetter__;
-delete constructor.__proto__.constructor;
-Object.setPrototypeOf(constructor.prototype,null);
-delete constructor.prototype;
-Object.setPrototypeOf(constructor,null);
-Object.freeze(constructor);
-Object.freeze(Function.__proto__);
-//Object.freeze(Function);
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
+//for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames','getPrototypeOf'].indexOf(k)<0){delete Object[k]}}
+
+//TOOLS
+//AsyncFunction = (async()=>{}).constuctor;
+//for debug:
+//function getAllPrototypeMethods(obj) {
+//    let props = [];
+//    let currentObj = obj;
+//    do {
+//        props = props.concat(Object.getOwnPropertyNames(currentObj));
+//    } while ((currentObj = Object.getPrototypeOf(currentObj)));
+//
+//    return props.sort().filter(function(e, i, arr) { 
+//       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
+//    });
+//}
+//console.log(getAllPrototypeMethods(constructor));
+
 Promise
 `;
 
 //tmp for __proto__ attach, clean later..
 let sandbox_safe_method = function(m,do_return=false){
   let rt = function(...args){ let rt = m(...args); if (do_return) return rt }
-//  eval([
-//  //  '__defineGetter__',
-//  //  '__defineSetter__',
-//    '__lookupGetter__',
-//    '__lookupSetter__',
-//    'hasOwnProperty',
-//    'isPrototypeOf',
-//    'propertyIsEnumerable',
-//    'toLocaleString',
-//    'toString',
-//    'valueOf'
-//  ].map(v=>'Object.setPrototypeOf(rt.'+v+',null);delete rt.'+v+';').join(''))
-Object.setPrototypeOf(rt,null);
-Object.freeze(rt);
-//console.log('sandbox_safe_method',rt);
+  Object.setPrototypeOf(rt,null);
+  Object.freeze(rt);
+  //console.log('sandbox_safe_method',rt);
   return rt;
 };
 
@@ -126,7 +132,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
       try{
         //GENESIS
-        ctxx = vm.createContext(new function(){});//BIGBANG
+        //ctxx = vm.createContext(new function(){});//BIGBANG
+        ctxx = vm.createContext(new ObjectX);//BIGBANG
         [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//INIT
         //ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
         let console_dev = Object.create(null);
@@ -145,6 +152,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Object.freeze(Promise.prototype.finally);
         Object.setPrototypeOf(Promise.prototype.then,null);
         Object.freeze(Promise.prototype.then);
+        //Object.setPrototypeOf(Promise.prototype.constructor,null);
+        Promise.prototype.constructor=ObjectX;//...
         Object.setPrototypeOf(Promise.prototype,null);
         Object.freeze(Promise.prototype);
 
@@ -192,7 +201,10 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
     Promise.prototype.catch = Promise.prototype.catch;//
     Promise.prototype.then = Promise_prototype_then;//
     Promise.prototype.finally = Promise_prototype_finally;//
-    Promise.__proto__.constructor=Function;
+    //Promise.prototype.constructor = Promise;
+    if (Promise.__proto__){
+      Promise.__proto__.constructor=Function;
+    }
     Object.prototype.constructor=Object;
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
@@ -203,5 +215,5 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 }
 let jevalx = jevalx_core;
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,ObjectX}
 
