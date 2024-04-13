@@ -85,10 +85,15 @@ const S_SETUP = [
   'valueOf'
 ].map(v=>'Object.setPrototypeOf('+v+',null);Object.freeze('+v+');delete constructor.'+v+';').join('')
 +`
-for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
-
 //TOOLS
 //AsyncFunction = (async()=>{}).constuctor;
+class Error {
+  constructor(message,code) { this.message = message; this.name = 'Error'; if (code) this.code = code; }
+  toString() { return JSON.stringify(this) }
+}
+Object.setPrototypeOf(Error,null);
+Object.freeze(Error);
+for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 
 Promise
 `;
@@ -105,12 +110,12 @@ let sandbox_safe_method = function(m,do_return=false){
 let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
   let last_resolve,last_reject;//for quicker return.
-    let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
+    let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXa',js,code:ex?.code,tag:'Xa'};
       //err.message!='EvilXa' &&
       console.log('EvilXa=>',ex,'<=',jss)
       if (last_reject) last_reject(err);
     };
-    let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
+    let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXb',js,code:ex?.code,tag:'Xb'};
       //err.message!='EvilXb' &&
       console.log('EvilXb=>',ex,'<=',jss)
       if (last_reject) last_reject(err);
@@ -163,7 +168,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Object.freeze(Promise.prototype);//L0 for the import("").catch()
 
         //SIMULATION{{{
-        [ctxx,rst] = jevalx_raw(`(async()=>{try{let rst=(()=>eval(${jss}))();while(rst){if(rst instanceof Promise){rst=await rst}else if(typeof rst=='function'){rst=rst()}else break}return ${!!json_output}?JSON.stringify(rst):rst}catch(ex){}})()`,ctxx,timeout,js_opts);
+        [ctxx,rst] = jevalx_raw(`(async()=>{try{let rst=(()=>eval(${jss}))();while(rst){if(rst instanceof Promise){rst=await rst}else if(typeof rst=='function'){rst=rst()}else break}return ${!!json_output}?JSON.stringify(rst):rst}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
         //SIMULATION}}}
 
         //HOUSEWEEP
@@ -172,13 +177,13 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           //if (findEvil(rst)) throw {message:'EvilProtoX',js};//seem sno need now.
           delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//not sure, TODO?
         }
-      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
+      }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc'};
         //err.message=='EvilXc' &&
         console.log('EvilXc=>',ex,'<=',jss)
       }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
-  }catch(ex){ err = {message:ex?.message||'EvilXd',js};
+  }catch(ex){ if (!err) err = {message:ex?.message||'EvilXd',js,code:ex?.code,tag:'Xd'};
     //err.message=='EvilXd' &&
     console.log('EvilXd=>',ex,'<=',jss)
   }

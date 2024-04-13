@@ -315,7 +315,7 @@ Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_L', ''))")
   try{
     console.log('LLLL result=',await jevalx(code));
   }catch(ex){
-    console.log('LLLL ex=',ex.message);
+    console.log('LLLL ex=',ex);
   }
   console.log('LLLL check=',typeof(process),typeof(Promise));
 },
