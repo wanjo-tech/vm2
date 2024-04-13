@@ -69,11 +69,6 @@ delete constructor.prototype;
 Object.setPrototypeOf(constructor,null);
 Object.freeze(constructor);
 Object.freeze(Function.__proto__);
-
-Object.setPrototypeOf(Promise.prototype.finally,null);
-Object.freeze(Promise.prototype.finally);
-Object.freeze(Promise.prototype);
-
 //Object.freeze(Function);
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
 Promise
@@ -143,12 +138,15 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Promise.prototype.catch = function(){
           return new _Promise((rr,jj)=>{ Promise_prototype_catch.call(this,error=>jj(error))});
         };
+        //TO IMPROVE LATER:
         Object.setPrototypeOf(Promise.prototype.catch,null);
         Object.freeze(Promise.prototype.catch);
         Object.setPrototypeOf(Promise.prototype.finally,null);
         Object.freeze(Promise.prototype.finally);
         Object.setPrototypeOf(Promise.prototype.then,null);
         Object.freeze(Promise.prototype.then);
+        Object.setPrototypeOf(Promise.prototype,null);
+        Object.freeze(Promise.prototype);
 
         //SIMULATION{{{
         [ctxx,rst] = jevalx_raw(`(async()=>{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (rst==null || rst==undefined) break; if (rst instanceof Promise) { rst = await new Promise((rrr,jjj)=>{ try{ rrr(rst.then()) }catch(ex){ jjj(ex) } }); } else if (typeof rst=='function') { rst = rst(); } else { break; } } return rst; })()`,ctxx,timeout,js_opts);

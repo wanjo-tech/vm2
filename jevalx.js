@@ -34,6 +34,7 @@ function findEvil(obj,maxdepth=3) {
 const Promise___proto__ = Promise.__proto__;
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___then = Promise.__proto__.then;
+const Promise_prototype_finally = Promise.prototype.finally;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
 const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
@@ -137,12 +138,15 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Promise.prototype.catch = function(){
           return new _Promise((rr,jj)=>{ Promise_prototype_catch.call(this,error=>jj(error))});
         };
+        //TO IMPROVE LATER:
         Object.setPrototypeOf(Promise.prototype.catch,null);
         Object.freeze(Promise.prototype.catch);
         Object.setPrototypeOf(Promise.prototype.finally,null);
         Object.freeze(Promise.prototype.finally);
         Object.setPrototypeOf(Promise.prototype.then,null);
         Object.freeze(Promise.prototype.then);
+        Object.setPrototypeOf(Promise.prototype,null);
+        Object.freeze(Promise.prototype);
 
         //SIMULATION{{{
         [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
