@@ -127,16 +127,16 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         let console_dev = Object.create(null);
         console_dev['log']=sandbox_safe_method(console.log);
         ctxx.console = console_dev;
+        if (ctx) Object_assign(ctxx,ctx);//CTX: TODO, need to protect the outer stuff for the __proto__ pollution.
 
-        if (ctx) Object_assign(ctxx,ctx);//CTX
-        //OVERRIDE (return the sandbox Promise for the import().catch()
+        //PRECAUTION
         Promise.prototype.catch = function(){
           return new _Promise((r,j)=>{ Promise_prototype_catch.call(this,error=>j(error))});
         };
-//r16
-Object.setPrototypeOf(Promise.prototype.catch,null);
-Object.freeze(Promise.prototype.catch);
-        //WORLD
+        Object.setPrototypeOf(Promise.prototype.catch,null);
+        Object.freeze(Promise.prototype.catch);
+
+        //SIMULATION
         [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);
         let sandbox_level = 9;
         for (var i=0;i<sandbox_level;i++) {
@@ -153,6 +153,8 @@ Object.freeze(Promise.prototype.catch);
             });
           } else break;
         }
+
+        //HOUSEWEEP
         if (rst) {
           if (json_output){
             ctxx['rst'] = rst;
@@ -175,8 +177,8 @@ Object.freeze(Promise.prototype.catch);
   }
   finally{
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
-    //Promise.prototype.catch = Promise_prototype_catch;
-    //Promise.prototype.then = Promise_prototype_then;
+    Promise.prototype.catch = Promise.prototype.catch;//
+    Promise.prototype.then = Promise_prototype_then;//
     Promise.__proto__.constructor=Function;
     Object.prototype.constructor=Object;
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
