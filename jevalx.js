@@ -143,8 +143,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           //ctxx = vm.createContext(new function(){});//OLD BIGBANG
           ctxx = vm.createContext(new X);//BIGBANG FROM X
           [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);
-
-          let fake_delay = async function(t,r){ await delay(t); return _Promise.resolve(r) }
+          let _Promise_resolve = _Promise.resolve;//@r21.
+          let fake_delay = async function(t,r){ await delay(t); return _Promise_resolve(r) }
           Object.setPrototypeOf(fake_delay,null);
           Object.freeze(fake_delay);
           _Promise.delay = fake_delay;
