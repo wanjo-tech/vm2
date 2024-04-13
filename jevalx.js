@@ -139,6 +139,10 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         };
         Object.setPrototypeOf(Promise.prototype.catch,null);
         Object.freeze(Promise.prototype.catch);
+        Object.setPrototypeOf(Promise.prototype.finally,null);
+        Object.freeze(Promise.prototype.finally);
+        Object.setPrototypeOf(Promise.prototype.then,null);
+        Object.freeze(Promise.prototype.then);
 
         //SIMULATION{{{
         [ctxx,rst] = jevalx_raw(js,ctxx,timeout,js_opts);

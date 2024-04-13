@@ -34,6 +34,7 @@ function findEvil(obj,maxdepth=3) {
 const Promise___proto__ = Promise.__proto__;
 const Promise___proto___apply = Promise.__proto__.apply;
 const Promise___proto___then = Promise.__proto__.then;
+const Promise_prototype_finally = Promise.prototype.finally;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
 const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
@@ -68,6 +69,11 @@ delete constructor.prototype;
 Object.setPrototypeOf(constructor,null);
 Object.freeze(constructor);
 Object.freeze(Function.__proto__);
+
+Object.setPrototypeOf(Promise.prototype.finally,null);
+Object.freeze(Promise.prototype.finally);
+Object.freeze(Promise.prototype);
+
 //Object.freeze(Function);
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
 Promise
@@ -139,6 +145,10 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         };
         Object.setPrototypeOf(Promise.prototype.catch,null);
         Object.freeze(Promise.prototype.catch);
+        Object.setPrototypeOf(Promise.prototype.finally,null);
+        Object.freeze(Promise.prototype.finally);
+        Object.setPrototypeOf(Promise.prototype.then,null);
+        Object.freeze(Promise.prototype.then);
 
         //SIMULATION{{{
         [ctxx,rst] = jevalx_raw(`(async()=>{ var rst = eval(${jss}); for (let i=0;i<9;i++){ if (rst==null || rst==undefined) break; if (rst instanceof Promise) { rst = await new Promise((rrr,jjj)=>{ try{ rrr(rst.then()) }catch(ex){ jjj(ex) } }); } else if (typeof rst=='function') { rst = rst(); } else { break; } } return rst; })()`,ctxx,timeout,js_opts);
