@@ -11,23 +11,23 @@ const Object_assign = Object.assign;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 
 // for __proto__ Pollultion:
-//function findEvil(obj,maxdepth=3) {
-//  let currentObj = obj;
-//  let depth = 0;
-//  while (currentObj !== null && currentObj!==undefined && depth < maxdepth) {
-//    //'constructor','toString','__proto__',
-//    const properties = ['constructor','then'];//Object_getOwnPropertyNames(currentObj);
-//    for (let i = 0; i < properties.length; i++) {
-//      const descriptor = Object_getOwnPropertyDescriptor(currentObj, properties[i]);
-//      if (descriptor && (typeof descriptor.get === 'function' || typeof descriptor.set == 'function')) {
-//        return true;
-//      }
-//    }
-//    currentObj = Object_getPrototypeOf(currentObj);
-//    depth++;
-//  }
-//  return false;
-//}
+function findEvil(obj,maxdepth=3) {
+  let currentObj = obj;
+  let depth = 0;
+  while (currentObj !== null && currentObj!==undefined && depth < maxdepth) {
+    //'constructor','toString','__proto__',
+    const properties = ['message','code','constructor','then'];//Object_getOwnPropertyNames(currentObj);
+    for (let i = 0; i < properties.length; i++) {
+      const descriptor = Object_getOwnPropertyDescriptor(currentObj, properties[i]);
+      if (descriptor && (typeof descriptor.get === 'function' || typeof descriptor.set == 'function')) {
+        return true;
+      }
+    }
+    currentObj = Object_getPrototypeOf(currentObj);
+    depth++;
+  }
+  return false;
+}
 
 // for Promise Pollultion:
 const Promise___proto__ = Promise.__proto__;
@@ -174,7 +174,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         //HOUSEWEEP
         rst = await rst;
         if (rst) {
-          //if (findEvil(rst)) throw {message:'EvilProtoX',js};//seem sno need now.
+          if (findEvil(rst)) throw {message:'EvilProtoX',js};//seem sno need now.
           delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//not sure, TODO?
         }
       }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc'};
@@ -197,6 +197,12 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
     //Object.prototype.constructor=Object;//no need any more now?
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
+  }
+  if (err) {
+    if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') err.message = 'EvilImportX';
+    if (err?.code=='ERR_SCRIPT_EXECUTION_TIMEOUT') err.message = 'Timeout'+timeout;
+    if (!err?.time) err.time = new Date().getTime();//for app
+    if (!err?.id) err.id = err.time;//for app
   }
   if (evil || err) throw err;
   if (return_ctx) return [ctxx,rst];
