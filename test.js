@@ -1289,6 +1289,16 @@ Promise.delay(1);
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+  r22:async function(){ let case_id = arguments.callee.name; var code=`
+console.log.prototype.__proto__.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r22", "")
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
   x1:async function(){ let case_id = arguments.callee.name; var code=`

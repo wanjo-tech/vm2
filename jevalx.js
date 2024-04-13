@@ -101,6 +101,8 @@ Promise
 //tmp for __proto__ attach, clean later.. TODO...
 let sandbox_safe_method = function(m,do_return=false){
   let rt = function(...args){ let rt = m(...args); if (do_return) return rt }
+  Object.setPrototypeOf(rt.prototype,null);
+  Object.freeze(rt.prototype);
   Object.setPrototypeOf(rt,null);
   Object.freeze(rt);
   //console.log('sandbox_safe_method',rt);
@@ -137,10 +139,9 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
       last_resolve = r, last_reject = j;
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
       try{
-        //GENESIS
-        if (ctx && vm.isContext(ctx)) { ctxx = ctx } //enable session...
+        if (ctx && vm.isContext(ctx)) { ctxx = ctx } //SESSION
         else {
-          //ctxx = vm.createContext(new function(){});//OLD BIGBANG
+          //GENESIS
           ctxx = vm.createContext(new X);//BIGBANG FROM X
           [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);
           let _Promise_resolve = _Promise.resolve;//@r21.
@@ -150,11 +151,11 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           _Promise.delay = fake_delay;
 
           let console_dev = Object.create(null);
-          console_dev['log']=sandbox_safe_method(console.log);
+          let fake_console_log = sandbox_safe_method(console.log);
+          console_dev['log']=fake_console_log;
           ctxx.console = console_dev;
           if (ctx) Object_assign(ctxx,ctx);//CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
         }
-
         //PRECAUTION
         ////Host Promise
         Object.setPrototypeOf(Promise.prototype.catch,null);
