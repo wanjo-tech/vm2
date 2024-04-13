@@ -1306,4 +1306,17 @@ When you use `__proto__`, you're looking up properties and methods on an object'
 
 __proto__ almost is getPrototypeOf() but sometime not exactly...same... most pollution came from there.
 
+NOTES: list hidden method of ...
+function getAllPrototypeMethods(obj) {
+    let props = [];
+    let currentObj = obj;
+    do {
+        props = props.concat(Object.getOwnPropertyNames(currentObj));
+    } while ((currentObj = Object.getPrototypeOf(currentObj)));
+
+    return props.sort().filter(function(e, i, arr) { 
+       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
+    });
+}
+console.log(getAllPrototypeMethods(constructor));
 */

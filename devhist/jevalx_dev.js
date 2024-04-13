@@ -1,12 +1,15 @@
 const vm = require('node:vm');
 const processWtf = require('process');
 
-//for dev/performance boost:
+//boost:
 const console_log = console.log;
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
+const getOwnPropertyNames = Object_getOwnPropertyNames;
 const Object_assign = Object.assign;
+
+const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 
 // for __proto__ Pollultion:
 function findEvil(obj,maxdepth=3) {
@@ -14,11 +17,10 @@ function findEvil(obj,maxdepth=3) {
   let depth = 0;
   while (currentObj !== null && currentObj!==undefined && depth < maxdepth) {
     //'constructor','toString','__proto__',
-    const properties = ['then'];//Object_getOwnPropertyNames(currentObj);
+    const properties = ['constructor','then'];//Object_getOwnPropertyNames(currentObj);
     for (let i = 0; i < properties.length; i++) {
       const descriptor = Object_getOwnPropertyDescriptor(currentObj, properties[i]);
-      if (descriptor && (typeof descriptor.get === 'function'/* || typeof descriptor.set == 'function'*/)) {
-//console.log('findEvil', properties[i]);
+      if (descriptor && (typeof descriptor.get === 'function' || typeof descriptor.set == 'function')) {
         return true;
       }
     }
@@ -29,193 +31,184 @@ function findEvil(obj,maxdepth=3) {
 }
 
 // for Promise Pollultion:
-const Promise_prototype = Promise.prototype;
-const Promise_prototype_getPrototypeOf = Object_getPrototypeOf(Promise.prototype);
-const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
-const Promise_constructor = Promise.constructor;
-
+const Promise___proto__ = Promise.__proto__;
 const Promise___proto___apply = Promise.__proto__.apply;
+const Promise___proto___then = Promise.__proto__.then;
 const Promise_prototype_catch = Promise.prototype.catch;
 const Promise_prototype_then = Promise.prototype.then;
-const Promise_prototype_apply = Promise.prototype.apply;
-
-function resetPromise(seq=0){
-  console.log('resetPromise()',seq);
-
-Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
-Object.setPrototypeOf(Promise.prototype,Promise_prototype_getPrototypeOf);
-
-//if (Function.prototype != Object.getPrototypeOf(Promise.prototype.constructor)) {
-//  Object.setPrototypeOf(Promise.prototype.constructor,Function.prototype);
-//  console.log('resetPromise=>', Function.prototype == Object.getPrototypeOf(Promise.prototype.constructor))
-//}
-
-  Promise.__proto__.apply = Promise___proto___apply;
-  Promise.prototype.catch = Promise_prototype_catch;
-  Promise.prototype.apply= Promise_prototype_apply;
-  Promise.prototype.then= Promise_prototype_then;
-  Promise.prototype.constructor=Function;
-  Promise.__proto__.constructor=Function;//last piece ;)
-//console_log('step 7',Promise,''+Promise.constructor,''+Promise.prototype.constructor);
-}
+const Promise_getPrototypeOf = Object_getPrototypeOf(Promise);
+//Object.setPrototypeOf(Promise,null);///tmp protect Host Promise
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
-function Global(){if (this instanceof Global){}else{return new Global()}};
+//const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
-//important to replace the inner Function which is danger!
-const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
-
-//quick test
-//O=constructor.__proto__.__proto__;getOwnPropertyNames(O)
-//O=[].__proto__.constructor;getOwnPropertyNames(O)
-//O=[].__proto__.__proto__.constructor;getOwnPropertyNames(O)
-//O=getOwnPropertyNames.__proto__.constructor;getOwnPropertyNames(O)
-const S_SETUP = `delete Object.prototype.constructor;//important: hide 'Object' itself in sandbox.
-//protect constructor.__proto__:
+const S_SETUP = [
+  'console','Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'
+].map(v=>'delete '+v+';').join('')
++[
+//  '__defineGetter__',
+//  '__defineSetter__',
+  '__lookupGetter__',
+  '__lookupSetter__',
+  'hasOwnProperty',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'toLocaleString',
+  'toString',
+  'valueOf'
+].map(v=>'Object.setPrototypeOf('+v+',null);delete constructor.'+v+';').join('')
++`
 delete constructor.__proto__.__proto__.constructor;
 delete constructor.__proto__.__proto__.__defineGetter__;
 delete constructor.__proto__.__proto__.__defineSetter__;
-`+[
-//'eval',//RC2 set it free for testing.
-'console',//no use at all, user can attach console from host.
-'Function',//very important to replace it with our.
-'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join('') 
-+`
-Object.__proto__.constructor=Function=${S_FUNCTION};
-for(let k of Object.getOwnPropertyNames(Object)){if(['fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0)delete Object[k]}
-constructor.__proto__.constructor=Function;//very important
-AsyncFunction=(async()=>0).constructor;
+delete constructor.__proto__.constructor;
+Object.setPrototypeOf(constructor.prototype,null);
+delete constructor.prototype;
+Object.setPrototypeOf(constructor,null);
+Object.freeze(constructor);
+Object.freeze(Function.__proto__);
+//Object.freeze(Function);
+for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
+Promise
 `;
 
-const jevalx_ext = (js,ctx,timeout=666,js_opts)=>{
-  let rst,ctxx;
-  fwd_eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];
-  if (!ctx || !vm.isContext(ctx)){
-    //ctxx = vm.createContext(new Global);
-    ctxx = vm.createContext(new function(){});
-    [ctxx,rst] = jevalx_raw(S_SETUP,ctxx);
-    //ctxx.console_log = console_log;
-    //ctxx.console = console; //RC2 testing
-    //ctxx.setTimeout= setTimeout;//for dev test only
-    //ctxx.getOwnPropertyNames = Object.getOwnPropertyNames;
-    //ctxx.eval=(js)=>jevalx_raw(js,ctxx,timeout,js_opts)[1];//essential. but tried to apply the eval inside the sandbox (RC2)
-    if (ctx) Object_assign(ctxx,ctx);
-  }else{ ctxx = ctx; }
-  return jevalx_raw(js,ctxx,timeout,js_opts)
-}
-
-let jevalx_core = async(js,ctx,timeout=666,user_import_handler=undefined)=>{
-  let ctxx,rst,err,evil=0;
-  let tmpHandler = (reason, promise)=>{ if (!err) err={message:'EvilX',js,uncaughtException:!!promise};
-//console.log(999,reason);
+//tmp for __proto__ attach, clean later..
+let sandbox_safe_method = function(m,do_return=false){
+  let rt = function(...args){ let rt = m(...args); if (do_return) return rt }
+//  eval([
+//  //  '__defineGetter__',
+//  //  '__defineSetter__',
+//    '__lookupGetter__',
+//    '__lookupSetter__',
+//    'hasOwnProperty',
+//    'isPrototypeOf',
+//    'propertyIsEnumerable',
+//    'toLocaleString',
+//    'toString',
+//    'valueOf'
+//  ].map(v=>'Object.setPrototypeOf(rt.'+v+',null);delete rt.'+v+';').join(''))
+Object.setPrototypeOf(rt,null);
+Object.freeze(rt);
+//console.log('sandbox_safe_method',rt);
+  return rt;
 };
+
+let jevalx_core = async(js,ctx,timeout=666,json_output=true,return_ctx=false,user_import_handler=undefined)=>{
+  let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
+  let last_resolve,last_reject;//for quicker return.
+    let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:'EvilXb',js};
+      //err.message!='EvilXb' &&
+      console.log('EvilXb=>',ex,'<=',jss)
+      if (last_reject) last_reject(err);
+    };
+    let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:'EvilXa',js};
+      //err.message!='EvilXa' &&
+      console.log('EvilXa=>',ex,'<=',jss)
+      if (last_reject) last_reject(err);
+    };
   try{
-    processWtf.addListener('unhandledRejection',tmpHandler);
-    processWtf.addListener('uncaughtException',tmpHandler)
-
-    /* TODO later
-    Promise.prototype.then = function() {
-      if (evil || err) {
-        console.log('777_then',evil,err)
-        resetPromise(1);
-        throw err;
-      }
-      return Promise_prototype_then.apply(this, arguments);
-    };
-    Promise.prototype.apply = function() {
-      if (evil || err) {
-        console.log('777 apply',evil,err);
-        resetPromise(2);
-        throw err;
-      }
-      return Promise_prototype_apply.apply(this, arguments);
-    };
-    Promise.prototype.catch = function() {
-      if (evil || err) {
-        console.log('777 catch',evil,err);
-        resetPromise(3);
-        throw err;// in v20 notworking...
-        //return Promise_prototype_catch.apply(this, arguments);
-      }
-      return Promise_prototype_catch.apply(this, arguments);
-    };*/
-
-Object.setPrototypeOf(Promise.prototype,null);
-Object.setPrototypeOf(Promise,null);
-//Promise.constructor=Global;
-//Promise.constructor.constructor=Global;
-//delete Promise.prototype.constructor;
-//delete Promise.constructor;
-
+        processWtf.addListener('unhandledRejection',tmpHandlerReject);
+        processWtf.addListener('uncaughtException',tmpHandlerException)
     let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
       if (!evil && !err){
         if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
         if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
       }
       evil++; err = {message:'EvilImport',js};
-      Promise.prototype.then = function() {
-        if (evil || err) {
-          //console.log('778_then',evil,err);
-          //resetPromise(3);
-          throw err;//
-        }
-        return Promise_prototype_then.apply(this, arguments);
-      };
-      Promise.prototype.apply = function() {
-        if (evil || err) { resetPromise(4); throw err; }
-        return Promise_prototype_apply.apply(this, arguments);
-      };
-      Promise.prototype.catch = function() {
-        if (evil || err) { resetPromise(5); throw err; }
-        return Promise_prototype_catch.apply(this, arguments);
-      };
       throw('EvilImport');
     }});
     await new Promise(async(r,j)=>{
+      last_resolve = r, last_reject = j;
+      //support the user_import_handler()
       setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
       try{
-        [ctxx,rst] = jevalx_ext(js,ctx,timeout,js_opts);
-        let sandbox_level = 9;
-        for (var i=0;i<sandbox_level;i++) {
-          //console_log('debug',i,rst);
-          if (evil || !rst || err) break;
-          if (findEvil(rst)) throw {message:'EvilProto',js};
-          if ('function'==typeof rst) {//run in the sandbox !
-            ctxx['rst_tmp']=rst;
-            [ctxx,rst] = jevalx_ext('(()=>rst_tmp())()',ctxx,timeout,js_opts);
-          }else if (rst.then){
-            rst = await new Promise(async(r,j)=>{
-              setTimeout(()=>j({message:'Timeout',js}),timeout);
-              try{ r(await rst) } catch(ex) { j(ex) };
-            });
-          } else break;
-        }
+        let _Promise;
+        //GENESIS
+        ctxx = vm.createContext(new function(){});//BIGBANG
+        [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);//INIT
+        //ctxx.console = {log:console.log,props:getOwnPropertyNames};//DEV
+        let console_dev = Object.create(null);
+        console_dev['log']=sandbox_safe_method(console.log);
+        ctxx.console = console_dev;
+        if (ctx) Object_assign(ctxx,ctx);//CTX: TODO, need to protect the outer stuff for the __proto__ pollution.
 
-////TMP SOLUTION for r5
-//if (Function.prototype != Object.getPrototypeOf(Promise.prototype.constructor)) {
-//  console.log('Promise compromised...');
-//  Object.setPrototypeOf(Promise.prototype.constructor,Function.prototype);
-//  console.log('after_9999_reset', Function.prototype == Object.getPrototypeOf(Promise.prototype.constructor))
-//}
-        if (findEvil(rst)) throw {message:'EvilProtoX',js};
-        if (rst) delete rst['toString'];
-      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilUnknown'),js}; }
+        //PRECAUTION
+        Promise.prototype.catch = function(){
+          return new _Promise((rr,jj)=>{ Promise_prototype_catch.call(this,error=>jj(error))});
+        };
+        Object.setPrototypeOf(Promise.prototype.catch,null);
+        Object.freeze(Promise.prototype.catch);
+
+        //SIMULATION{{{
+//console.log('--------- 666 -------',new Date());
+        [ctxx,rst] = await jevalx_raw(`new Promise(async(resolve,reject)=>{
+    var rst = eval(${jss});
+    for (let i=0;i<9;i++){
+      if (rst==null || rst==undefined) break;
+      if (rst instanceof Promise) {
+        //rst = await rst;//hanged for Q7x
+      rst = await new Promise((rrr,jjj)=>{
+          try{ rrr(rst.then()) }catch(ex){ jjj(ex) }
+      });
+      } else if (typeof rst=='function') {
+        rst = rst();
+      }
+      else { break; }
+    }
+//if (rst instanceof Promise) //sandbox Promise...
+//rst = await rst;
+    //resolve(rst)
+    //if (rst instanceof Promise || typeof rst=='function') { return reject('EvilCall'); }
+    //return( ${json_output}?JSON.stringify(rst):rst );
+    resolve( ${json_output}?JSON.stringify(rst):rst );
+  })`,ctxx,timeout,js_opts);
+        //SIMULATION}}}
+        //HOUSEWEEP
+if (rst instanceof _Promise) //sandbox Promise...
+rst = await rst;
+if (typeof rst=='function') { err = {message:'EvilCall'}; }
+//console.log('--------- 667 -------',rst,new Date());
+      }catch(ex){ err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js};
+        //err.message=='EvilXc' &&
+        console.log('EvilXc=>',ex,'<=',jss)
+      }
+console.log('--------- 668 -------',rst,err,new Date());
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
-  }catch(ex){ err = {message:ex?.message||'EvilXX',js};
-///console.log(888,ex)
- }
-  finally{
-  processWtf.removeListener('unhandledRejection',tmpHandler);
-  processWtf.removeListener('uncaughtException',tmpHandler)
+  }catch(ex){ err = {message:ex?.message||'EvilXd',js};
+    //err.message=='EvilXd' &&
+    console.log('EvilXd=>',ex,'<=',jss)
   }
-  resetPromise(9);
-///console.log('here return',evil,err,rst);
+  finally{
+    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
+    Promise.prototype.catch = Promise.prototype.catch;//
+    Promise.prototype.then = Promise_prototype_then;//
+    Promise.__proto__.constructor=Function;
+    Object.prototype.constructor=Object;
+    processWtf.removeListener('unhandledRejection',tmpHandlerReject);
+    processWtf.removeListener('uncaughtException',tmpHandlerException)
+  }
   if (evil || err) throw err;
+  if (return_ctx) return [ctxx,rst];
   return rst;
 }
-var jevalx = jevalx_core;
+let jevalx = jevalx_core;
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,jevalx_ext,S_SETUP}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay}
 
+/**
+NOTES: list hidden method of ...
+function getAllPrototypeMethods(obj) {
+    let props = [];
+    let currentObj = obj;
+    do {
+        props = props.concat(Object.getOwnPropertyNames(currentObj));
+    } while ((currentObj = Object.getPrototypeOf(currentObj)));
+
+    return props.sort().filter(function(e, i, arr) { 
+       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
+    });
+}
+console.log(getAllPrototypeMethods(constructor));
+*/
