@@ -6,18 +6,25 @@ const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
 const Object_assign = Object.assign;
+const Object_setPrototypeOf = Object.setPrototypeOf;
+const Object_freeze = Object.freeze;
+const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
+//with_prototype for class/not-async-function
+function XX(obj,with_prototype=false,do_free=true) {
+  if (with_prototype){
+    Object_setPrototypeOf(obj.prototype,null);
+    Object_freeze(obj.prototype);
+  }
+  //if (obj.__proto__) Object_setPrototypeOf(obj.__proto__,null);//TODO
+  Object_setPrototypeOf(obj, null);
+  if (do_free) Object_freeze(obj);
+  return obj
+}
 
 // X LIKE VOID
 function X(){ if (this instanceof X){ }else{ return new X() } }
-X.prototype.constructor = X;
-Object.setPrototypeOf(X.prototype,null);
-Object.freeze(X.prototype);
-//if (X.__proto__) Object.setPrototypeOf(X.__proto__,null);//L1
-Object.setPrototypeOf(X,null);//L0
-Object.freeze(X);//L0
-
-//Host tools
-const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
+//X.prototype.constructor = X;//to-delete
+XX(X,true);//L0!
 
 // for __proto__ Pollultion:
 function findEvil(obj,maxdepth=3) {
@@ -39,31 +46,17 @@ function findEvil(obj,maxdepth=3) {
 }
 
 // for Promise Pollultion:
-////Promise.prototype
-const Promise_prototype = Promise.prototype;
-//const Promise_prototype_finally = Promise.prototype.finally;
-//const Promise_prototype_catch = Promise.prototype.catch;
-//const Promise_prototype_then = Promise.prototype.then;
-Object.setPrototypeOf(Promise.prototype.catch,null);
-Object.freeze(Promise.prototype.catch);
-Object.setPrototypeOf(Promise.prototype.finally,null);
-Object.freeze(Promise.prototype.finally);
-Object.setPrototypeOf(Promise.prototype.then,null);
-Object.freeze(Promise.prototype.then);
-//Promise.prototype.constructor=X;//@r5
-//Object.setPrototypeOf(Promise.prototype,null);//
-//Object.freeze(Promise.prototype);//L0 for the import("").catch()//@r5
-////Promise
-const Promise___proto__ = Promise.__proto__;
-const Promise___proto___apply = Promise.__proto__.apply;
-const Promise___proto___then = Promise.__proto__.then;
+//L0 @q9
+XX(Promise.prototype.catch);
+XX(Promise.prototype.finally);
+XX(Promise.prototype.then);
 const Promise_getPrototypeOf = Object.getPrototypeOf(Promise);
 Object.setPrototypeOf(Promise,null);
 
-//@r23 for Host RangeError throws when error-stack-overflow (Bug of node:vm):
+//@r23 Host RangeError throws when error-stack-overflow (Bug of node:vm):
 RangeError.prototype.constructor=undefined;
-Object.setPrototypeOf(RangeError.prototype,null);
-Object.freeze(RangeError.prototype);
+
+XX(RangeError.prototype);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
@@ -76,8 +69,6 @@ const S_SETUP = [
 ].map(v=>'delete '+v+';').join('')
 //IMPORTANT: need to lock the danger functions of 'this'
 +[
-//  '__defineGetter__',
-//  '__defineSetter__',
   '__lookupGetter__',
   '__lookupSetter__',
   'hasOwnProperty',
@@ -96,8 +87,8 @@ class Error {
   constructor(message,code) { this.message = message; this.name = 'Error'; if (code) this.code = code; }
   toString() { return JSON.stringify(this) }
 }
-Object.setPrototypeOf(Error,null);
-Object.freeze(Error);
+////Object.setPrototypeOf(Error,null);
+////Object.freeze(Error);
 
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 
@@ -107,11 +98,7 @@ Promise
 //tmp for __proto__ attach, clean later.. TODO...
 let sandbox_safe_method = function(m,do_return=false){
   let rt = function(...args){ let rt = m(...args); if (do_return) return rt }
-  Object.setPrototypeOf(rt.prototype,null);
-  Object.freeze(rt.prototype);
-  Object.setPrototypeOf(rt,null);
-  Object.freeze(rt);
-  //console.log('sandbox_safe_method',rt);
+  XX(rt,true)
   return rt;
 };
 
@@ -152,15 +139,15 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);
           let _Promise_resolve = _Promise.resolve;//@r21.
           let fake_delay = async function(t,r){ await delay(t); return _Promise_resolve(r) }
-          Object.setPrototypeOf(fake_delay,null);
-          Object.freeze(fake_delay);
-          _Promise.delay = fake_delay;
+          _Promise.delay = XX(fake_delay)
 
           let console_dev = Object.create(null);
           let fake_console_log = sandbox_safe_method(console.log);
           console_dev['log']=fake_console_log;
           ctxx.console = console_dev;
-          if (ctx) Object_assign(ctxx,ctx);//CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
+
+          //CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
+          if (ctx) Object_assign(ctxx,ctx);
         }
         //PRECAUTION
         Promise.prototype.constructor=X;//@r5
@@ -168,7 +155,6 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 
         //SIMULATION
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
-        //SIMULATION}}}
 
         //HOUSEWEEP
         rst = await rst;
@@ -177,8 +163,6 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 
           //TODO upgrade the findEvil to check evil Function?
           delete rst['hasOwnProperty'];delete rst['then'];delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//not sure, TODO?
-
-          //if (rst.hasOwnProperty || rst.toString || rst.constructor || rst.toJSON) console.log('--------- 9999 -----------',rst);
         }
       }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc'};
         //err.message=='EvilXc' &&
@@ -191,7 +175,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
     console.log('EvilXd=>',ex,'<=',jss)
   }
   finally{
-    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L1 for console
+    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L1 for console display
     Promise.prototype = Promise.prototype;
     Promise.prototype.constructor = Promise;//no use if locked Promise.prototype...
     //if (Promise.__proto__){ Promise.__proto__.constructor=Function; }//locked, no need anymore.
