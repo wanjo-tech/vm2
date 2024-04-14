@@ -1,6 +1,15 @@
 const vm = require('node:vm');
 const processWtf = require('process');
 
+// X LIKE VOID
+function X(){ if (this instanceof X){ }else{ return new X() } }
+X.prototype.constructor = X;
+Object.setPrototypeOf(X.prototype,null);
+Object.freeze(X.prototype);
+//if (X.__proto__) Object.setPrototypeOf(X.__proto__,null);//L1
+Object.setPrototypeOf(X,null);//L0
+Object.freeze(X);//L0
+
 //boost:
 const console_log = console.log;
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -54,18 +63,15 @@ const Promise_prototype_then = Promise.prototype.then;
 const Promise_getPrototypeOf = Object.getPrototypeOf(Promise);
 Object.setPrototypeOf(Promise,null);///protect Host Promise
 
+//@r23 for Host RangeError throws when error-stack-overflow (Bug of node:vm):
+RangeError.prototype.constructor=undefined;
+Object.setPrototypeOf(RangeError.prototype,null);
+delete RangeError.prototype;
+Object.freeze(RangeError.prototype);
+
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
 //const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
-
-// X LIKE VOID
-function X(){ if (this instanceof X){ }else{ return new X() } }
-X.prototype.constructor = X;
-Object.setPrototypeOf(X.prototype,null);
-Object.freeze(X.prototype);
-//if (X.__proto__) Object.setPrototypeOf(X.__proto__,null);//L1
-Object.setPrototypeOf(X,null);//L0
-Object.freeze(X);//L0
 
 const S_SETUP = [
 'console',//it is not working
@@ -86,13 +92,8 @@ const S_SETUP = [
 ].map(v=>'Object.setPrototypeOf('+v+',null);Object.freeze('+v+');delete constructor.'+v+';').join('')
 +`
 //TOOLS
-//AsyncFunction = (async()=>{}).constuctor;
-class Error {
-  constructor(message,code) { this.message = message; this.name = 'Error'; if (code) this.code = code; }
-  toString() { return JSON.stringify(this) }
-}
-Object.setPrototypeOf(Error,null);
-Object.freeze(Error);
+AsyncFunction = (async()=>{}).constructor;
+
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 
 Promise
@@ -157,7 +158,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           if (ctx) Object_assign(ctxx,ctx);//CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
         }
         //PRECAUTION
-        ////Host Promise
+        ////Host Promise (TODO moved higer level later>)
         Object.setPrototypeOf(Promise.prototype.catch,null);
         Object.freeze(Promise.prototype.catch);
         Object.setPrototypeOf(Promise.prototype.finally,null);
@@ -168,8 +169,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         Object.setPrototypeOf(Promise.prototype,null);//L0 for cleariing the __proto__
         Object.freeze(Promise.prototype);//L0 for the import("").catch()
 
-        //SIMULATION{{{
-        [ctxx,rst] = jevalx_raw(`(async()=>{try{let rst=(()=>eval(${jss}))();while(rst){if(rst instanceof Promise){rst=await rst}else if(typeof rst=='function'){rst=rst()}else break}return ${!!json_output}?JSON.stringify(rst):rst}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
+        //SIMULATION
+        [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
         //SIMULATION}}}
 
         //HOUSEWEEP

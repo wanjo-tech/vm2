@@ -1019,7 +1019,7 @@ false
 R1:(async()=>{
 //https://gist.github.com/leesh3288/f693061e6523c97274ad5298eb2c74e9
 var code=`
-//Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
+Symbol= Object.getOwnPropertySymbols(Array)[0].constructor;
 async function fn() {
     (function stack() {
         new Error().stack;
@@ -1316,6 +1316,24 @@ e.constructor.constructor('return process')().mainModule.require("fs").writeFile
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+  r23:async function(){ let case_id = arguments.callee.name; var code=`
+try {
+    (function stack() {
+        s = new EvalError().stack;
+        stack();
+    })();
+} catch (e) {
+console.log('e',e);
+console.log('e.constructor'+e.constructor);
+e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r23", ""); }
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
   x1:async function(){ let case_id = arguments.callee.name; var code=`
 const i = import('');
@@ -1347,7 +1365,7 @@ LAST:(async()=>{ //normal case:
   //assertWtf.equal( 81 , await jevalx('x**y',{x:3,y:4}) );
   console.log('ASSERT 8, ()=>x**y',await jevalx('()=>x**y',{x:2,y:3}));
 
-  console.log('ASSERT 27 == new Promise(r=>r(x**y))',await jevalx('new Promise(r=>r(x**y))',{x:3,y:3}));
+  console.log('ASSERT 27 == new Promise(r=>r(x**y**2))',await jevalx('new Promise(r=>r(x**y))',{x:3,y:3,z:2}));
 
   console.log(`TEST json output`,await jevalx('({t:new Date()})',{},timeout=666,json_output=true));
 
