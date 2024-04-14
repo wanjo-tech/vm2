@@ -42,6 +42,7 @@ function findEvil(obj,maxdepth=3) {
 
 // for Promise Pollultion:
 ////Promise.prototype
+const Promise_prototype = Promise.prototype;
 //const Promise_prototype_finally = Promise.prototype.finally;
 //const Promise_prototype_catch = Promise.prototype.catch;
 //const Promise_prototype_then = Promise.prototype.then;
@@ -51,9 +52,9 @@ Object.setPrototypeOf(Promise.prototype.finally,null);
 Object.freeze(Promise.prototype.finally);
 Object.setPrototypeOf(Promise.prototype.then,null);
 Object.freeze(Promise.prototype.then);
-Promise.prototype.constructor=X;//@r5
+//Promise.prototype.constructor=X;//@r5
 //Object.setPrototypeOf(Promise.prototype,null);//
-Object.freeze(Promise.prototype);//L0 for the import("").catch()//@r5
+//Object.freeze(Promise.prototype);//L0 for the import("").catch()//@r5
 ////Promise
 const Promise___proto__ = Promise.__proto__;
 const Promise___proto___apply = Promise.__proto__.apply;
@@ -154,16 +155,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           if (ctx) Object_assign(ctxx,ctx);//CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
         }
         //PRECAUTION
-        ////Host Promise (TODO moved higer level later>)
-        //Object.setPrototypeOf(Promise.prototype.catch,null);
-        //Object.freeze(Promise.prototype.catch);
-        //Object.setPrototypeOf(Promise.prototype.finally,null);
-        //Object.freeze(Promise.prototype.finally);
-        //Object.setPrototypeOf(Promise.prototype.then,null);
-        //Object.freeze(Promise.prototype.then);
-        //Promise.prototype.constructor=X;//L0
-        //Object.setPrototypeOf(Promise.prototype,null);//L0 for cleariing the __proto__
-        //Object.freeze(Promise.prototype);//L0 for the import("").catch()
+        Promise.prototype.constructor=X;//@r5
+        Promise.prototype=undefined;
 
         //SIMULATION
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
@@ -187,7 +180,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
   }
   finally{
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L1 for console
-    //Promise.prototype.constructor = Promise;//no use, locked Promise.prototype...TODO
+    Promise.prototype = Promise.prototype;
+    Promise.prototype.constructor = Promise;//no use if locked Promise.prototype...
     //if (Promise.__proto__){ Promise.__proto__.constructor=Function; }//locked, no need anymore.
     //Object.prototype.constructor=Object;//no need any more now?
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);

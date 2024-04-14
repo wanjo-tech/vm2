@@ -1071,6 +1071,8 @@ var case_id= 'r5';
 var code=`
 const i = import('');
 try { i.then() } catch (e) {}
+//delete i.constructor;//test if recover
+//console.log('i.constructor'+i.constructor);
 i.constructor.constructor("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "")
 `;
        try{
