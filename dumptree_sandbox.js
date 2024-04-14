@@ -114,6 +114,7 @@ const rootObjects = {
     AsyncFunction: async () => {},
     Promise: (async () => {}),
     //HostPromise: import('').catch(_=>_).constructor,//
+    globalThis: this,
 };
 
 const objectTrees = {};

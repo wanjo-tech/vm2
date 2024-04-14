@@ -78,6 +78,7 @@ function buildObjectTree(obj, depth = 0, patha = [], pathb=[]) {
                 tree[prop]['danger'] = 2;
               }
             }
+            if (!danger) delete tree[prop]['danger'];
         } catch (error) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }

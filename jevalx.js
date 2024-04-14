@@ -18,8 +18,6 @@ Object.freeze(X);//L0
 
 //Host tools
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
-//for dev/debug e.g. jevalx(`dumptree(this)`,{dumptree})
-let dumptree = require('./dumptree');
 
 // for __proto__ Pollultion:
 function findEvil(obj,maxdepth=3) {
@@ -72,8 +70,9 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 //const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
 const S_SETUP = [
-//no use, but not yet need to delete.
-'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__',
+'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__',//L0
+'Error','AggregateError','EvalError','RangeError','ReferenceError','SyntaxError','TypeError','URIError',
+'WebAssembly',//
 ].map(v=>'delete '+v+';').join('')
 //IMPORTANT: need to lock the danger functions of 'this'
 +[
@@ -91,6 +90,14 @@ const S_SETUP = [
 +`
 //TOOLS
 AsyncFunction = (async()=>{}).constructor;
+
+//if delete Error...
+class Error {
+  constructor(message,code) { this.message = message; this.name = 'Error'; if (code) this.code = code; }
+  toString() { return JSON.stringify(this) }
+}
+Object.setPrototypeOf(Error,null);
+Object.freeze(Error);
 
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 
@@ -204,5 +211,5 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 }
 let jevalx = jevalx_core;
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X,dumptree}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X}
 

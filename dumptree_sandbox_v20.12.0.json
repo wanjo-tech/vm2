@@ -1112,6 +1112,1052 @@
         }
       }
     }
+  },
+  "globalThis": {
+    "typeobj": "object",
+    "AsyncFunction": {
+      "type": "function",
+      "value": "Function",
+      "str": "function AsyncFunction() { [native code] }",
+      "pathb": "globalThis.AsyncFunction"
+    },
+    "console": {
+      "typeobj": "object",
+      "log": {
+        "type": "function",
+        "value": "Function",
+        "str": "Cannot convert to string",
+        "pathb": "globalThis.console.log"
+      },
+      "pathb": "globalThis.console"
+    },
+    "console_log": {
+      "type": "function",
+      "value": "Function",
+      "str": "function () { [native code] }",
+      "pathb": "globalThis.console_log"
+    },
+    "getOwnPropertyNames": {
+      "type": "function",
+      "value": "Function",
+      "str": "function getOwnPropertyNames() { [native code] }",
+      "pathb": "globalThis.getOwnPropertyNames"
+    },
+    "Object_getPrototypeOf": {
+      "type": "function",
+      "value": "Function",
+      "str": "function getPrototypeOf() { [native code] }",
+      "pathb": "globalThis.Object_getPrototypeOf"
+    },
+    "Object_setPrototypeOf": {
+      "type": "function",
+      "value": "Function",
+      "str": "function setPrototypeOf() { [native code] }",
+      "pathb": "globalThis.Object_setPrototypeOf"
+    },
+    "Object_getOwnPropertyDescriptor": {
+      "type": "function",
+      "value": "Function",
+      "str": "function getOwnPropertyDescriptor() { [native code] }",
+      "pathb": "globalThis.Object_getOwnPropertyDescriptor"
+    },
+    "Object": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Object() { [native code] }",
+      "pathb": "globalThis.Object"
+    },
+    "Function": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Function() { [native code] }",
+      "pathb": "globalThis.Function"
+    },
+    "Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Array() { [native code] }",
+      "pathb": "globalThis.Array"
+    },
+    "Number": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Number() { [native code] }",
+      "pathb": "globalThis.Number"
+    },
+    "parseFloat": {
+      "type": "function",
+      "value": "Function",
+      "str": "function parseFloat() { [native code] }",
+      "pathb": "globalThis.parseFloat"
+    },
+    "parseInt": {
+      "type": "function",
+      "value": "Function",
+      "str": "function parseInt() { [native code] }",
+      "pathb": "globalThis.parseInt"
+    },
+    "Infinity": {
+      "type": "number",
+      "value": null,
+      "str": "null",
+      "pathb": "globalThis.Infinity"
+    },
+    "NaN": {
+      "type": "number",
+      "value": null,
+      "str": "null",
+      "pathb": "globalThis.NaN"
+    },
+    "undefined": {
+      "type": "undefined",
+      "str": "Cannot convert to string",
+      "pathb": "globalThis.undefined"
+    },
+    "Boolean": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Boolean() { [native code] }",
+      "pathb": "globalThis.Boolean"
+    },
+    "String": {
+      "type": "function",
+      "value": "Function",
+      "str": "function String() { [native code] }",
+      "pathb": "globalThis.String"
+    },
+    "Date": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Date() { [native code] }",
+      "pathb": "globalThis.Date"
+    },
+    "Promise": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Promise() { [native code] }",
+      "pathb": "globalThis.Promise"
+    },
+    "RegExp": {
+      "type": "function",
+      "value": "Function",
+      "str": "function RegExp() { [native code] }",
+      "pathb": "globalThis.RegExp"
+    },
+    "Error": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Error() { [native code] }",
+      "pathb": "globalThis.Error"
+    },
+    "globalThis": {
+      "note": "Circular reference detected",
+      "pathb": "globalThis.globalThis"
+    },
+    "JSON": {
+      "typeobj": "object",
+      "parse": {
+        "type": "function",
+        "value": "Function",
+        "str": "function parse() { [native code] }",
+        "pathb": "globalThis.JSON.parse"
+      },
+      "stringify": {
+        "type": "function",
+        "value": "Function",
+        "str": "function stringify() { [native code] }",
+        "pathb": "globalThis.JSON.stringify"
+      },
+      "prototype_": {
+        "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "pathb": "globalThis.JSON.getPrototypeOf().constructor"
+        },
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.JSON.getPrototypeOf().hasOwnProperty"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.JSON.getPrototypeOf().__lookupGetter__"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.JSON.getPrototypeOf().__lookupSetter__"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.JSON.getPrototypeOf().isPrototypeOf"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.JSON.getPrototypeOf().propertyIsEnumerable"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.JSON.getPrototypeOf().toString"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.JSON.getPrototypeOf().valueOf"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.JSON.getPrototypeOf().toLocaleString"
+        }
+      },
+      "pathb": "globalThis.JSON"
+    },
+    "Math": {
+      "typeobj": "object",
+      "abs": {
+        "type": "function",
+        "value": "Function",
+        "str": "function abs() { [native code] }",
+        "pathb": "globalThis.Math.abs"
+      },
+      "acos": {
+        "type": "function",
+        "value": "Function",
+        "str": "function acos() { [native code] }",
+        "pathb": "globalThis.Math.acos"
+      },
+      "acosh": {
+        "type": "function",
+        "value": "Function",
+        "str": "function acosh() { [native code] }",
+        "pathb": "globalThis.Math.acosh"
+      },
+      "asin": {
+        "type": "function",
+        "value": "Function",
+        "str": "function asin() { [native code] }",
+        "pathb": "globalThis.Math.asin"
+      },
+      "asinh": {
+        "type": "function",
+        "value": "Function",
+        "str": "function asinh() { [native code] }",
+        "pathb": "globalThis.Math.asinh"
+      },
+      "atan": {
+        "type": "function",
+        "value": "Function",
+        "str": "function atan() { [native code] }",
+        "pathb": "globalThis.Math.atan"
+      },
+      "atanh": {
+        "type": "function",
+        "value": "Function",
+        "str": "function atanh() { [native code] }",
+        "pathb": "globalThis.Math.atanh"
+      },
+      "atan2": {
+        "type": "function",
+        "value": "Function",
+        "str": "function atan2() { [native code] }",
+        "pathb": "globalThis.Math.atan2"
+      },
+      "ceil": {
+        "type": "function",
+        "value": "Function",
+        "str": "function ceil() { [native code] }",
+        "pathb": "globalThis.Math.ceil"
+      },
+      "cbrt": {
+        "type": "function",
+        "value": "Function",
+        "str": "function cbrt() { [native code] }",
+        "pathb": "globalThis.Math.cbrt"
+      },
+      "expm1": {
+        "type": "function",
+        "value": "Function",
+        "str": "function expm1() { [native code] }",
+        "pathb": "globalThis.Math.expm1"
+      },
+      "clz32": {
+        "type": "function",
+        "value": "Function",
+        "str": "function clz32() { [native code] }",
+        "pathb": "globalThis.Math.clz32"
+      },
+      "cos": {
+        "type": "function",
+        "value": "Function",
+        "str": "function cos() { [native code] }",
+        "pathb": "globalThis.Math.cos"
+      },
+      "cosh": {
+        "type": "function",
+        "value": "Function",
+        "str": "function cosh() { [native code] }",
+        "pathb": "globalThis.Math.cosh"
+      },
+      "exp": {
+        "type": "function",
+        "value": "Function",
+        "str": "function exp() { [native code] }",
+        "pathb": "globalThis.Math.exp"
+      },
+      "floor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function floor() { [native code] }",
+        "pathb": "globalThis.Math.floor"
+      },
+      "fround": {
+        "type": "function",
+        "value": "Function",
+        "str": "function fround() { [native code] }",
+        "pathb": "globalThis.Math.fround"
+      },
+      "hypot": {
+        "type": "function",
+        "value": "Function",
+        "str": "function hypot() { [native code] }",
+        "pathb": "globalThis.Math.hypot"
+      },
+      "imul": {
+        "type": "function",
+        "value": "Function",
+        "str": "function imul() { [native code] }",
+        "pathb": "globalThis.Math.imul"
+      },
+      "log": {
+        "type": "function",
+        "value": "Function",
+        "str": "function log() { [native code] }",
+        "pathb": "globalThis.Math.log"
+      },
+      "log1p": {
+        "type": "function",
+        "value": "Function",
+        "str": "function log1p() { [native code] }",
+        "pathb": "globalThis.Math.log1p"
+      },
+      "log2": {
+        "type": "function",
+        "value": "Function",
+        "str": "function log2() { [native code] }",
+        "pathb": "globalThis.Math.log2"
+      },
+      "log10": {
+        "type": "function",
+        "value": "Function",
+        "str": "function log10() { [native code] }",
+        "pathb": "globalThis.Math.log10"
+      },
+      "max": {
+        "type": "function",
+        "value": "Function",
+        "str": "function max() { [native code] }",
+        "pathb": "globalThis.Math.max"
+      },
+      "min": {
+        "type": "function",
+        "value": "Function",
+        "str": "function min() { [native code] }",
+        "pathb": "globalThis.Math.min"
+      },
+      "pow": {
+        "type": "function",
+        "value": "Function",
+        "str": "function pow() { [native code] }",
+        "pathb": "globalThis.Math.pow"
+      },
+      "random": {
+        "type": "function",
+        "value": "Function",
+        "str": "function random() { [native code] }",
+        "pathb": "globalThis.Math.random"
+      },
+      "round": {
+        "type": "function",
+        "value": "Function",
+        "str": "function round() { [native code] }",
+        "pathb": "globalThis.Math.round"
+      },
+      "sign": {
+        "type": "function",
+        "value": "Function",
+        "str": "function sign() { [native code] }",
+        "pathb": "globalThis.Math.sign"
+      },
+      "sin": {
+        "type": "function",
+        "value": "Function",
+        "str": "function sin() { [native code] }",
+        "pathb": "globalThis.Math.sin"
+      },
+      "sinh": {
+        "type": "function",
+        "value": "Function",
+        "str": "function sinh() { [native code] }",
+        "pathb": "globalThis.Math.sinh"
+      },
+      "sqrt": {
+        "type": "function",
+        "value": "Function",
+        "str": "function sqrt() { [native code] }",
+        "pathb": "globalThis.Math.sqrt"
+      },
+      "tan": {
+        "type": "function",
+        "value": "Function",
+        "str": "function tan() { [native code] }",
+        "pathb": "globalThis.Math.tan"
+      },
+      "tanh": {
+        "type": "function",
+        "value": "Function",
+        "str": "function tanh() { [native code] }",
+        "pathb": "globalThis.Math.tanh"
+      },
+      "trunc": {
+        "type": "function",
+        "value": "Function",
+        "str": "function trunc() { [native code] }",
+        "pathb": "globalThis.Math.trunc"
+      },
+      "E": {
+        "type": "number",
+        "value": 2.718281828459045,
+        "str": "2.718281828459045",
+        "pathb": "globalThis.Math.E"
+      },
+      "LN10": {
+        "type": "number",
+        "value": 2.302585092994046,
+        "str": "2.302585092994046",
+        "pathb": "globalThis.Math.LN10"
+      },
+      "LN2": {
+        "type": "number",
+        "value": 0.6931471805599453,
+        "str": "0.6931471805599453",
+        "pathb": "globalThis.Math.LN2"
+      },
+      "LOG10E": {
+        "type": "number",
+        "value": 0.4342944819032518,
+        "str": "0.4342944819032518",
+        "pathb": "globalThis.Math.LOG10E"
+      },
+      "LOG2E": {
+        "type": "number",
+        "value": 1.4426950408889634,
+        "str": "1.4426950408889634",
+        "pathb": "globalThis.Math.LOG2E"
+      },
+      "PI": {
+        "type": "number",
+        "value": 3.141592653589793,
+        "str": "3.141592653589793",
+        "pathb": "globalThis.Math.PI"
+      },
+      "SQRT1_2": {
+        "type": "number",
+        "value": 0.7071067811865476,
+        "str": "0.7071067811865476",
+        "pathb": "globalThis.Math.SQRT1_2"
+      },
+      "SQRT2": {
+        "type": "number",
+        "value": 1.4142135623730951,
+        "str": "1.4142135623730951",
+        "pathb": "globalThis.Math.SQRT2"
+      },
+      "prototype_": {
+        "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "pathb": "globalThis.Math.getPrototypeOf().constructor"
+        },
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Math.getPrototypeOf().hasOwnProperty"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Math.getPrototypeOf().__lookupGetter__"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Math.getPrototypeOf().__lookupSetter__"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Math.getPrototypeOf().isPrototypeOf"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Math.getPrototypeOf().propertyIsEnumerable"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Math.getPrototypeOf().toString"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Math.getPrototypeOf().valueOf"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Math.getPrototypeOf().toLocaleString"
+        }
+      },
+      "pathb": "globalThis.Math"
+    },
+    "Intl": {
+      "typeobj": "object",
+      "getCanonicalLocales": {
+        "type": "function",
+        "value": "Function",
+        "str": "function getCanonicalLocales() { [native code] }",
+        "pathb": "globalThis.Intl.getCanonicalLocales"
+      },
+      "supportedValuesOf": {
+        "type": "function",
+        "value": "Function",
+        "str": "function supportedValuesOf() { [native code] }",
+        "pathb": "globalThis.Intl.supportedValuesOf"
+      },
+      "DateTimeFormat": {
+        "type": "function",
+        "value": "Function",
+        "str": "function DateTimeFormat() { [native code] }",
+        "pathb": "globalThis.Intl.DateTimeFormat"
+      },
+      "NumberFormat": {
+        "type": "function",
+        "value": "Function",
+        "str": "function NumberFormat() { [native code] }",
+        "pathb": "globalThis.Intl.NumberFormat"
+      },
+      "Collator": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Collator() { [native code] }",
+        "pathb": "globalThis.Intl.Collator"
+      },
+      "PluralRules": {
+        "type": "function",
+        "value": "Function",
+        "str": "function PluralRules() { [native code] }",
+        "pathb": "globalThis.Intl.PluralRules"
+      },
+      "RelativeTimeFormat": {
+        "type": "function",
+        "value": "Function",
+        "str": "function RelativeTimeFormat() { [native code] }",
+        "pathb": "globalThis.Intl.RelativeTimeFormat"
+      },
+      "ListFormat": {
+        "type": "function",
+        "value": "Function",
+        "str": "function ListFormat() { [native code] }",
+        "pathb": "globalThis.Intl.ListFormat"
+      },
+      "Locale": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Locale() { [native code] }",
+        "pathb": "globalThis.Intl.Locale"
+      },
+      "DisplayNames": {
+        "type": "function",
+        "value": "Function",
+        "str": "function DisplayNames() { [native code] }",
+        "pathb": "globalThis.Intl.DisplayNames"
+      },
+      "Segmenter": {
+        "type": "function",
+        "value": "Function",
+        "str": "function Segmenter() { [native code] }",
+        "pathb": "globalThis.Intl.Segmenter"
+      },
+      "prototype_": {
+        "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "pathb": "globalThis.Intl.getPrototypeOf().constructor"
+        },
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Intl.getPrototypeOf().hasOwnProperty"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Intl.getPrototypeOf().__lookupGetter__"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Intl.getPrototypeOf().__lookupSetter__"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Intl.getPrototypeOf().isPrototypeOf"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Intl.getPrototypeOf().propertyIsEnumerable"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Intl.getPrototypeOf().toString"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Intl.getPrototypeOf().valueOf"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Intl.getPrototypeOf().toLocaleString"
+        }
+      },
+      "pathb": "globalThis.Intl"
+    },
+    "ArrayBuffer": {
+      "type": "function",
+      "value": "Function",
+      "str": "function ArrayBuffer() { [native code] }",
+      "pathb": "globalThis.ArrayBuffer"
+    },
+    "Uint8Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Uint8Array() { [native code] }",
+      "pathb": "globalThis.Uint8Array"
+    },
+    "Int8Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Int8Array() { [native code] }",
+      "pathb": "globalThis.Int8Array"
+    },
+    "Uint16Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Uint16Array() { [native code] }",
+      "pathb": "globalThis.Uint16Array"
+    },
+    "Int16Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Int16Array() { [native code] }",
+      "pathb": "globalThis.Int16Array"
+    },
+    "Uint32Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Uint32Array() { [native code] }",
+      "pathb": "globalThis.Uint32Array"
+    },
+    "Int32Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Int32Array() { [native code] }",
+      "pathb": "globalThis.Int32Array"
+    },
+    "Float32Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Float32Array() { [native code] }",
+      "pathb": "globalThis.Float32Array"
+    },
+    "Float64Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Float64Array() { [native code] }",
+      "pathb": "globalThis.Float64Array"
+    },
+    "Uint8ClampedArray": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Uint8ClampedArray() { [native code] }",
+      "pathb": "globalThis.Uint8ClampedArray"
+    },
+    "BigUint64Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function BigUint64Array() { [native code] }",
+      "pathb": "globalThis.BigUint64Array"
+    },
+    "BigInt64Array": {
+      "type": "function",
+      "value": "Function",
+      "str": "function BigInt64Array() { [native code] }",
+      "pathb": "globalThis.BigInt64Array"
+    },
+    "DataView": {
+      "type": "function",
+      "value": "Function",
+      "str": "function DataView() { [native code] }",
+      "pathb": "globalThis.DataView"
+    },
+    "Map": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Map() { [native code] }",
+      "pathb": "globalThis.Map"
+    },
+    "BigInt": {
+      "type": "function",
+      "value": "Function",
+      "str": "function BigInt() { [native code] }",
+      "pathb": "globalThis.BigInt"
+    },
+    "Set": {
+      "type": "function",
+      "value": "Function",
+      "str": "function Set() { [native code] }",
+      "pathb": "globalThis.Set"
+    },
+    "WeakMap": {
+      "type": "function",
+      "value": "Function",
+      "str": "function WeakMap() { [native code] }",
+      "pathb": "globalThis.WeakMap"
+    },
+    "WeakSet": {
+      "type": "function",
+      "value": "Function",
+      "str": "function WeakSet() { [native code] }",
+      "pathb": "globalThis.WeakSet"
+    },
+    "FinalizationRegistry": {
+      "type": "function",
+      "value": "Function",
+      "str": "function FinalizationRegistry() { [native code] }",
+      "pathb": "globalThis.FinalizationRegistry"
+    },
+    "WeakRef": {
+      "type": "function",
+      "value": "Function",
+      "str": "function WeakRef() { [native code] }",
+      "pathb": "globalThis.WeakRef"
+    },
+    "decodeURI": {
+      "type": "function",
+      "value": "Function",
+      "str": "function decodeURI() { [native code] }",
+      "pathb": "globalThis.decodeURI"
+    },
+    "decodeURIComponent": {
+      "type": "function",
+      "value": "Function",
+      "str": "function decodeURIComponent() { [native code] }",
+      "pathb": "globalThis.decodeURIComponent"
+    },
+    "encodeURI": {
+      "type": "function",
+      "value": "Function",
+      "str": "function encodeURI() { [native code] }",
+      "pathb": "globalThis.encodeURI"
+    },
+    "encodeURIComponent": {
+      "type": "function",
+      "value": "Function",
+      "str": "function encodeURIComponent() { [native code] }",
+      "pathb": "globalThis.encodeURIComponent"
+    },
+    "escape": {
+      "type": "function",
+      "value": "Function",
+      "str": "function escape() { [native code] }",
+      "pathb": "globalThis.escape"
+    },
+    "unescape": {
+      "type": "function",
+      "value": "Function",
+      "str": "function unescape() { [native code] }",
+      "pathb": "globalThis.unescape"
+    },
+    "eval": {
+      "type": "function",
+      "value": "Function",
+      "str": "function eval() { [native code] }",
+      "pathb": "globalThis.eval"
+    },
+    "isFinite": {
+      "type": "function",
+      "value": "Function",
+      "str": "function isFinite() { [native code] }",
+      "pathb": "globalThis.isFinite"
+    },
+    "isNaN": {
+      "type": "function",
+      "value": "Function",
+      "str": "function isNaN() { [native code] }",
+      "pathb": "globalThis.isNaN"
+    },
+    "SharedArrayBuffer": {
+      "type": "function",
+      "value": "Function",
+      "str": "function SharedArrayBuffer() { [native code] }",
+      "pathb": "globalThis.SharedArrayBuffer"
+    },
+    "Atomics": {
+      "typeobj": "object",
+      "load": {
+        "type": "function",
+        "value": "Function",
+        "str": "function load() { [native code] }",
+        "pathb": "globalThis.Atomics.load"
+      },
+      "store": {
+        "type": "function",
+        "value": "Function",
+        "str": "function store() { [native code] }",
+        "pathb": "globalThis.Atomics.store"
+      },
+      "add": {
+        "type": "function",
+        "value": "Function",
+        "str": "function add() { [native code] }",
+        "pathb": "globalThis.Atomics.add"
+      },
+      "sub": {
+        "type": "function",
+        "value": "Function",
+        "str": "function sub() { [native code] }",
+        "pathb": "globalThis.Atomics.sub"
+      },
+      "and": {
+        "type": "function",
+        "value": "Function",
+        "str": "function and() { [native code] }",
+        "pathb": "globalThis.Atomics.and"
+      },
+      "or": {
+        "type": "function",
+        "value": "Function",
+        "str": "function or() { [native code] }",
+        "pathb": "globalThis.Atomics.or"
+      },
+      "xor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function xor() { [native code] }",
+        "pathb": "globalThis.Atomics.xor"
+      },
+      "exchange": {
+        "type": "function",
+        "value": "Function",
+        "str": "function exchange() { [native code] }",
+        "pathb": "globalThis.Atomics.exchange"
+      },
+      "compareExchange": {
+        "type": "function",
+        "value": "Function",
+        "str": "function compareExchange() { [native code] }",
+        "pathb": "globalThis.Atomics.compareExchange"
+      },
+      "isLockFree": {
+        "type": "function",
+        "value": "Function",
+        "str": "function isLockFree() { [native code] }",
+        "pathb": "globalThis.Atomics.isLockFree"
+      },
+      "wait": {
+        "type": "function",
+        "value": "Function",
+        "str": "function wait() { [native code] }",
+        "pathb": "globalThis.Atomics.wait"
+      },
+      "waitAsync": {
+        "type": "function",
+        "value": "Function",
+        "str": "function waitAsync() { [native code] }",
+        "pathb": "globalThis.Atomics.waitAsync"
+      },
+      "notify": {
+        "type": "function",
+        "value": "Function",
+        "str": "function notify() { [native code] }",
+        "pathb": "globalThis.Atomics.notify"
+      },
+      "prototype_": {
+        "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "pathb": "globalThis.Atomics.getPrototypeOf().constructor"
+        },
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Atomics.getPrototypeOf().hasOwnProperty"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Atomics.getPrototypeOf().__lookupGetter__"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Atomics.getPrototypeOf().__lookupSetter__"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Atomics.getPrototypeOf().isPrototypeOf"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Atomics.getPrototypeOf().propertyIsEnumerable"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Atomics.getPrototypeOf().toString"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Atomics.getPrototypeOf().valueOf"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.Atomics.getPrototypeOf().toLocaleString"
+        }
+      },
+      "pathb": "globalThis.Atomics"
+    },
+    "prototype_": {
+      "typeobj": "object",
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "function () { [native code] }",
+        "pathb": "globalThis.getPrototypeOf().constructor"
+      },
+      "prototype_": {
+        "typeobj": "object",
+        "constructor": {
+          "type": "function",
+          "value": "Function",
+          "str": "function Object() { [native code] }",
+          "pathb": "globalThis.getPrototypeOf().getPrototypeOf().constructor"
+        },
+        "hasOwnProperty": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.getPrototypeOf().getPrototypeOf().hasOwnProperty"
+        },
+        "__lookupGetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.getPrototypeOf().getPrototypeOf().__lookupGetter__"
+        },
+        "__lookupSetter__": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.getPrototypeOf().getPrototypeOf().__lookupSetter__"
+        },
+        "isPrototypeOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.getPrototypeOf().getPrototypeOf().isPrototypeOf"
+        },
+        "propertyIsEnumerable": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.getPrototypeOf().getPrototypeOf().propertyIsEnumerable"
+        },
+        "toString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.getPrototypeOf().getPrototypeOf().toString"
+        },
+        "valueOf": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.getPrototypeOf().getPrototypeOf().valueOf"
+        },
+        "toLocaleString": {
+          "type": "function",
+          "value": "Function",
+          "str": "Cannot convert to string",
+          "pathb": "globalThis.getPrototypeOf().getPrototypeOf().toLocaleString"
+        }
+      }
+    }
   }
 }
 ]

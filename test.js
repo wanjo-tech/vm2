@@ -1340,6 +1340,15 @@ e.constructor.constructor('return process')().mainModule.require("fs").writeFile
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
+  tpl:async function(){ let case_id = arguments.callee.name; var code=`
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
   x1:async function(){ let case_id = arguments.callee.name; var code=`
 const i = import('');
 //console.log('i='+typeof i);
@@ -1364,7 +1373,12 @@ i.catch();
 
 LAST:(async()=>{ //normal case:
 
-  console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
+  try{
+    assert.equal( 8 , await jevalx('x**y',{x:2,y:3}))
+    console.log('ASSERT 8 == x**y',true);
+  }catch(ex){
+    console.log('ASSERT 8 == x**y',ex);
+  }
   //assertWtf.equal( 8 , await jevalx('x**y',{x:2,y:3}) );
   console.log('ASSERT 81 == x**y',await jevalx('(async()=>(x**y))()',{x:3,y:4}));
   //assertWtf.equal( 81 , await jevalx('x**y',{x:3,y:4}) );
