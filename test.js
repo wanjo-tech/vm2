@@ -1209,7 +1209,6 @@ Promise.delay(1234).then(_=>import('').constructor.constructor('return process')
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
-/*
   r15:async function(){ let case_id = arguments.callee.name; var code=`
 Promise.delay(1000).then(_=>import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r15", ""))
 `;
@@ -1220,7 +1219,27 @@ Promise.delay(1000).then(_=>import('').catch(_=>_).constructor.constructor('retu
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
-*/
+  r15a:async function(){ let case_id = arguments.callee.name; var code=`
+(async()=>Promise.delay(1000).then(_=>import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r15a", "")))()
+`;
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+//the delay still return the host Promise.
+  r15b:async function(){ let case_id = arguments.callee.name; var code=`
+(async()=>{Promise.delay(1234,1234).catch(_=>_).then(_=>import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r15b", ""))})()
+`;
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
   r16:async function(){ let case_id = arguments.callee.name; var code=`
 const i = import('');
 i.catch.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r16', ''))"]));
@@ -1306,14 +1325,14 @@ console.log.prototype.__proto__.constructor.constructor('return process')().main
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
-  r22:async function(){ let case_id = arguments.callee.name; var code=`
+  r22b:async function(){ let case_id = arguments.callee.name; var code=`
 try {
     (function stack() {
         new Error().stack;
         stack();
     })();
 } catch (e) {
-e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r22", ""); }
+e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r22b", ""); }
 `
      try{
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));

@@ -138,8 +138,12 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           ctxx = vm.createContext(new X);//BIGBANG FROM X
           [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);
           let _Promise_resolve = _Promise.resolve;//@r21.
-          let fake_delay = async function(t,r){ await delay(t); return _Promise_resolve(r) }
-          _Promise.delay = XX(fake_delay)
+
+          //r15b still fail!!
+          //let fake_delay = async function(t,r){ await delay(t); 
+          //console.log('_Promise_resolve',r);
+          //return _Promise_resolve(r) }
+          //_Promise.delay = XX(fake_delay)
 
           let console_dev = Object.create(null);
           let fake_console_log = sandbox_safe_method(console.log);
