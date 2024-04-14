@@ -23,23 +23,22 @@ const Object_setPrototypeOf = Object.setPrototypeOf;
 const Object_freeze = Object.freeze;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 
-//NOTES: with_prototype for class/not-async-function
-function XX(obj,with_prototype=false,do_free=true) {
+// X VOID
+function X(){ if (this instanceof X){ }else{ return new X() } }
+
+// LOCK
+function XX(obj,with_prototype=true,do_free=true) {
   if (with_prototype){
-    Object_setPrototypeOf(obj.prototype,null);
-    Object_freeze(obj.prototype);
+    if (obj.prototype){
+      Object_setPrototypeOf(obj.prototype,null);
+      Object_freeze(obj.prototype);
+    }
   }
-  //if (obj.__proto__) Object_setPrototypeOf(obj.__proto__,null);//TODO
-  Object_setPrototypeOf(obj, null);
+  Object_setPrototypeOf(obj, X.prototype);//L0
   if (do_free) Object_freeze(obj);
   return obj
 }
-
-//NOTES: const i=import("").catch(_=>_);X=i.constructor !!
-// X LIKE VOID
-function X(){ if (this instanceof X){ }else{ return new X() } }
-//X.prototype.constructor = X;//to-delete
-XX(X,true);//L0!
+XX(X);//L0!
 
 // for __proto__ Pollultion:
 function findEvil(obj,maxdepth=3) {
@@ -66,7 +65,6 @@ const Promise_getPrototypeOf = Object.getPrototypeOf(Promise);//L1 for console d
 XX(Promise.prototype.catch);
 XX(Promise.prototype.finally);
 XX(Promise.prototype.then);
-//Object.setPrototypeOf(Promise,null);//L0
 
 //@r23 host-RangeError throws when error-stack-overflow (Bug of node:vm):
 RangeError.prototype.constructor=undefined;
@@ -104,12 +102,12 @@ Promise
 `;
 
 //tmp for __proto__ attach, TODO improve...
-let sandbox_safe_method = function(m,do_return=false){
+let sandbox_safe_sync_method = function(m,do_return=false){
   return XX( function(...args){ let rt2 = m(...args); if (do_return) if (rt2) XX(rt2); return rt2 } )
 };
 
 let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
-  let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
+  let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
   let last_resolve,last_reject;//for quicker return.
     let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXa',js,code:ex?.code,tag:'Xa',ex};
       //err.message!='EvilXa' && console.log('EvilXa=>',ex,'<=',jss)
@@ -134,16 +132,12 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           //GENESIS
           ctxx = vm.createContext(new X);//BIGBANG FROM X
           [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);
-          let _Promise_resolve = _Promise.resolve;//@r21.
 
-          //r15b still fail!!
-          //let fake_delay = async function(t,r){ await delay(t); 
-          //console.log('_Promise_resolve',r);
-          //return _Promise_resolve(r) }
-          //_Promise.delay = XX(fake_delay)
+          //@r15b,
+          _Promise.delay = XX((t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r)))));
 
           let console_dev = Object.create(null);
-          let fake_console_log = sandbox_safe_method(console.log);
+          let fake_console_log = sandbox_safe_sync_method(console.log);
           console_dev['log']=fake_console_log;
           ctxx.console = console_dev;
 
@@ -151,11 +145,13 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           if (ctx) Object_assign(ctxx,ctx);
         }
         //PRECAUTION
-        Promise.prototype.constructor=X;//@r4,@r5
+        Promise.prototype.constructor=X;//L0 @r4,@r5
+
         //SIMULATION
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
         //HOUSEWEEP
         rst = await rst;
+        done = true;
         if (rst) {
           if (findEvil(rst)) throw {message:'EvilProtoX',js};//seem no need now?
           delete rst['hasOwnProperty'];delete rst['then'];delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//TODO
@@ -169,6 +165,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
     err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss) //currently only TimeoutX @Q7x
   }
   finally{
+    done = true;
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L1 for console display
     Promise.prototype.constructor = Promise;//
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
@@ -186,5 +183,5 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 }
 let jevalx = jevalx_core;
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X,XX}
 
