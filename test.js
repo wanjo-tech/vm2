@@ -1494,4 +1494,18 @@ function getAllPrototypeMethods(obj) {
     });
 }
 console.log(getAllPrototypeMethods(constructor));
+
+old helper.
+//const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
+
+    //js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
+    //  if (!evil && !err){
+    //    if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
+    //    if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
+    //  }
+    //  evil++; err = {message:'EvilImport',js};
+    //  throw('EvilImport');
+    //}});
+
+
 */

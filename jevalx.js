@@ -1,3 +1,16 @@
+/** Quick Notes:.
+
+Known escape instances are all related to the Host Object. The current strategy is to cut off related connections, including the following:
+
+*) "constructor": as restriction of node:vm, cannot delete it, so we have to clear and lock its dangerous properties/methods. 
+*) "Object": there are few danger method such as defineProperty/defineProperties/__defineGetter__/__defineSetter__, would help the prisoner find a way to escape.
+*) "Error": a know erro-stack-overflow will throw a RangError which is belong to host, we now locked it to prevent attack by this bug
+*) "import()": another node:vm bug that return a Host Promise, we currently have to lock the host Promise as well.
+*) output: the result from the sandbox might have evil setter/getter or prototype-pollutions, which we have to detect and kill.
+*) "context": all the context will introduce sort of prototype-attack, here is a TODO to wrap or proxy to it, marked a TODO here.
+
+*/
+
 const vm = require('node:vm');
 const processWtf = require('process');
 
@@ -9,7 +22,8 @@ const Object_assign = Object.assign;
 const Object_setPrototypeOf = Object.setPrototypeOf;
 const Object_freeze = Object.freeze;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
-//with_prototype for class/not-async-function
+
+//NOTES: with_prototype for class/not-async-function
 function XX(obj,with_prototype=false,do_free=true) {
   if (with_prototype){
     Object_setPrototypeOf(obj.prototype,null);
@@ -21,6 +35,7 @@ function XX(obj,with_prototype=false,do_free=true) {
   return obj
 }
 
+//NOTES: const i=import("").catch(_=>_);X=i.constructor !!
 // X LIKE VOID
 function X(){ if (this instanceof X){ }else{ return new X() } }
 //X.prototype.constructor = X;//to-delete
@@ -46,32 +61,24 @@ function findEvil(obj,maxdepth=3) {
 }
 
 // for Promise Pollultion:
-const Promise_prototype = Promise.prototype;
-//const Promise_prototype_finally = Promise.prototype.finally;
-//const Promise_prototype_catch = Promise.prototype.catch;
-//const Promise_prototype_then = Promise.prototype.then;
-//L0 @q9
+const Promise_getPrototypeOf = Object.getPrototypeOf(Promise);//L1 for console display
+//L0 @q9 locked
 XX(Promise.prototype.catch);
 XX(Promise.prototype.finally);
 XX(Promise.prototype.then);
-const Promise_getPrototypeOf = Object.getPrototypeOf(Promise);
-Object.setPrototypeOf(Promise,null);
+//Object.setPrototypeOf(Promise,null);//L0
 
-//@r23 Host RangeError throws when error-stack-overflow (Bug of node:vm):
+//@r23 host-RangeError throws when error-stack-overflow (Bug of node:vm):
 RangeError.prototype.constructor=undefined;
-
 XX(RangeError.prototype);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
-//const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
-
 const S_SETUP = [
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__',//L0
-'Error','AggregateError','EvalError','RangeError','ReferenceError','SyntaxError','TypeError','URIError',
-'WebAssembly',//
+'Error','AggregateError','EvalError','RangeError','ReferenceError','SyntaxError','TypeError','URIError',//L1
+'WebAssembly',//L1
 ].map(v=>'delete '+v+';').join('')
-//IMPORTANT: need to lock the danger functions of 'this'
 +[
   '__lookupGetter__',
   '__lookupSetter__',
@@ -86,55 +93,41 @@ const S_SETUP = [
 //TOOLS
 AsyncFunction = (async()=>{}).constructor;
 
-//if delete Error...
 class Error {
   constructor(message,code) { this.message = message; this.name = 'Error'; if (code) this.code = code; }
   toString() { return JSON.stringify(this) }
 }
-////Object.setPrototypeOf(Error,null);
-////Object.freeze(Error);
 
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 
 Promise
 `;
 
-//tmp for __proto__ attach, clean later.. TODO...
+//tmp for __proto__ attach, TODO improve...
 let sandbox_safe_method = function(m,do_return=false){
-  let rt = function(...args){ let rt = m(...args); if (do_return) return rt }
-  XX(rt,true)
-  return rt;
+  return XX( function(...args){ let rt2 = m(...args); if (do_return) if (rt2) XX(rt2); return rt2 } )
 };
 
 let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js);
   let last_resolve,last_reject;//for quicker return.
-    let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXa',js,code:ex?.code,tag:'Xa'};
-      //err.message!='EvilXa' &&
-      console.log('EvilXa=>',ex,'<=',jss)
+    let tmpHandlerException = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXa',js,code:ex?.code,tag:'Xa',ex};
+      //err.message!='EvilXa' && console.log('EvilXa=>',ex,'<=',jss)
       if (last_reject) last_reject(err);
     };
-    let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXb',js,code:ex?.code,tag:'Xb'};
-      //err.message!='EvilXb' &&
-      console.log('EvilXb=>',ex,'<=',jss)
+    let tmpHandlerReject = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXb',js,code:ex?.code,tag:'Xb',ex};
+      //err.message!='EvilXb' && console.log('EvilXb=>',ex,'<=',jss)
       if (last_reject) last_reject(err);
     };
   try{
     processWtf.addListener('unhandledRejection',tmpHandlerReject);
     processWtf.addListener('uncaughtException',tmpHandlerException)
     let _Promise;
-    //support the user_import_handler()
-    let js_opts=({async importModuleDynamically(specifier, referrer, importAttributes){
-      if (!evil && !err){
-        if (user_import_handler) { return user_import_handler({specifier, referrer, importAttributes}) }
-        if (specifier=='fs'){ return import(`./fake${specifier||""}.mjs`) }
-      }
-      evil++; err = {message:'EvilImport',js};
-      throw('EvilImport');
-    }});
+    //to support the user_import_handler()
+    let js_opts;//TODO for import()
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
-      setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//FOR DEV TEST...
+      setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//L0
       try{
         if (ctx && vm.isContext(ctx)) { ctxx = ctx } //SESSION
         else {
@@ -158,48 +151,26 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           if (ctx) Object_assign(ctxx,ctx);
         }
         //PRECAUTION
-        // changed Promise.prototype.constructor
-        //Promise.prototype.catch = function(){
-        //  return new _Promise((rr,jj)=>{ Promise_prototype_catch.call(this,error=>jj(error))});
-        //};
         Promise.prototype.constructor=X;//@r4,@r5
-
-        //Promise.prototype=undefined;
-        //XX(Promise.prototype);//
-        //Object.setPrototypeOf(Promise.prototype,null);
-        //Object.freeze(Promise.prototype);
-
         //SIMULATION
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
-
         //HOUSEWEEP
         rst = await rst;
         if (rst) {
           if (findEvil(rst)) throw {message:'EvilProtoX',js};//seem no need now?
-
-          //TODO upgrade the findEvil to check evil Function?
-          delete rst['hasOwnProperty'];delete rst['then'];delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//not sure, TODO?
+          delete rst['hasOwnProperty'];delete rst['then'];delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//TODO
         }
       }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc'};
-        //err.message=='EvilXc' &&
-        console.log('EvilXc=>',ex,'<=',jss)
+        err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
       }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
   }catch(ex){ if (!err) err = {message:ex?.message||'EvilXd',js,code:ex?.code,tag:'Xd'};
-    //err.message=='EvilXd' &&
-    console.log('EvilXd=>',ex,'<=',jss)
+    err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss) //currently only TimeoutX @Q7x
   }
   finally{
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L1 for console display
-    Promise.prototype = Promise_prototype;
-    //Promise.prototype.catch = Promise_prototype_catch;//
-    //Promise.prototype.then = Promise_prototype_then;//
-    //Promise.prototype.finally = Promise_prototype_finally;//
     Promise.prototype.constructor = Promise;//
-    //if (Promise.__proto__){ Promise.__proto__.constructor=Function; }//locked, no need anymore.
-
-    //Object.prototype.constructor=Object;//no need any more now?
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
   }

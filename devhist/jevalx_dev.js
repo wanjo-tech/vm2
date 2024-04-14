@@ -183,7 +183,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
   }
   finally{
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);
-    Promise.prototype.catch = Promise.prototype.catch;//
+    Promise.prototype.catch = Promise_prototype_catch;//
     Promise.prototype.then = Promise_prototype_then;//
     Promise.prototype.finally = Promise_prototype_finally;//
     //Promise.prototype.constructor = Promise;
