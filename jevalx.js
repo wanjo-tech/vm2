@@ -46,6 +46,10 @@ function findEvil(obj,maxdepth=3) {
 }
 
 // for Promise Pollultion:
+const Promise_prototype = Promise.prototype;
+//const Promise_prototype_finally = Promise.prototype.finally;
+//const Promise_prototype_catch = Promise.prototype.catch;
+//const Promise_prototype_then = Promise.prototype.then;
 //L0 @q9
 XX(Promise.prototype.catch);
 XX(Promise.prototype.finally);
@@ -154,8 +158,16 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           if (ctx) Object_assign(ctxx,ctx);
         }
         //PRECAUTION
-        Promise.prototype.constructor=X;//@r5
-        Promise.prototype=undefined;
+        // changed Promise.prototype.constructor
+        //Promise.prototype.catch = function(){
+        //  return new _Promise((rr,jj)=>{ Promise_prototype_catch.call(this,error=>jj(error))});
+        //};
+        Promise.prototype.constructor=X;//@r4,@r5
+
+        //Promise.prototype=undefined;
+        //XX(Promise.prototype);//
+        //Object.setPrototypeOf(Promise.prototype,null);
+        //Object.freeze(Promise.prototype);
 
         //SIMULATION
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
@@ -180,9 +192,13 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
   }
   finally{
     Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L1 for console display
-    Promise.prototype = Promise.prototype;
-    Promise.prototype.constructor = Promise;//no use if locked Promise.prototype...
+    Promise.prototype = Promise_prototype;
+    //Promise.prototype.catch = Promise_prototype_catch;//
+    //Promise.prototype.then = Promise_prototype_then;//
+    //Promise.prototype.finally = Promise_prototype_finally;//
+    Promise.prototype.constructor = Promise;//
     //if (Promise.__proto__){ Promise.__proto__.constructor=Function; }//locked, no need anymore.
+
     //Object.prototype.constructor=Object;//no need any more now?
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)

