@@ -64,6 +64,7 @@ Object.setPrototypeOf(Promise,null);
 
 //@r23 for Host RangeError throws when error-stack-overflow (Bug of node:vm):
 RangeError.prototype.constructor=undefined;
+Object.setPrototypeOf(RangeError.prototype,null);
 Object.freeze(RangeError.prototype);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
@@ -166,7 +167,11 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         rst = await rst;
         if (rst) {
           if (findEvil(rst)) throw {message:'EvilProtoX',js};//seem no need now?
-          delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//not sure, TODO?
+
+          //TODO upgrade the findEvil to check evil Function?
+          delete rst['hasOwnProperty'];delete rst['then'];delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//not sure, TODO?
+
+          //if (rst.hasOwnProperty || rst.toString || rst.constructor || rst.toJSON) console.log('--------- 9999 -----------',rst);
         }
       }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc'};
         //err.message=='EvilXc' &&

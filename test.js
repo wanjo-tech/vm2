@@ -1,7 +1,11 @@
 //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
-//let assertWtf = require('assert');
+let assert = require('assert');
+
+console.log('assert+'+assert);
+
+//console.log('fetch+'+fetch);
 let argo = argv2o();
 
 let jevalxModule;
@@ -1366,7 +1370,7 @@ LAST:(async()=>{ //normal case:
   //assertWtf.equal( 81 , await jevalx('x**y',{x:3,y:4}) );
   console.log('ASSERT 8, ()=>x**y',await jevalx('()=>x**y',{x:2,y:3}));
 
-  console.log('ASSERT 27 == new Promise(r=>r(x**y**2))',await jevalx('new Promise(r=>r(x**y))',{x:3,y:3,z:2}));
+  console.log('ASSERT 19683 == new Promise(r=>r(x**y**z))',await jevalx('new Promise(r=>r(x**y**z))',{x:3,y:3,z:2}));
 
   console.log(`TEST json output`,await jevalx('({t:new Date()})',{},timeout=666,json_output=true));
 
