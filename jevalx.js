@@ -1,6 +1,12 @@
 const vm = require('node:vm');
 const processWtf = require('process');
 
+//boost:
+const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const Object_getPrototypeOf = Object.getPrototypeOf;
+const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
+const Object_assign = Object.assign;
+
 // X LIKE VOID
 function X(){ if (this instanceof X){ }else{ return new X() } }
 X.prototype.constructor = X;
@@ -10,29 +16,10 @@ Object.freeze(X.prototype);
 Object.setPrototypeOf(X,null);//L0
 Object.freeze(X);//L0
 
-//boost:
-const console_log = console.log;
-const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-const Object_getPrototypeOf = Object.getPrototypeOf;
-const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
-const Object_assign = Object.assign;
-
 //Host tools
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
-//for dev/debug e.g. jevalx(`dump(this)`,{console:{log:console.log},props:Object.getOwnPropertyNames,dump})
-//TODO dumptree()
-function dump(obj) {
-    let props = [];
-    let currentObj = obj;
-    do {
-        props = props.concat(Object_getOwnPropertyNames(currentObj));
-    } while ((currentObj = Object.getPrototypeOf(currentObj)));
-
-    return props.sort().filter(function(e, i, arr) { 
-       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
-    });
-}
-
+//for dev/debug e.g. jevalx(`dumptree(this)`,{dumptree})
+let dumptree = require('./dumptree');
 
 // for __proto__ Pollultion:
 function findEvil(obj,maxdepth=3) {
@@ -72,7 +59,7 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 //const S_FUNCTION = "(...args)=>eval(`(${args.slice(0,-1).join(',')})=>{${args[args.length-1]}}`)";
 
 const S_SETUP = [
-'console',//it is not working
+//no use, but not yet need to delete.
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__',
 ].map(v=>'delete '+v+';').join('')
 //IMPORTANT: need to lock the danger functions of 'this'
@@ -210,5 +197,5 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 }
 let jevalx = jevalx_core;
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X,dump}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X,dumptree}
 

@@ -1,10 +1,7 @@
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
-});
-
-var {jevalx,S_SETUP} = require('./jevalx');
-
-const console_log=console.log,Object_getPrototypeOf=Object.getPrototypeOf,Object_getOwnPropertyNames=Object.getOwnPropertyNames,Object_setPrototypeOf=Object.setPrototypeOf,Object_getOwnPropertyDescriptor=Object.getOwnPropertyDescriptor,getOwnPropertyNames = Object_getOwnPropertyNames;
+const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const Object_getPrototypeOf=Object.getPrototypeOf;
+const Object_setPrototypeOf=Object.setPrototypeOf;
+const Object_getOwnPropertyNames = Object.getOwnPropertyNames;
 
 const property_tocheck = [Object];
 
@@ -19,7 +16,7 @@ function buildObjectTree(obj, depth = 0, patha = [], pathb=[]) {
 
   if (obj!==null && obj!==undefined) {
     const tree = {typeobj:typeof(obj)};
-    getOwnPropertyNames(obj).forEach(prop => {
+    Object_getOwnPropertyNames(obj).forEach(prop => {
         const descriptor = Object_getOwnPropertyDescriptor(obj, prop);
         let propertyStr = 'Uninitialized';
         let danger = undefined;
@@ -108,10 +105,16 @@ const rootObjects = {
 };
 
 if (require.main === module) {
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
+  });
+
+  var {jevalx,S_SETUP} = require('./jevalx');
+
   eval(S_SETUP);
 
   if (constructor && Object && Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
-    console_log('test constructor.__proto__.constructor');
+    console.log('test constructor.__proto__.constructor');
     constructor.__proto__.constructor=Object.__proto__.constructor;
   }
   //if (constructor==Object)
@@ -122,7 +125,7 @@ if (require.main === module) {
       objectTrees[key] = buildObjectTree(rootObjects[key], 0, [],[key]);
   }
   const jsonResult = JSON.stringify(objectTrees, null, 2);
-  console_log(jsonResult);
+  console.log(jsonResult);
 }else{
-  module.exports = {dumptree:(o)=>buildObjectTree(o,0,[])}
+  module.exports = (o)=>buildObjectTree(o,0,[])
 }

@@ -28,7 +28,7 @@ function buildObjectTree(obj, depth = 0, patha = [], pathb=[]) {
 
   if (obj!==null && obj!==undefined) {
     const tree = {typeobj:typeof(obj)};
-    getOwnPropertyNames(obj).forEach(prop => {
+    Object.getOwnPropertyNames(obj).forEach(prop => {
         const descriptor = Object_getOwnPropertyDescriptor(obj, prop);
         let propertyStr = 'Uninitialized';
         let danger = undefined;
