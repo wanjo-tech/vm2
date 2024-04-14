@@ -65,8 +65,6 @@ Object.setPrototypeOf(Promise,null);///protect Host Promise
 
 //@r23 for Host RangeError throws when error-stack-overflow (Bug of node:vm):
 RangeError.prototype.constructor=undefined;
-Object.setPrototypeOf(RangeError.prototype,null);
-delete RangeError.prototype;
 Object.freeze(RangeError.prototype);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];

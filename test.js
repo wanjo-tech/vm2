@@ -1323,9 +1323,8 @@ try {
         stack();
     })();
 } catch (e) {
-console.log('e',e);
-console.log('e.constructor'+e.constructor);
-e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r23", ""); }
+e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r23", "");
+}
 `
      try{
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
