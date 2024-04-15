@@ -33,6 +33,7 @@ const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 
 // X VOID
 function X(){ if (this instanceof X){ }else{ return new X() } }
+Object.prototype.constructor=X;
 
 // LOCK
 function XX(obj, with_prototype = true, do_freeze = true) {
@@ -117,9 +118,9 @@ Promise
 `;
 
 //tmp for __proto__ attach, TODO improve...
-//let sandbox_safe_sync_method = function(m,do_return=false){
-//  return XX( function(...args){ let rt2 = m(...args); if (do_return) if (rt2) XX(rt2); return rt2 } )
-//};
+let sandbox_safe_sync_method = function(m,do_return=false){
+  return XX( function(...args){ let rt2 = m(...args); if (do_return) if (rt2) XX(rt2); return rt2 } )
+};
 
 let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
@@ -152,11 +153,11 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           //_Promise.delay = XX((t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r)))));
           _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
 
-          //let console_dev = Object.create(null);
-          //let fake_console_log = sandbox_safe_sync_method(console.log);
-          //console_dev['log']=fake_console_log;
-          //ctxx.console = console_dev;
-          ctxx.console = {log:console.log};
+          let console_dev = Object.create(null);
+          let fake_console_log = sandbox_safe_sync_method(console.log);
+          console_dev['log']=fake_console_log;
+          ctxx.console = console_dev;
+          //ctxx.console = {log:console.log};//not yet.
 
           if (ctx) Object_assign(ctxx,ctx);
         }
