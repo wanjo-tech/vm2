@@ -18,6 +18,9 @@ Object.defineProperty(Object.prototype, '__proto__', {
 
 const vm = require('node:vm');
 const processWtf = require('process');
+const timers = require('timers');
+
+const setTimeout = timers.setTimeout;
 
 //boost:
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
