@@ -20,7 +20,7 @@ https://github.com/wanjo-tech/vm2/blob/main/test.js
 
 ## Used-by
 
-* I use jevalx() in my kk project.
+* I use jevalx() in my [kk project](https://github.com/wanjo-tech/kk)
 
 ## Container
 
