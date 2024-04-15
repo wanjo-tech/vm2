@@ -23,15 +23,50 @@ const Object_freeze = Object.freeze;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 
 // X VOID
-function X(){ if (this instanceof X){ }else{ return new X() } }
+//function X(){ if (this instanceof X){ }else{ return new X() } }
+//testing new readonly proxy mode of X:
+function X(wrappee){
+  if (this instanceof X){
+    if (wrappee) {
+      const handler = {
+          get(target, prop, receiver) {
+            if (typeof(prop)!='string' || ['constructor','prototype','keys','__defineGetter__','__defineSetter__'].indexOf(prop)>=0) return;
+            //console.log({prop,wrappee})
+            try{
+              let rt;
+              if (prop=='toJSON') rt = ()=>JSON.stringify(wrappee);
+              else { rt = prop in wrappee ? wrappee[prop] : undefined;}
+              rt = XX(rt);
+              //console.log('rt=',rt)
+              return rt;
+            }catch(ex){
+              //console.log('ex',ex,target,prop,receiver)
+              return undefined;
+            }
+          },
+          //set(target, prop, value) {
+          //    if (prop in wrappee) {
+          //        wrappee[prop] = value;
+          //        return true;
+          //    }
+          //    return false;
+          //}
+      };
+      let rt = new Proxy(this, handler);
+      rt=XX(rt);
+      return rt
+    }
+  }else{ return new X(wrappee) }
+}
 
 // LOCK
 function XX(obj,with_prototype=true,do_free=true) {
-  if (with_prototype){
-    if (obj.prototype){
-      Object_setPrototypeOf(obj.prototype,null);
-      Object_freeze(obj.prototype);
-    }
+  if (!obj) return;
+  if (obj.prototype){
+    //obj.prototype.constructor=undefined;
+    //delete obj.prototype.constructor;
+    Object_setPrototypeOf(obj.prototype,null);
+    Object_freeze(obj.prototype);
   }
   Object_setPrototypeOf(obj, X.prototype);//L0
   if (do_free) Object_freeze(obj);
@@ -135,10 +170,11 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           //@r15b,
           _Promise.delay = XX((t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r)))));
 
-          let console_dev = Object.create(null);
-          let fake_console_log = sandbox_safe_sync_method(console.log);
-          console_dev['log']=fake_console_log;
-          ctxx.console = console_dev;
+          //let console_dev = Object.create(null);
+          //let fake_console_log = sandbox_safe_sync_method(console.log);
+          //console_dev['log']=fake_console_log;
+          //ctxx.console = console_dev;
+          ctxx.console = X(console);
 
           //CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
           if (ctx) Object_assign(ctxx,ctx);
@@ -183,6 +219,6 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 let jevalx = jevalx_core;
 
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X,XX,
-VER:'rc3'
+VER:'rc4'
 }
 

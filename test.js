@@ -8,12 +8,7 @@ let argo = argv2o();
 
 let jevalxModule;
 
-if (argo.dev){
-  jevalxModule = require('./jevalx_dev.js');
-  //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
-}else{
-  jevalxModule = require('./jevalx.js');
-}
+jevalxModule = require(`./jevalx${argo.ver?('_'+argo.ver):''}.js`);
 let jevalx = jevalxModule.jevalx;
 
 const fs = require('fs').promises;
@@ -1493,7 +1488,7 @@ await searchFiles('.',/pwn*/);
       console.log('-------------- test ALL end ---------------');
     }
   })().then(()=>{
-    console.log('command line:',argo);
+    console.log('command line:',argo,'VER:',jevalxModule.VER);
   }).catch(ex=>{
     console.log('!!!!!!!!!!! main.catch.ex',ex);
   })
