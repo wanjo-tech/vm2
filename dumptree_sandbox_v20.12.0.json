@@ -35,6 +35,15 @@
         "pathb": "constructor.prototype.constructor"
       },
       "pathb": "constructor.prototype"
+    },
+    "prototype_": {
+      "typeobj": "object",
+      "constructor": {
+        "type": "function",
+        "value": "Function",
+        "str": "Cannot convert to string",
+        "pathb": "constructor.getPrototypeOf().constructor"
+      }
     }
   },
   "Object": {

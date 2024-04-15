@@ -3,8 +3,6 @@
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
 let assert = require('assert');
 
-console.log('assert+'+assert);
-
 //console.log('fetch+'+fetch);
 let argo = argv2o();
 
@@ -1373,6 +1371,23 @@ e.constructor.constructor('return process')().mainModule.require("fs").writeFile
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
+  r24:async function(){ let case_id = arguments.callee.name; var code=`
+let r=_=>_;
+this.Error={get prepareStackTrace(){const l=r;r=1;return l;}};
+try{
+    try{(1)[1]}catch(e){e.stack}
+}catch(e){ e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r24", ""); }
+false
+`
+     try{
+       //console.log(`${case_id} code=`,JSON.stringify(code));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
   tpl:async function(){ let case_id = arguments.callee.name; var code=`
 `
      try{
@@ -1444,7 +1459,7 @@ LAST:(async()=>{ //normal case:
 }
 
 if (require.main === module) {
-  console.log(argo);
+  console.log('commmand line:',argo);
   (async()=>{
     let test_cases = require('./test');
     //console.log('test_cases',test_cases);
@@ -1468,7 +1483,7 @@ await searchFiles('.',/pwn*/);
       console.log('-------------- test ALL end ---------------');
     }
   })().then(()=>{
-    console.log('-------- argo',argo);
+    console.log('command line:',argo);
   }).catch(ex=>{
     console.log('!!!!!!!!!!! main.catch.ex',ex);
   })

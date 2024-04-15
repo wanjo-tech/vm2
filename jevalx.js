@@ -1,14 +1,13 @@
-/** Quick Notes:.
+/** Quick Notes:
 
-Known escape instances are all related to the Host Object. The current strategy is to cut off related connections, including the following:
+All known escape instances are related to the Host Object. The current strategy involves cutting off connections to the following components to mitigate risks:
 
-*) "constructor": as restriction of node:vm, cannot delete it, so we have to clear and lock its dangerous properties/methods. 
-*) "Object": there are few danger method such as defineProperty/defineProperties/__defineGetter__/__defineSetter__, would help the prisoner find a way to escape.
-*) "Error": a know erro-stack-overflow will throw a RangError which is belong to host, we now locked it to prevent attack by this bug
-*) "import()": another node:vm bug that return a Host Promise, we currently have to lock the host Promise as well.
-*) output: the result from the sandbox might have evil setter/getter or prototype-pollutions, which we have to detect and kill.
-*) "context": all the context will introduce sort of prototype-attack, here is a TODO to wrap or proxy to it, marked a TODO here.
-
+*) "constructor": Due to restrictions in node:vm, it cannot be deleted. Therefore, we must clear and secure its dangerous properties and methods.
+*) "Object": This includes dangerous methods such as defineProperty, defineProperties, __defineGetter__, and __defineSetter__, which could potentially aid escapes.
+*) "Error": Known issues like error-stack-overflow throw a RangeError belonging to the host. We have locked it to prevent exploits through this bug.
+*) "import()": A bug in node:vm that returns a Host Promise. We currently need to secure the host Promise as well.
+*) "output": Outputs from the sandbox might contain malicious setters/getters or prototype pollution, which we must detect and neutralize.
+*) "context": All contexts may introduce some form of prototype attack. A TODO has been marked here to wrap or proxy it for enhanced security.
 */
 
 const vm = require('node:vm');
