@@ -12,6 +12,8 @@ All known escape instances are related to the Host Object. The current strategy 
 
 const vm = require('node:vm');
 const processWtf = require('process');
+const timers = require('timers');
+let setTimeout = timers.setTimeout;
 
 //boost:
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -28,16 +30,22 @@ const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 function X(wrapee,debug=0){
   if (this instanceof X){
     if (wrapee) {
-      //if (typeof wrapee!='object' && typeof wrapee!='function') return wrapee;
-      let wrapped = (typeof wrapee !== 'object' && typeof wrapee !== 'function') ? { value: wrapee } : wrapee;
-      const handler = {
+      if (typeof wrapee!='object') {
+        let rt = XX(wrapee);
+        return rt;
+      }
+      //let wrapped = (typeof wrapee !== 'object') ? { value: wrapee } : wrapee;
+      let rt = new Proxy(this, {
           get(target, prop, receiver) {
-            if (typeof(prop)!='string'||['constructor','prototype','keys','__defineGetter__','__defineSetter__'].indexOf(prop)>=0)
-              return;
+            if (typeof(prop)!='string'||['toString','constructor','prototype','keys','__defineGetter__','__defineSetter__'].indexOf(prop)>=0) return;
             if (debug>0) console.log({prop,wrapee})
             try{
               let rt;
-              if (prop=='toJSON') rt = ()=>JSON.parse(JSON.stringify(wrapee));//TMP TODO
+              if (prop=='toJSON') rt = ()=>{
+                console.log('wrapee',wrapee);
+                if (typeof wrapee=='function') return [String(wrapee)];
+                wrapee?JSON.parse(JSON.stringify(wrapee)):null;//TMP
+              };
               else { rt = prop in wrapee ? wrapee[prop] : undefined;}
               rt = XX(rt);
               if (debug>1)console.log('rt=',rt)
@@ -47,8 +55,7 @@ function X(wrapee,debug=0){
               //return undefined;
             }
           },
-      };
-      let rt = new Proxy(this, handler);
+      });
       rt=XX(rt);
       return rt
     }
@@ -187,7 +194,8 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           delete rst['hasOwnProperty'];delete rst['then'];delete rst['toString']; delete rst['constructor']; delete rst['toJSON'];//TODO
         }
       }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc'};
-        err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
+        //err.message=='EvilXc' &&
+        console.log('EvilXc=>',ex,'<=',jss)
       }
       setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
     });
