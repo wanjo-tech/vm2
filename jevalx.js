@@ -26,16 +26,17 @@ const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 function X(){ if (this instanceof X){ }else{ return new X() } }
 
 // LOCK
-function XX(obj,with_prototype=true,do_free=true) {
-  if (obj==null || obj==undefined) return obj;
-  if (with_prototype && obj.prototype){
-      Object_setPrototypeOf(obj.prototype,null);
-      Object_freeze(obj.prototype);
+function XX(obj, with_prototype = true, do_freeze = true) {
+  if (obj == null || obj == undefined) return obj;
+  if (with_prototype && obj.prototype) {
+    Object.setPrototypeOf(obj.prototype, null);
+    if (do_freeze) Object.freeze(obj.prototype);
   }
-  Object_setPrototypeOf(obj, X.prototype);//L0
-  if (do_free) Object_freeze(obj);
-  return obj
+  Object.setPrototypeOf(obj, X.prototype);
+  if (do_freeze) Object.freeze(obj);
+  return obj;
 }
+
 XX(X);//L0!
 
 // for __proto__ Pollultion:

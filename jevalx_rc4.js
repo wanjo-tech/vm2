@@ -25,48 +25,47 @@ const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 // X VOID
 //function X(){ if (this instanceof X){ }else{ return new X() } }
 //testing new readonly proxy mode of X:
-function X(wrapee,debug=0){
-  if (this instanceof X){
-    if (wrapee) {
-if (typeof wrapee!='object' && typeof wrapee!='functioin') return wrapee;
-      const handler = {
-          get(target, prop, receiver) {
-            if (typeof(prop)!='string'||['constructor','prototype','keys','__defineGetter__','__defineSetter__'].indexOf(prop)>=0)
-              return;
-            if (debug>0) console.log({prop,wrapee})
-            try{
-              let rt;
-              if (prop=='toJSON') rt = ()=>JSON.stringify(wrapee);
-              else { rt = prop in wrapee ? wrapee[prop] : undefined;}
-              rt = XX(rt);
-              if (debug>1)console.log('rt=',rt)
-              return rt;
-            }catch(ex){
-              if (debug>2) console.log('ex',ex,target,prop,receiver)
-              //return undefined;
-            }
-          },
-      };
-      let rt = new Proxy(this, handler);
-      rt=XX(rt);
-      return rt
+function X(wrapee, debug = 0) {
+  if (this instanceof X) {
+    if (wrapee !== null && wrapee !== undefined) {
+      let wrapped = (typeof wrapee !== 'object' && typeof wrapee !== 'function') ? { value: wrapee } : wrapee;
+      let proxy = new Proxy(this, {
+        get(target, prop, receiver) {
+          if (typeof(prop) !== 'string' || ['constructor', 'prototype', 'keys', '__defineGetter__', '__defineSetter__'].indexOf(prop) >= 0)
+            return;
+          if (debug > 0) console.log({ prop, wrapee });
+          try {
+            let result;
+            if (prop === 'toJSON') result = () => JSON.stringify(wrapped);
+            else { result = prop in wrapped ? wrapped[prop] : undefined; }
+            result = XX(result);
+            if (debug > 1) console.log('result =', result);
+            return result;
+          } catch (ex) {
+            if (debug > 2) console.log('ex', ex, target, prop, receiver);
+          }
+        },
+      });
+      return XX(proxy);
     }
-  }else{ 
-if (null==wrapee || undefined==wrapee || typeof wrapee!='object' && typeof wrapee!='functioin') return wrapee;
-return new X(wrapee) }
+  } else {
+    if (null == wrapee || undefined == wrapee || typeof wrapee != 'object' && typeof wrapee != 'function') return wrapee;
+    return new X(wrapee);
+  }
 }
 
 // LOCK
-function XX(obj,with_prototype=true,do_free=true) {
-  if (obj==null || obj==undefined) return obj;
-  if (with_prototype && obj.prototype){
-      Object_setPrototypeOf(obj.prototype,null);
-      Object_freeze(obj.prototype);
+function XX(obj, with_prototype = true, do_freeze = true) {
+  if (obj == null || obj == undefined) return obj;
+  if (with_prototype && obj.prototype) {
+    Object.setPrototypeOf(obj.prototype, null);
+    if (do_freeze) Object.freeze(obj.prototype);
   }
-  Object_setPrototypeOf(obj, X.prototype);//L0
-  if (do_free) Object_freeze(obj);
-  return obj
+  Object.setPrototypeOf(obj, X.prototype);
+  if (do_freeze) Object.freeze(obj);
+  return obj;
 }
+
 XX(X);//L0!
 
 // for __proto__ Pollultion:
