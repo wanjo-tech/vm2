@@ -25,32 +25,36 @@ const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 // X VOID
 //function X(){ if (this instanceof X){ }else{ return new X() } }
 //testing new readonly proxy mode of X:
-function X(wrapee, debug = 0) {
-  if (this instanceof X) {
-    if (wrapee !== null && wrapee !== undefined) {
+function X(wrapee,debug=0){
+  if (this instanceof X){
+    if (wrapee) {
+      //if (typeof wrapee!='object' && typeof wrapee!='function') return wrapee;
       let wrapped = (typeof wrapee !== 'object' && typeof wrapee !== 'function') ? { value: wrapee } : wrapee;
-      let proxy = new Proxy(this, {
-        get(target, prop, receiver) {
-          if (typeof(prop) !== 'string' || ['constructor', 'prototype', 'keys', '__defineGetter__', '__defineSetter__'].indexOf(prop) >= 0)
-            return;
-          if (debug > 0) console.log({ prop, wrapee });
-          try {
-            let result;
-            if (prop === 'toJSON') result = () => JSON.stringify(wrapped);
-            else { result = prop in wrapped ? wrapped[prop] : undefined; }
-            result = XX(result);
-            if (debug > 1) console.log('result =', result);
-            return result;
-          } catch (ex) {
-            if (debug > 2) console.log('ex', ex, target, prop, receiver);
-          }
-        },
-      });
-      return XX(proxy);
+      const handler = {
+          get(target, prop, receiver) {
+            if (typeof(prop)!='string'||['constructor','prototype','keys','__defineGetter__','__defineSetter__'].indexOf(prop)>=0)
+              return;
+            if (debug>0) console.log({prop,wrapee})
+            try{
+              let rt;
+              if (prop=='toJSON') rt = ()=>JSON.parse(JSON.stringify(wrapee));//TMP TODO
+              else { rt = prop in wrapee ? wrapee[prop] : undefined;}
+              rt = XX(rt);
+              if (debug>1)console.log('rt=',rt)
+              return rt;
+            }catch(ex){
+              if (debug>2) console.log('ex',ex,target,prop,receiver)
+              //return undefined;
+            }
+          },
+      };
+      let rt = new Proxy(this, handler);
+      rt=XX(rt);
+      return rt
     }
-  } else {
-    if (null == wrapee || undefined == wrapee || typeof wrapee != 'object' && typeof wrapee != 'function') return wrapee;
-    return new X(wrapee);
+  }else{
+    if (null==wrapee || undefined==wrapee || typeof wrapee!='object' && typeof wrapee!='function') return wrapee;
+    return new X(wrapee)
   }
 }
 
