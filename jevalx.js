@@ -74,7 +74,9 @@ XX(TypeError.prototype);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
-const S_SETUP = [
+const S_SETUP = `
+Object.defineProperty(this,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
+`+[
 'console',//
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__',//L0
 'Error','AggregateError','EvalError','RangeError','ReferenceError','SyntaxError','TypeError','URIError',//L1
@@ -91,15 +93,11 @@ const S_SETUP = [
   'valueOf'
 ].map(v=>'Object.setPrototypeOf('+v+',null);Object.freeze('+v+');delete constructor.'+v+';').join('')
 +`
-//TOOLS
-AsyncFunction = (async()=>{}).constructor;
 
 class Error {
   constructor(message,code) { this.message = message; this.name = 'Error'; if (code) this.code = code; }
   toString() { return JSON.stringify(this) }
 }
-//Object.setPrototypeOf(Error.prototype,null);
-//Object.freeze(Error.prototype);
 
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 
@@ -146,7 +144,6 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           console_dev['log']=fake_console_log;
           ctxx.console = console_dev;
 
-          //CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
           if (ctx) Object_assign(ctxx,ctx);
         }
         //PRECAUTION
@@ -155,7 +152,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
         //SIMULATION
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
         //HOUSEWEEP
-        rst = await rst;
+        rst = await rst;//above we use (async()=>{...})() which sure is a Promise
         done = true;
         if (rst) {
           if (findEvil(rst)) throw {message:'EvilProtoX',js};//seem no need now?
