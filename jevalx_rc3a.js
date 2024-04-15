@@ -10,12 +10,6 @@ All known escape instances are related to the Host Object. The current strategy 
 *) "context": All contexts may introduce some form of prototype attack. A TODO has been marked here to wrap or proxy it for enhanced security.
 */
 
-//rc3b
-Object.defineProperty(Object.prototype, '__proto__', {
-  get() { console.log('host__proto__999_get');return undefined; },
-  set(newValue) { console.log('host__proto__999_set',newValue) }
-});
-
 const vm = require('node:vm');
 const processWtf = require('process');
 
@@ -43,12 +37,14 @@ function XX(obj, with_prototype = true, do_freeze = true) {
   return obj;
 }
 
-XX(X);//L0!!
+XX(X);//L0!
 
+// for __proto__ Pollultion:
 function findEvil(obj,maxdepth=3) {
   let currentObj = obj;
   let depth = 0;
   while (currentObj !== null && currentObj!==undefined && depth < maxdepth) {
+    //'constructor','toString','__proto__',
     const properties = ['message','code','constructor','then'];//Object_getOwnPropertyNames(currentObj);
     for (let i = 0; i < properties.length; i++) {
       const descriptor = Object_getOwnPropertyDescriptor(currentObj, properties[i]);
@@ -64,26 +60,21 @@ function findEvil(obj,maxdepth=3) {
 
 // for Promise Pollultion:
 const Promise_getPrototypeOf = Object.getPrototypeOf(Promise);//L1 for console display
-
-//L0!! @q9 
+//L0 @q9 locked
 XX(Promise.prototype.catch);
 XX(Promise.prototype.finally);
 XX(Promise.prototype.then);
 
 //@r23 host-RangeError throws when error-stack-overflow (Bug of node:vm):
 RangeError.prototype.constructor=X;
-//XX(RangeError.prototype);
+XX(RangeError.prototype);
 //@r24 TypeError
 TypeError.prototype.constructor=X;
-//XX(TypeError.prototype);
+XX(TypeError.prototype);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
 const S_SETUP = `
-Object.defineProperty(Object.prototype, '__proto__', {
-  get() { console.log('box__proto__999_get');return undefined; },
-  set(newValue) { console.log('box__proto__999_set',newValue) }
-});
 Object.defineProperty(this,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
 `+[
 'console',//
@@ -114,9 +105,9 @@ Promise
 `;
 
 //tmp for __proto__ attach, TODO improve...
-//let sandbox_safe_sync_method = function(m,do_return=false){
-//  return XX( function(...args){ let rt2 = m(...args); if (do_return) if (rt2) XX(rt2); return rt2 } )
-//};
+let sandbox_safe_sync_method = function(m,do_return=false){
+  return XX( function(...args){ let rt2 = m(...args); if (do_return) if (rt2) XX(rt2); return rt2 } )
+};
 
 let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
@@ -145,20 +136,18 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           ctxx = vm.createContext(new X);//BIGBANG FROM X
           [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);
 
-          //@r15b (no need XX() after global __proto__ protection
-          //_Promise.delay = XX((t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r)))));
-          _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
+          //@r15b,
+          _Promise.delay = XX((t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r)))));
 
-          //let console_dev = Object.create(null);
-          //let fake_console_log = sandbox_safe_sync_method(console.log);
-          //console_dev['log']=fake_console_log;
-          //ctxx.console = console_dev;
-          ctxx.console = {log:console.log};
+          let console_dev = Object.create(null);
+          let fake_console_log = sandbox_safe_sync_method(console.log);
+          console_dev['log']=fake_console_log;
+          ctxx.console = console_dev;
 
           if (ctx) Object_assign(ctxx,ctx);
         }
         //PRECAUTION
-        Promise.prototype.constructor=X;//L0 @r4,@r5, r14,r15
+        Promise.prototype.constructor=X;//L0 @r4,@r5
 
         //SIMULATION
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
@@ -179,7 +168,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
   }
   finally{
     done = true;
-    //Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//old for display
+    Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//L1 for console display
     Promise.prototype.constructor = Promise;//
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
@@ -198,6 +187,6 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
 let jevalx = jevalx_core;
 
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X,XX,
-VER:'rc3b'
+VER:'rc3a'
 }
 
