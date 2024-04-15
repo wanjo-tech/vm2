@@ -4,7 +4,7 @@ All known escape instances are related to the Host Object. The current strategy 
 
 *) "constructor": Due to restrictions in node:vm, it cannot be deleted. Therefore, we must clear and secure its dangerous properties and methods.
 *) "Object": This includes dangerous methods such as defineProperty, defineProperties, __defineGetter__, and __defineSetter__, which could potentially aid escapes.
-*) "Error": Known issues like error-stack-overflow throw a RangeError belonging to the host. We have locked it to prevent exploits through this bug.
+*) "Error": In some case, host Error will be thrown. We have locked them to prevent exploits through this bug.
 *) "import()": A bug in node:vm that returns a Host Promise. We currently need to secure the host Promise as well.
 *) "output": Outputs from the sandbox might contain malicious setters/getters or prototype pollution, which we must detect and neutralize.
 *) "context": All contexts may introduce some form of prototype attack. A TODO has been marked here to wrap or proxy it for enhanced security.
@@ -66,6 +66,9 @@ XX(Promise.prototype.then);
 //@r23 host-RangeError throws when error-stack-overflow (Bug of node:vm):
 RangeError.prototype.constructor=undefined;
 XX(RangeError.prototype);
+//@r24 TypeError
+TypeError.prototype.constructor=undefined;
+XX(TypeError.prototype);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
@@ -92,6 +95,8 @@ class Error {
   constructor(message,code) { this.message = message; this.name = 'Error'; if (code) this.code = code; }
   toString() { return JSON.stringify(this) }
 }
+//Object.setPrototypeOf(Error.prototype,null);
+//Object.freeze(Error.prototype);
 
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 
@@ -169,8 +174,9 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
     processWtf.removeListener('uncaughtException',tmpHandlerException)
   }
   if (err) {
-    if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') err.message = 'EvilImportX';
-    if (err?.code=='ERR_SCRIPT_EXECUTION_TIMEOUT') err.message = 'Timeout'+timeout;
+    if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
+    if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
+    if (err?.code=='ERR_SCRIPT_EXECUTION_TIMEOUT') {err.message = 'Timeout'+timeout;err.code='TIMEOUT';}
     if (!err?.time) err.time = new Date().getTime();//for app
     if (!err?.id) err.id = err.time;//for app
   }

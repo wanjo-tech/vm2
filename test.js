@@ -1370,7 +1370,7 @@ e.constructor.constructor('return process')().mainModule.require("fs").writeFile
 let r=_=>_;
 this.Error={get prepareStackTrace(){const l=r;r=1;return l;}};
 try{
-    try{(1)[1]}catch(e){e.stack}
+    try{null[1]}catch(e){e.stack}
 }catch(e){ e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r24", ""); }
 false
 `
