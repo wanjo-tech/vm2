@@ -25,38 +25,35 @@ const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 // X VOID
 //function X(){ if (this instanceof X){ }else{ return new X() } }
 //testing new readonly proxy mode of X:
-function X(wrappee){
+function X(wrapee,debug=0){
   if (this instanceof X){
-    if (wrappee) {
+    if (wrapee) {
+if (typeof wrapee!='object' && typeof wrapee!='functioin') return wrapee;
       const handler = {
           get(target, prop, receiver) {
-            if (typeof(prop)!='string' || ['constructor','prototype','keys','__defineGetter__','__defineSetter__'].indexOf(prop)>=0) return;
-            //console.log({prop,wrappee})
+            if (typeof(prop)!='string'||['constructor','prototype','keys','__defineGetter__','__defineSetter__'].indexOf(prop)>=0)
+              return;
+            if (debug>0) console.log({prop,wrapee})
             try{
               let rt;
-              if (prop=='toJSON') rt = ()=>JSON.stringify(wrappee);
-              else { rt = prop in wrappee ? wrappee[prop] : undefined;}
+              if (prop=='toJSON') rt = ()=>JSON.stringify(wrapee);
+              else { rt = prop in wrapee ? wrapee[prop] : undefined;}
               rt = XX(rt);
-              //console.log('rt=',rt)
+              if (debug>1)console.log('rt=',rt)
               return rt;
             }catch(ex){
-              //console.log('ex',ex,target,prop,receiver)
-              return undefined;
+              if (debug>2) console.log('ex',ex,target,prop,receiver)
+              //return undefined;
             }
           },
-          //set(target, prop, value) {
-          //    if (prop in wrappee) {
-          //        wrappee[prop] = value;
-          //        return true;
-          //    }
-          //    return false;
-          //}
       };
       let rt = new Proxy(this, handler);
       rt=XX(rt);
       return rt
     }
-  }else{ return new X(wrappee) }
+  }else{ 
+if (null==wrapee || undefined==wrapee || typeof wrapee!='object' && typeof wrapee!='functioin') return wrapee;
+return new X(wrapee) }
 }
 
 // LOCK
@@ -175,7 +172,14 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           ctxx.console = X(console);
 
           //CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
-          if (ctx) Object_assign(ctxx,ctx);
+          if (ctx) {
+             //Object_assign(ctxx,ctx);
+            for (let k in ctx){
+              let v = ctx[k];
+              let vv=X(v);
+              ctxx[k] = vv;
+            }
+          }
         }
         //PRECAUTION
         Promise.prototype.constructor=X;//L0 @r4,@r5

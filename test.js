@@ -1426,13 +1426,14 @@ i.catch();
 
 LAST:(async()=>{ //normal case:
 
-  try{
-    assert.equal( 8 , await jevalx('x**y',{x:2,y:3}))
-    console.log('ASSERT 8 == x**y',true);
-  }catch(ex){
-    console.log('ASSERT 8 == x**y',ex);
-  }
+  //try{
+  //  assert.equal( 8 , await jevalx('x**y',{x:2,y:3}))
+  //  console.log('ASSERT 8 == x**y',true);
+  //}catch(ex){
+  //  console.log('ASSERT 8 == x**y',ex);
+  //}
   //assertWtf.equal( 8 , await jevalx('x**y',{x:2,y:3}) );
+  console.log('ASSERT 8 == x**y',await jevalx('x**y',{x:2,y:3}));
   console.log('ASSERT 81 == x**y',await jevalx('(async()=>(x**y))()',{x:3,y:4}));
   //assertWtf.equal( 81 , await jevalx('x**y',{x:3,y:4}) );
   console.log('ASSERT 8, ()=>x**y',await jevalx('()=>x**y',{x:2,y:3}));
