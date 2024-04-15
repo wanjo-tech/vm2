@@ -61,12 +61,10 @@ function X(wrappee){
 
 // LOCK
 function XX(obj,with_prototype=true,do_free=true) {
-  if (!obj) return;
-  if (obj.prototype){
-    //obj.prototype.constructor=undefined;
-    //delete obj.prototype.constructor;
-    Object_setPrototypeOf(obj.prototype,null);
-    Object_freeze(obj.prototype);
+  if (obj==null || obj==undefined) return;
+  if (with_prototype && obj.prototype){
+      Object_setPrototypeOf(obj.prototype,null);
+      Object_freeze(obj.prototype);
   }
   Object_setPrototypeOf(obj, X.prototype);//L0
   if (do_free) Object_freeze(obj);

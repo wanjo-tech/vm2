@@ -27,11 +27,9 @@ function X(){ if (this instanceof X){ }else{ return new X() } }
 
 // LOCK
 function XX(obj,with_prototype=true,do_free=true) {
-  if (with_prototype){
-    if (obj.prototype){
+  if (with_prototype && obj.prototype){
       Object_setPrototypeOf(obj.prototype,null);
       Object_freeze(obj.prototype);
-    }
   }
   Object_setPrototypeOf(obj, X.prototype);//L0
   if (do_free) Object_freeze(obj);
