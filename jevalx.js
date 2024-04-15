@@ -15,6 +15,11 @@ Object.defineProperty(Object.prototype, '__proto__', {
   get() { console.log('host__proto__999_get');return undefined; },
   set(newValue) { console.log('host__proto__999_set',newValue) }
 });
+// X VOID
+function X(){ if (this instanceof X){ }else{ return new X() } }
+//
+Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
+//AsyncFunction = (async()=>{}).constructor;
 
 const vm = require('node:vm');
 const processWtf = require('process');
@@ -31,9 +36,6 @@ const Object_setPrototypeOf = Object.setPrototypeOf;
 const Object_freeze = Object.freeze;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 
-// X VOID
-function X(){ if (this instanceof X){ }else{ return new X() } }
-Object.prototype.constructor=X;
 
 // LOCK
 function XX(obj, with_prototype = true, do_freeze = true) {
@@ -117,10 +119,9 @@ for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys'
 Promise
 `;
 
-//tmp for __proto__ attach, TODO improve...
-let sandbox_safe_sync_method = function(m,do_return=false){
-  return XX( function(...args){ let rt2 = m(...args); if (do_return) if (rt2) XX(rt2); return rt2 } )
-};
+//let sandbox_safe_sync_method = function(m,do_return=false){
+//  return XX( function(...args){ let rt2 = m(...args); if (do_return) if (rt2) XX(rt2); return rt2 } )
+//};
 
 let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined)=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
@@ -153,16 +154,20 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           //_Promise.delay = XX((t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r)))));
           _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
 
-          let console_dev = Object.create(null);
-          let fake_console_log = sandbox_safe_sync_method(console.log);
-          console_dev['log']=fake_console_log;
-          ctxx.console = console_dev;
-          //ctxx.console = {log:console.log};//not yet.
+          //let console_dev = Object.create(null);
+          //let fake_console_log = sandbox_safe_sync_method(console.log);
+          //console_dev['log']=fake_console_log;
+          //ctxx.console = console_dev;
+          ctxx.console = {log:console.log};//can be replaced by ctx.console
 
+          //safe now ;)
           if (ctx) Object_assign(ctxx,ctx);
         }
-        //PRECAUTION
-        Promise.prototype.constructor=X;//L0 @r4,@r5, r14,r15
+        //PRECAUTION L0!!
+        Object.prototype.constructor=X;
+        Function.prototype.constructor = X;
+        AsyncFunction.prototype.constructor = X;
+        Promise.prototype.constructor = X;
 
         //SIMULATION
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
@@ -184,7 +189,13 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
   finally{
     done = true;
     //Object.setPrototypeOf(Promise,Promise_getPrototypeOf);//old for display
+
+    //for inspect display...
     Promise.prototype.constructor = Promise;//
+    Object.prototype.constructor = Object;//
+    Function.prototype.constructor = Function;//
+    AsyncFunction.prototype.constructor = AsyncFunction;//
+
     processWtf.removeListener('unhandledRejection',tmpHandlerReject);
     processWtf.removeListener('uncaughtException',tmpHandlerException)
   }
