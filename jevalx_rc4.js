@@ -4,7 +4,7 @@ All known escape instances are related to the Host Object. The current strategy 
 
 *) "constructor": Due to restrictions in node:vm, it cannot be deleted. Therefore, we must clear and secure its dangerous properties and methods.
 *) "Object": This includes dangerous methods such as defineProperty, defineProperties, __defineGetter__, and __defineSetter__, which could potentially aid escapes.
-*) "Error": In some case, host Error will be thrown. We have locked them to prevent exploits through this bug.
+*) "Error": In some cases, host Error will be thrown. We have locked them to prevent exploits through this bug.
 *) "import()": A bug in node:vm that returns a Host Promise. We currently need to secure the host Promise as well.
 *) "output": Outputs from the sandbox might contain malicious setters/getters or prototype pollution, which we must detect and neutralize.
 *) "context": All contexts may introduce some form of prototype attack. A TODO has been marked here to wrap or proxy it for enhanced security.
@@ -58,7 +58,7 @@ return new X(wrapee) }
 
 // LOCK
 function XX(obj,with_prototype=true,do_free=true) {
-  if (obj==null || obj==undefined) return;
+  if (obj==null || obj==undefined) return obj;
   if (with_prototype && obj.prototype){
       Object_setPrototypeOf(obj.prototype,null);
       Object_freeze(obj.prototype);
@@ -96,15 +96,16 @@ XX(Promise.prototype.finally);
 XX(Promise.prototype.then);
 
 //@r23 host-RangeError throws when error-stack-overflow (Bug of node:vm):
-RangeError.prototype.constructor=undefined;
+RangeError.prototype.constructor=X;
 XX(RangeError.prototype);
 //@r24 TypeError
-TypeError.prototype.constructor=undefined;
+TypeError.prototype.constructor=X;
 XX(TypeError.prototype);
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
 const S_SETUP = [
+'console',//
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__',//L0
 'Error','AggregateError','EvalError','RangeError','ReferenceError','SyntaxError','TypeError','URIError',//L1
 'WebAssembly',//L1
@@ -174,7 +175,7 @@ let jevalx_core = async(js,ctx,timeout=666,json_output=false,return_ctx=false,us
           //let fake_console_log = sandbox_safe_sync_method(console.log);
           //console_dev['log']=fake_console_log;
           //ctxx.console = console_dev;
-          ctxx.console = X(console);
+          //ctxx.console = X(console);
 
           //CTX: TODO! need to protect the outer stuff for the __proto__ pollution.
           if (ctx) {
