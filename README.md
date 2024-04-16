@@ -4,7 +4,7 @@
 
 sandbox run js in ctx，running so far so good.  
 
-Challenge still accepted!
+Challenge still accepted!  If you have escape case, **just show me the code** at the issues(https://github.com/wanjo-tech/vm2/issues/4), I'll investigate and fix ASAP.
 
 ## Code
 
