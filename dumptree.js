@@ -82,7 +82,7 @@ function buildObjectTree(obj, depth = 0, patha = [], pathb=[]) {
         } catch (error) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }
-        tree[prop]['pathb'] = [...pathb,prop].join('.');
+        if (tree[prop]) tree[prop]['pathb'] = [...pathb,prop].join('.');
     });
     const proto = Object_getPrototypeOf(obj);
     if (proto) {
@@ -103,11 +103,14 @@ const rootObjects = {
     AsyncFunction: async () => {},
     Promise: (async () => {}),
     //HostPromise: import('').catch(_=>_).constructor,//
+    //globalThis: this,
 };
 
 if (require.main === module) {
+  const console_log = console.log;
+  const console_error = console.error;
   process.on('unhandledRejection', (reason, promise) => {
-    console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
+    console_error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
   });
 
   var {jevalx,S_SETUP} = require('./jevalx');
@@ -115,7 +118,7 @@ if (require.main === module) {
   eval(S_SETUP);
 
   if (constructor && Object && Object.__proto__ && constructor.__proto__ && Object.__proto__.constructor!=constructor.__proto__.constructor){
-    console.log('test constructor.__proto__.constructor');
+    console_log('test constructor.__proto__.constructor');
     constructor.__proto__.constructor=Object.__proto__.constructor;
   }
   //if (constructor==Object)
@@ -126,7 +129,7 @@ if (require.main === module) {
       objectTrees[key] = buildObjectTree(rootObjects[key], 0, [],[key]);
   }
   const jsonResult = JSON.stringify(objectTrees, null, 2);
-  console.log(jsonResult);
+  console_log(jsonResult);
 }else{
   module.exports = (o)=>buildObjectTree(o,0,[])
 }

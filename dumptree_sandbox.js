@@ -28,7 +28,7 @@ function buildObjectTree(obj, depth = 0, patha = [], pathb=[]) {
 
   if (obj!==null && obj!==undefined) {
     const tree = {typeobj:typeof(obj)};
-    Object.getOwnPropertyNames(obj).forEach(prop => {
+    Object_getOwnPropertyNames(obj).forEach(prop => {
         const descriptor = Object_getOwnPropertyDescriptor(obj, prop);
         let propertyStr = 'Uninitialized';
         let danger = undefined;
@@ -90,10 +90,11 @@ function buildObjectTree(obj, depth = 0, patha = [], pathb=[]) {
                 tree[prop]['danger'] = 2;
               }
             }
+            if (!danger) delete tree[prop]['danger'];
         } catch (error) {
             tree[prop] = { type: 'error', value: error.message, str: 'Error' };
         }
-        tree[prop]['pathb'] = [...pathb,prop].join('.');
+        if (tree[prop]) tree[prop]['pathb'] = [...pathb,prop].join('.');
     });
     const proto = Object_getPrototypeOf(obj);
     if (proto) {
@@ -114,7 +115,7 @@ const rootObjects = {
     AsyncFunction: async () => {},
     Promise: (async () => {}),
     //HostPromise: import('').catch(_=>_).constructor,//
-    globalThis: this,
+    //globalThis: this,
 };
 
 const objectTrees = {};
@@ -128,6 +129,6 @@ console_log(jsonResult);
 
 (async()=>{
   await jevalx(`console_log('[')`,{console_log});
-  await jevalx(code,{console_log,getOwnPropertyNames,Object_getPrototypeOf,Object_setPrototypeOf,Object_getOwnPropertyDescriptor});
+  await jevalx(code,{console_log,getOwnPropertyNames,Object_getPrototypeOf,Object_setPrototypeOf,Object_getOwnPropertyDescriptor,Object_getOwnPropertyNames});
   await jevalx(`console_log(']')`,{console_log});
 })()
