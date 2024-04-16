@@ -1378,8 +1378,17 @@ false
   },
 
 r25:async function(){ let case_id = arguments.callee.name; var code=`
-//{then:[].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r25', ''))"]))}
 {then: {get: Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_r25', ''))")}}
+`
+   try{
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+   }catch(ex){
+     console.log(`${case_id} ex=`,ex);
+   }
+   console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+},
+r26:async function(){ let case_id = arguments.callee.name; var code=`
+{then:[].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r26', ''))"]))}
 `
    try{
      console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
