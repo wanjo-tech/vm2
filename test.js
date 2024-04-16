@@ -136,7 +136,7 @@ throw {toString: eval.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_ca
   try{
     console.log('DDDD result=',await jevalx(code));
   }catch(ex){
-    console.log('DDDD ex=',ex.message);
+    console.log('DDDD ex=',ex);
   }
   console.log('DDDD check=',typeof(process),typeof(Promise));
 
@@ -713,9 +713,9 @@ var code=`
   try{
     var rst = await jevalx(code);
     console.log('Q15 result=',rst);
-    //console.log('Q15 result=',await rst.toString());//will trigger evil?
+    String(rst);//test trigger...
   }catch(ex){
-    console.log('Q15 ex=',ex.message,JSON.stringify(ex.js));
+    console.log('Q15 ex=',ex);
   }
   console.log('Q15 check=',typeof(process),typeof(Promise));
 
