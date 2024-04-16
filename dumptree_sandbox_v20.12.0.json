@@ -68,18 +68,6 @@
         "str": "function hasOwnProperty() { [native code] }",
         "pathb": "Object.prototype.hasOwnProperty"
       },
-      "__lookupGetter__": {
-        "type": "function",
-        "value": "Function",
-        "str": "function __lookupGetter__() { [native code] }",
-        "pathb": "Object.prototype.__lookupGetter__"
-      },
-      "__lookupSetter__": {
-        "type": "function",
-        "value": "Function",
-        "str": "function __lookupSetter__() { [native code] }",
-        "pathb": "Object.prototype.__lookupSetter__"
-      },
       "isPrototypeOf": {
         "type": "function",
         "value": "Function",
@@ -217,18 +205,6 @@
           "value": "Function",
           "str": "function hasOwnProperty() { [native code] }",
           "pathb": "Object.getPrototypeOf().getPrototypeOf().hasOwnProperty"
-        },
-        "__lookupGetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupGetter__() { [native code] }",
-          "pathb": "Object.getPrototypeOf().getPrototypeOf().__lookupGetter__"
-        },
-        "__lookupSetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupSetter__() { [native code] }",
-          "pathb": "Object.getPrototypeOf().getPrototypeOf().__lookupSetter__"
         },
         "isPrototypeOf": {
           "type": "function",
@@ -533,18 +509,6 @@
           "str": "function hasOwnProperty() { [native code] }",
           "pathb": "Array.prototype.getPrototypeOf().hasOwnProperty"
         },
-        "__lookupGetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupGetter__() { [native code] }",
-          "pathb": "Array.prototype.getPrototypeOf().__lookupGetter__"
-        },
-        "__lookupSetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupSetter__() { [native code] }",
-          "pathb": "Array.prototype.getPrototypeOf().__lookupSetter__"
-        },
         "isPrototypeOf": {
           "type": "function",
           "value": "Function",
@@ -665,18 +629,6 @@
           "value": "Function",
           "str": "function hasOwnProperty() { [native code] }",
           "pathb": "Array.getPrototypeOf().getPrototypeOf().hasOwnProperty"
-        },
-        "__lookupGetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupGetter__() { [native code] }",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().__lookupGetter__"
-        },
-        "__lookupSetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupSetter__() { [native code] }",
-          "pathb": "Array.getPrototypeOf().getPrototypeOf().__lookupSetter__"
         },
         "isPrototypeOf": {
           "type": "function",
@@ -800,18 +752,6 @@
           "value": "Function",
           "str": "function hasOwnProperty() { [native code] }",
           "pathb": "Function.getPrototypeOf().getPrototypeOf().hasOwnProperty"
-        },
-        "__lookupGetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupGetter__() { [native code] }",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().__lookupGetter__"
-        },
-        "__lookupSetter__": {
-          "type": "function",
-          "value": "Function",
-          "str": "function __lookupSetter__() { [native code] }",
-          "pathb": "Function.getPrototypeOf().getPrototypeOf().__lookupSetter__"
         },
         "isPrototypeOf": {
           "type": "function",
@@ -938,18 +878,6 @@
             "str": "function hasOwnProperty() { [native code] }",
             "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().hasOwnProperty"
           },
-          "__lookupGetter__": {
-            "type": "function",
-            "value": "Function",
-            "str": "function __lookupGetter__() { [native code] }",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().__lookupGetter__"
-          },
-          "__lookupSetter__": {
-            "type": "function",
-            "value": "Function",
-            "str": "function __lookupSetter__() { [native code] }",
-            "pathb": "AsyncFunction.getPrototypeOf().getPrototypeOf().getPrototypeOf().__lookupSetter__"
-          },
           "isPrototypeOf": {
             "type": "function",
             "value": "Function",
@@ -1075,18 +1003,6 @@
             "value": "Function",
             "str": "function hasOwnProperty() { [native code] }",
             "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().hasOwnProperty"
-          },
-          "__lookupGetter__": {
-            "type": "function",
-            "value": "Function",
-            "str": "function __lookupGetter__() { [native code] }",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().__lookupGetter__"
-          },
-          "__lookupSetter__": {
-            "type": "function",
-            "value": "Function",
-            "str": "function __lookupSetter__() { [native code] }",
-            "pathb": "Promise.getPrototypeOf().getPrototypeOf().getPrototypeOf().__lookupSetter__"
           },
           "isPrototypeOf": {
             "type": "function",

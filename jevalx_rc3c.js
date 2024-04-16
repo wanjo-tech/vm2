@@ -28,18 +28,18 @@ const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
-const S_SETUP = `(()=>{
-let Object_defineProperty = Object.defineProperty;
-Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});//L0
-Object_defineProperty(this,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
+const S_SETUP = `
+Object.defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});//L0
+Object.defineProperty(this,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
 `+[
 //'console',//L2
 'WebAssembly','Error','AggregateError','EvalError','RangeError','ReferenceError','SyntaxError','TypeError','URIError',//L1
-'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__',//L0
+'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__',//L0
 ].map(v=>'delete '+v+';').join('')
 +`
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
-return Promise})()`;
+Promise
+`;
 
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
@@ -98,6 +98,6 @@ let jevalx_core = async(js,ctx,options={})=>{
 let jevalx = jevalx_core;
 
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
-VER:'rc3d'
+VER:'rc3c'
 }
 
