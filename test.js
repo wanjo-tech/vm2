@@ -1120,8 +1120,8 @@ toString.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call
 import('fs').catch();
 `;
      try{
-       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},{timeout:666,json_output:true}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1133,8 +1133,7 @@ toString.__proto__ = {call: [].reduce.bind([1,2], Function.call.bind(Function.ca
 import('fs').catch();
 `;
      try{
-       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},{timeout:666,json_output:true}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1146,8 +1145,7 @@ valueOf.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.call)
 import('fs').catch();
 `;
      try{
-       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},{timeout:666,json_output:true}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1160,8 +1158,7 @@ setTimeout.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.ca
 import('fs').catch();
 `;
      try{
-       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},{timeout:666,json_output:true}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1174,7 +1171,6 @@ console.log.__proto__.call = [].reduce.bind([1,2], Function.call.bind(Function.c
 import('fs').catch();
 `;
      try{
-       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
@@ -1187,8 +1183,7 @@ import('fs').catch();
 const t = setTimeout(_=>t.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r13", ""), 1000);
 `;
      try{
-       console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},{timeout:666,json_output:true}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1199,8 +1194,7 @@ const t = setTimeout(_=>t.constructor.constructor('return process')().mainModule
 Promise.delay(1234).then(_=>import('').constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r14", ""))
 `;
      try{
-       //console.log(`${case_id} result(json)=`,await jevalx(code,{},timeout=666,json_output=true));
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+       console.log(`${case_id} result(json)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1440,7 +1434,7 @@ LAST:(async()=>{ //normal case:
 
   console.log('ASSERT 19683 == new Promise(r=>r(x**y**z))',await jevalx('new Promise(r=>r(x**y**z))',{x:3,y:3,z:2}));
 
-  console.log(`TEST json output`,await jevalx('({t:new Date()})',{},timeout=666,json_output=true));
+  console.log(`TEST json output`,await jevalx('({t:new Date()})',{},{timeout:666,json_output:true}));
 
   //console.log('ASSERT undefined == process:',await jevalx('[].constructor.constructor("return typeof(process)")()'));
 
