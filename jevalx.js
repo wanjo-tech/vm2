@@ -60,6 +60,7 @@ Object_defineProperty(Object.prototype,'__proto__',{
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 return Promise})()`;
 
+let jevalx_host_a = [ Function, Promise, Object, Function, AsyncFunction, RangeError, TypeError ];
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
   if (typeof options=='number') timeout = options;//
@@ -86,12 +87,7 @@ let jevalx_core = async(js,ctx,options={})=>{
           ctxx.console = {log:console.log};//can be replaced by ctx.console
           if (ctx) Object.assign(ctxx,ctx);
         }
-        Function.prototype.constructor = X;//L0
-        Promise.prototype.constructor = X;//L0
-        Object.prototype.constructor=X;
-        Function.prototype.constructor = X;
-        AsyncFunction.prototype.constructor = X;
-
+        jevalx_host_a.forEach(o=>(o.prototype.constructor=X));
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
         rst = await rst;//above we use (async()=>{...})() which sure is a Promise
         done = true;
@@ -106,11 +102,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss) //currently only TimeoutX @Q7x
   }
   finally{
-    Promise.prototype.constructor = Promise;//L0
-    Function.prototype.constructor = Function;//L1
-    Object.prototype.constructor=Object;
-    Function.prototype.constructor = Function;
-    AsyncFunction.prototype.constructor = AsyncFunction;
+    jevalx_host_a.forEach(o=>(o.prototype.constructor=o));
     processWtf.removeListener('unhandledRejection',tmpHandler);
     processWtf.removeListener('uncaughtException',tmpHandler)
   }
@@ -127,8 +119,7 @@ let jevalx_core = async(js,ctx,options={})=>{
 }
 let jevalx = jevalx_core;
 
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
-findEvil,
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,X,findEvil,
 VER:'rc3d'
 }
 
