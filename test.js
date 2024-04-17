@@ -1397,6 +1397,17 @@ r26:async function(){ let case_id = arguments.callee.name; var code=`
    }
    console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
 },
+r27:async function(){ let case_id = arguments.callee.name; var code=`
+o={__proto__:{get then(){return [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r27', ''))"]))}}};
+o
+`
+   try{
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+   }catch(ex){
+     console.log(`${case_id} ex=`,ex);
+   }
+   console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+},
 
 tpl:async function(){ let case_id = arguments.callee.name; var code=`
 `
