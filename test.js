@@ -1555,5 +1555,6 @@ old helper.
     //}});
 
 await jevalx(`dumptree(this)`,{dumptree:require('./dumptree')})
+Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});// TOOL
 
 */

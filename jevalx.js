@@ -35,23 +35,20 @@ function findEvil(obj,maxdepth=3) {
   }
   return false;
 }
-
-// TOOL
-Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
-
 const vm = require('node:vm');
 const processWtf = require('process');
 const timers = require('timers');
 const setTimeout = timers.setTimeout;
-
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 
 const S_SETUP = `(()=>{
 let Object_defineProperty = Object.defineProperty;
-Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});//L0
-Object_defineProperty(this,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
+Object_defineProperty(Object.prototype,'__proto__',{
+  get() { console.log('box__proto__911_get');return undefined; },
+  set(newValue) { console.log('box__proto__911_set',newValue) }
+});//L0
 `+[
 //'console',//L2
 'WebAssembly','Error','AggregateError','EvalError','RangeError','ReferenceError','SyntaxError','TypeError','URIError',//L1
@@ -77,7 +74,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     let js_opts;//TODO for import()
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
-      setTimeout(()=>{j({message:'TimeoutX',js,js_opts})},timeout+666)//L0
+      delay(timeout+666).then(()=>j({message:'TimeoutX',js,js_opts}))//L0 @Q7x
       try{
         if (ctx && vm.isContext(ctx)) { ctxx = ctx } //SESSION
         else {
@@ -96,7 +93,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc',ex};
         err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
       }
-      setTimeout(()=>{ if (evil||err) j(err); else r(rst); },1);
+      delay(1).then(()=>(evil||err)?j(err):r(rst))
     });
   }catch(ex){ if (!err) err = {message:ex?.message||'EvilXd',js,code:ex?.code,tag:'Xd'};
     err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss) //currently only TimeoutX @Q7x
