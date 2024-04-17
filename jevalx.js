@@ -17,6 +17,8 @@ const X=function(){}
 Object.setPrototypeOf(X.prototype,null);//L0
 Object.setPrototypeOf(X,X.prototype);//L0
 
+Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});// TOOL
+
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 function findEvil(obj,maxdepth=3) {
@@ -86,6 +88,10 @@ let jevalx_core = async(js,ctx,options={})=>{
         }
         Function.prototype.constructor = X;//L0
         Promise.prototype.constructor = X;//L0
+        Object.prototype.constructor=X;
+        Function.prototype.constructor = X;
+        AsyncFunction.prototype.constructor = X;
+
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
         rst = await rst;//above we use (async()=>{...})() which sure is a Promise
         done = true;
@@ -102,6 +108,9 @@ let jevalx_core = async(js,ctx,options={})=>{
   finally{
     Promise.prototype.constructor = Promise;//L0
     Function.prototype.constructor = Function;//L1
+    Object.prototype.constructor=Object;
+    Function.prototype.constructor = Function;
+    AsyncFunction.prototype.constructor = AsyncFunction;
     processWtf.removeListener('unhandledRejection',tmpHandler);
     processWtf.removeListener('uncaughtException',tmpHandler)
   }
