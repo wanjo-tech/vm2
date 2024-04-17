@@ -1066,6 +1066,37 @@ pc.__proto__ = {
        }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+  r4b:async()=>{ var case_id= 'r4x';
+var code=`
+p = import('').constructor.prototype;
+oldThen = p.constructor.prototype.then;
+p.then = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["p.then = oldThen,import('fs').then(m=>m.writeFileSync('pwned_r4b', ''))"]));
+Promise.delay(1)
+`;
+       try{
+         console.log(`${case_id} result=`,await jevalx(code,));
+       }catch(ex){
+         console.log(`${case_id} ex=`,ex);
+       }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+  r4c:async()=>{ var case_id= 'r4x';
+var code=`
+//delete import('').constructor;
+delete import('').constructor.prototype;
+p = import('').constructor.prototype;
+oldThen = p.constructor.prototype.then;
+p.then = [].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["p.then = oldThen,import('fs').then(m=>m.writeFileSync('pwned_r4c', ''))"]));
+Promise.delay(1)
+`;
+       try{
+         console.log(`${case_id} result=`,await jevalx(code,));
+       }catch(ex){
+         console.log(`${case_id} ex=`,ex);
+       }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
   r5:async()=>{
 var case_id= 'r5';

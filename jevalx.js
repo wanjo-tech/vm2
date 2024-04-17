@@ -85,6 +85,7 @@ let jevalx_core = async(js,ctx,options={})=>{
           if (ctx) Object.assign(ctxx,ctx);
         }
         Function.prototype.constructor = X;//L0
+        Promise.prototype.constructor = X;//L0
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,js_opts);
         rst = await rst;//above we use (async()=>{...})() which sure is a Promise
         done = true;
@@ -99,6 +100,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss) //currently only TimeoutX @Q7x
   }
   finally{
+    Promise.prototype.constructor = Promise;//L0
     Function.prototype.constructor = Function;//L1
     processWtf.removeListener('unhandledRejection',tmpHandler);
     processWtf.removeListener('uncaughtException',tmpHandler)
