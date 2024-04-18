@@ -42,7 +42,7 @@ let Object_defineProperty = Object.defineProperty;
 Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
 
 if (is_sandbox){//WhiteList14 in sandbox
-  let WhiteList = ['NaN','undefined','Infinity','Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math'];
+  let WhiteList = ['NaN','undefined','Infinity','Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String'];
   for (let v of Object.getOwnPropertyNames(this)){
     if (WhiteList.indexOf(v)<0) delete this[v];
   };
