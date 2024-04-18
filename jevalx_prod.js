@@ -19,6 +19,7 @@ Object.defineProperty(Object.prototype,'__proto__',{ get() { console.log('box__p
 `+[
 'WebAssembly','Error','AggregateError','EvalError','RangeError','ReferenceError','SyntaxError','TypeError','URIError',
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__',
+'FinalizationRegistry',//@r29
 ].map(v=>'delete '+v+';').join('')
 +`
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return Promise})()`;

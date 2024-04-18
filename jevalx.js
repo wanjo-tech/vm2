@@ -58,6 +58,7 @@ Object_defineProperty(Object.prototype,'__proto__',{
 //'console',//L2
 'WebAssembly','Error','AggregateError','EvalError','RangeError','ReferenceError','SyntaxError','TypeError','URIError',//L1
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__',//L0
+'FinalizationRegistry',//@r29
 ].map(v=>'delete '+v+';').join('')
 +`
 Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});

