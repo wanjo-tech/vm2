@@ -39,9 +39,10 @@ let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts
 const S_SETUP = `(()=>{
 let is_sandbox = 'function'!=typeof setTimeout;
 let Object_defineProperty = Object.defineProperty;
-Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});//L0
-if (is_sandbox){
-  let WhiteList = ['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math'];
+Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
+
+if (is_sandbox){//WhiteList14 in sandbox
+  let WhiteList = ['NaN','undefined','Infinity','Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math'];
   for (let v of Object.getOwnPropertyNames(this)){
     if (WhiteList.indexOf(v)<0) delete this[v];
   };
@@ -52,7 +53,7 @@ if (is_sandbox){
 +`
 Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
 //setTimeout = (f,t)=>Promise.delay(t).then(f);
-for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
+for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
 return Promise})()`;
 
 let jevalx_host_a = [ RangeError, TypeError, Promise, Object, AsyncFunction, Function ];
@@ -72,14 +73,13 @@ let jevalx_core = async(js,ctx,options={})=>{
     let _Promise;
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
-      delay(timeout+666).then(()=>{done=true;j({message:'TimeoutX',js})})//L0 @Q7x
+      delay(timeout+666).then(()=>{done=true;j({message:'TimeoutX',js})})//@Q7x
       try{
         if (ctx && vm.isContext(ctx)) ctxx = ctx;
         else {
           ctxx = vm.createContext(new X);
           [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);
           _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
-          ctxx.console = {log:console.log};//can be replaced by ctx.console
           if (ctx) Object.assign(ctxx,ctx);
         }
         jevalx_host_a.forEach(o=>(o.prototype.constructor=X));
