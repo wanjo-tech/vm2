@@ -1454,6 +1454,16 @@ o
    }
    console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
 },
+r28:async function(){ let case_id = arguments.callee.name; var code=`
+import('').catch(e=>e.constructor.prototype.__defineSetter__('constructor', c=>c.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r28", "")));
+`
+   try{
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+   }catch(ex){
+     console.log(`${case_id} ex=`,ex);
+   }
+   console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+},
 
 tpl:async function(){ let case_id = arguments.callee.name; var code=`
 `
