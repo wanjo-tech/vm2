@@ -29,14 +29,18 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
   let last_resolve,last_reject;
-  let tmpHandler = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXa',js,code:ex?.code,tag:Promise?'Xb':'Xa',ex}; if (last_reject) last_reject(err); };
+    let tmpHandler = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXa',js,code:ex?.code,tag:Promise?'Xb':'Xa',ex};
+      if (!done && last_reject) {
+        last_reject(err);
+      }
+    };
   try{
     processWtf.addListener('unhandledRejection',tmpHandler);
     processWtf.addListener('uncaughtException',tmpHandler)
     let _Promise;
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
-      delay(timeout+666).then(()=>j({message:'TimeoutX',js}))
+      delay(timeout+666).then(()=>{done=true;j({message:'TimeoutX',js})})//L0 @Q7x
       try{
         if (ctx && vm.isContext(ctx)) ctxx = ctx;
         else {
@@ -51,16 +55,22 @@ let jevalx_core = async(js,ctx,options={})=>{
         rst = await rst;
         done = true;
         if (rst) {delete rst.then;delete rst.toString;delete rst.toJSON}
-      }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc',ex};
+      }catch(ex){
+        done = true;
+        if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc',ex};
         err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
       }
       delay(1).then(()=>(evil||err)?j(err):r(rst))
     });
-  }catch(ex){ if (!err) err = {message:ex?.message||'EvilXd',js,code:ex?.code,tag:'Xd'};
-    err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss)
+  }catch(ex){
+    done = true;
+    if (!err) err = {message:ex?.message||'EvilXd',js,code:ex?.code,tag:'Xd'};
+    err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss) //currently only TimeoutX @Q7x
   }
   finally{
-    jevalx_host_a.forEach(o=>(o.prototype.constructor=o));
+    if (done) {
+      jevalx_host_a.forEach(o=>(o.prototype.constructor=o));
+    } else { console.log('TODO finally not done?') }
     processWtf.removeListener('unhandledRejection',tmpHandler);
     processWtf.removeListener('uncaughtException',tmpHandler)
   }
