@@ -69,7 +69,9 @@ let jevalx_core = async(js,ctx,options={})=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
   let last_resolve,last_reject;//for quicker return.
     let tmpHandler = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXa',js,code:ex?.code,tag:Promise?'Xb':'Xa',ex};
-      if (last_reject) last_reject(err);
+      if (!done && last_reject) {
+        last_reject(err);
+      }
     };
   try{
     processWtf.addListener('unhandledRejection',tmpHandler);
@@ -95,12 +97,16 @@ let jevalx_core = async(js,ctx,options={})=>{
         done = true;
         if (findEvil(rst)) throw {message:'EvilProtoX',js};//@r4
         if (rst) {delete rst.then;delete rst.toString;delete rst.toJSON}//@Q15
-      }catch(ex){ if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc',ex};
+      }catch(ex){
+        done = true;
+        if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc',ex};
         err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
       }
       delay(1).then(()=>(evil||err)?j(err):r(rst))
     });
-  }catch(ex){ if (!err) err = {message:ex?.message||'EvilXd',js,code:ex?.code,tag:'Xd'};
+  }catch(ex){
+    done = true;
+    if (!err) err = {message:ex?.message||'EvilXd',js,code:ex?.code,tag:'Xd'};
     err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss) //currently only TimeoutX @Q7x
   }
   finally{

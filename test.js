@@ -1485,6 +1485,17 @@ i.catch();
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
+  x2:async function(){ let case_id = arguments.callee.name; var code=`
+Promise.delay(999).then(()=>{const i=import("");console.log('i'+i.constructor.constructor("return process")())})
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
 LAST:(async()=>{ //normal case:
 
