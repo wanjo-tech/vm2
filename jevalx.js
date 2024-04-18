@@ -79,7 +79,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     let js_opts;//TODO for import()
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
-      delay(timeout+666).then(()=>j({message:'TimeoutX',js,js_opts}))//L0 @Q7x
+      delay(timeout+666).then(()=>{done=true;j({message:'TimeoutX',js,js_opts})})//L0 @Q7x
       try{
         if (ctx && vm.isContext(ctx)) { ctxx = ctx } //SESSION
         else {
@@ -104,7 +104,9 @@ let jevalx_core = async(js,ctx,options={})=>{
     err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss) //currently only TimeoutX @Q7x
   }
   finally{
-    jevalx_host_a.forEach(o=>(o.prototype.constructor=o));
+    if (done) {
+      jevalx_host_a.forEach(o=>(o.prototype.constructor=o));
+    } else { console.log('TODO finally not done?') }
     processWtf.removeListener('unhandledRejection',tmpHandler);
     processWtf.removeListener('uncaughtException',tmpHandler)
   }
