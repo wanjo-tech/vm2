@@ -57,10 +57,12 @@ Object_defineProperty(Object.prototype,'__proto__',{
 'Symbol','Reflect','Proxy','Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__',//L0
 ].map(v=>'delete '+v+';').join('')
 +`
+Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
+setTimeout = (f,t)=>Promise.delay(t).then(f);
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 return Promise})()`;
 
-let jevalx_host_a = [ Function, Promise, Object, Function, AsyncFunction, RangeError, TypeError ];
+let jevalx_host_a = [ RangeError, TypeError, Promise, Object, AsyncFunction, Function ];
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
   if (typeof options=='number') timeout = options;//

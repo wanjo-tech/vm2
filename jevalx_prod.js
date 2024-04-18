@@ -20,7 +20,7 @@ Object.defineProperty(Object.prototype,'__proto__',{ get() { console.log('box__p
 +`
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return Promise})()`;
 
-let jevalx_host_a = [ Function, Promise, Object, Function, AsyncFunction, RangeError, TypeError ];
+let jevalx_host_a = [ RangeError, TypeError, Promise, Object, AsyncFunction, Function ];
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
   if (typeof options=='number') timeout = options;
@@ -73,5 +73,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   return rst;
 }
 let jevalx = jevalx_core;
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,VER:'prod'}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
+VER:'prod'
+}
 

@@ -1097,6 +1097,19 @@ Promise.delay(1)
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
+  r4d:async()=>{ var case_id= 'r4x';
+var code=`
+p = import('').constructor.prototype;
+console.log('p=',p,typeof(p));
+`;
+       try{
+         console.log(`${case_id} result=`,await jevalx(code,));
+       }catch(ex){
+         console.log(`${case_id} ex=`,ex);
+       }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
   r5:async()=>{
 var case_id= 'r5';
@@ -1396,7 +1409,9 @@ let r=_=>_;
 this.Error={get prepareStackTrace(){const l=r;r=1;return l;}};
 try{
     try{null[1]}catch(e){e.stack}
-}catch(e){ e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r24", ""); }
+}catch(e){
+console.log('r24.e:'+e.constructor.prototype);
+e.constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r24", ""); }
 false
 `
      try{
