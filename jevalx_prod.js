@@ -64,6 +64,7 @@ let jevalx_core = async(js,ctx,options={})=>{
           ctxx = vm.createContext(new X);
           [ctxx,_Promise] = jevalx_raw(S_SETUP,ctxx);
           _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
+          ctxx.console = {log: console.log};
           if (ctx) Object.assign(ctxx,ctx);
         }
         jevalx_host_a.forEach(o=>(o.prototype.constructor=X));
