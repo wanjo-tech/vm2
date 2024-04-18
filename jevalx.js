@@ -19,6 +19,9 @@ Object.setPrototypeOf(X,X.prototype);//L0
 
 Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});// TOOL
 
+//@r28
+eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
+
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 function findEvil(obj,maxdepth=3) {
@@ -58,7 +61,7 @@ Object_defineProperty(Object.prototype,'__proto__',{
 ].map(v=>'delete '+v+';').join('')
 +`
 Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
-setTimeout = (f,t)=>Promise.delay(t).then(f);
+//setTimeout = (f,t)=>Promise.delay(t).then(f);
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}//L0
 return Promise})()`;
 

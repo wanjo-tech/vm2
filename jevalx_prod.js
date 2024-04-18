@@ -3,6 +3,9 @@ const X=function(){}
 Object.setPrototypeOf(X.prototype,null);
 Object.setPrototypeOf(X,X.prototype);
 Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
+
+eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
+
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 const vm = require('node:vm');
