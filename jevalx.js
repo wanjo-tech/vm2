@@ -1,15 +1,10 @@
-Object.defineProperty(Object.prototype, '__proto__', {
-  get() { console.log('host__proto__911_get');return undefined; },
-  set(newValue) { console.log('host__proto__911_set',newValue) }
+Object.defineProperty(Object.prototype,'__proto__',{
+  get(){console.log('host__proto__911_get')},
+  set(newValue){console.log('host__proto__911_set',newValue)}
 });
-const X=function(){}
-//Object.setPrototypeOf(X.prototype,null);
-//Object.setPrototypeOf(X,X.prototype);
-
-Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
-
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
-
+const X=function(){}
+//Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 function findEvil(obj,maxdepth=3) {
@@ -33,9 +28,7 @@ const processWtf = require('process');
 const timers = require('timers');
 const setTimeout = timers.setTimeout;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
-
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
-
 const S_SETUP = `(()=>{
 let is_sandbox = 'function'!=typeof setTimeout;
 let Object_defineProperty = Object.defineProperty;
@@ -52,12 +45,9 @@ if (is_sandbox){//WhiteList14 in sandbox
 ].map(v=>'delete '+v+';').join('')
 +`
 Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
-//setTimeout = (f,t)=>Promise.delay(t).then(f);
-for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
-return Promise})()`;
-
-let jevalx_host_a = [ Promise, Object, Function, //AsyncFunction, RangeError, TypeError
-];
+setTimeout = (f,t)=>Promise.delay(t).then(f);//TESTING
+for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return Promise})()`;
+let jevalx_host_a=[Promise,Object,Function,/*AsyncFunction,RangeError,TypeError*/];
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
   if (typeof options=='number') timeout = options;
