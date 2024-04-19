@@ -3,8 +3,8 @@ Object.defineProperty(Object.prototype, '__proto__', {
   set(newValue) { console.log('host__proto__911_set',newValue) }
 });
 const X=function(){}
-Object.setPrototypeOf(X.prototype,null);
-Object.setPrototypeOf(X,X.prototype);
+//Object.setPrototypeOf(X.prototype,null);
+//Object.setPrototypeOf(X,X.prototype);
 
 Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
 
@@ -40,7 +40,8 @@ Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructo
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}
 return Promise})()`;
 
-let jevalx_host_a = [ RangeError, TypeError, Promise, Object, AsyncFunction, Function ];
+let jevalx_host_a = [ Promise, Object, Function, //AsyncFunction, RangeError, TypeError
+];
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
   if (typeof options=='number') timeout = options;
