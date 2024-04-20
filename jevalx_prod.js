@@ -4,9 +4,28 @@ Object.defineProperty(Object.prototype,'__proto__',{
 });
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 const X=function(){}
+//Object.setPrototypeOf(X,new X);
 //Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
+function findEvil(obj,maxdepth=3) {
+  let currentObj = obj;
+  let depth = 0;
+  while (currentObj !== null && currentObj!==undefined && depth < maxdepth) {
+    const properties = ['message','code','constructor','then'];
+    for (let i = 0; i < properties.length; i++) {
+      let prop = properties[i];
+      const descriptor = Object_getOwnPropertyDescriptor(currentObj, prop);
+      if (descriptor && (typeof descriptor.get === 'function' || typeof descriptor.set == 'function')) {
+        return true;
+      }
+      if (prop=='then' && typeof currentObj[prop]=='function') return true;
+    }
+    currentObj = Object_getPrototypeOf(currentObj);
+    depth++;
+  }
+  return false;
+}
 const vm = require('node:vm');
 const processWtf = require('process');
 const timers = require('timers');
@@ -62,7 +81,8 @@ let jevalx_core = async(js,ctx,options={})=>{
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
         rst = await rst;
         done = true;
-        if (rst) {delete rst.then;delete rst.toString;delete rst.toJSON}
+        if (findEvil(rst)) throw {message:'EvilProtoX',js};//@r4
+        if (rst) {delete rst.then;delete rst.toString;delete rst.toJSON}//@Q15
       }catch(ex){
         done = true;
         if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc',ex};
@@ -95,6 +115,7 @@ let jevalx_core = async(js,ctx,options={})=>{
 }
 let jevalx = jevalx_core;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
+X,findEvil,
 VER:'prod'
 }
 

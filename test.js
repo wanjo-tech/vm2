@@ -1482,6 +1482,16 @@ false
    console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
 },
 
+t1:async function(){ let case_id = arguments.callee.name; var code=`
+({then:1,__proto__:{then:async(r)=>{r();for(let i=0;i<9;i++)await Promise.resolve();import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t1","")}}})
+`;
+   try{
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+   }catch(ex){
+     console.log(`${case_id} ex=`,ex);
+   }
+   console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+},
 
 tpl:async function(){ let case_id = arguments.callee.name; var code=`
 `
