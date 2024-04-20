@@ -28,21 +28,15 @@ const setTimeout = timers.setTimeout;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 const S_SETUP = `(()=>{
-let is_sandbox = 'function'!=typeof setTimeout;
+let is_sandbox = 'function'!=typeof clearTimeout;
 let Object_defineProperty = Object.defineProperty;
 Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
-
-if (is_sandbox){//WhiteList14 in sandbox
-  let WhiteList = ['NaN','undefined','Infinity','Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String'];
-  for (let v of Object.getOwnPropertyNames(this)){
-    if (WhiteList.indexOf(v)<0) delete this[v];
-  };
+if (is_sandbox){
+  let WhiteList = ['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String'];
+  for (let v of Object.getOwnPropertyNames(this)){ if (WhiteList.indexOf(v)<0) delete this[v]; };
 };
-`+[
-'Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__',//L0
-].map(v=>'delete '+v+';').join('')
+`+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')
 +`
-Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});
 setTimeout = (f,t)=>Promise.delay(t).then(f);//TESTING
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return [Promise,Object,Function]})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
@@ -74,10 +68,7 @@ let jevalx_core = async(js,ctx,options={})=>{
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
         rst = await rst;
         done = true;
-        if (!json_output){
-          if (findEvil(rst)) throw {message:'EvilProtoX',js};//@(r4,t1)
-          //if (rst) {delete rst.then;delete rst.toString;delete rst.toJSON}//@Q15
-        }
+        if (!json_output && findEvil(rst)) throw {message:'EvilProtoX',js};
       }catch(ex){
         done = true;
         if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc',ex};

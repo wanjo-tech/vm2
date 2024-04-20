@@ -1551,6 +1551,7 @@ LAST:(async()=>{ //normal case:
 
   console.log('ASSERT 19683 == new Promise(r=>r(x**y**z))',await jevalx('new Promise(r=>r(x**y**z))',{x:3,y:3,z:2}));
 
+  //JSON.parse(await jevalx(`({t:new Date()})`,{},{json_output:true}))
   console.log(`TEST json output`,await jevalx('({t:new Date()})',{},{timeout:666,json_output:true}));
 
   //console.log('ASSERT undefined == process:',await jevalx('[].constructor.constructor("return typeof(process)")()'));
