@@ -20,7 +20,7 @@ function findEvil(obj,maxdepth=3) {
         return true;
       }
       if (prop=='then' && typeof currentObj[prop]=='function') return true;
-      if (prop=='toString' && currentObj[prop]){ delete currentObj[prop] }
+      if (prop=='toString'){ delete currentObj[prop] } //not allow customization
     }
     currentObj = Object_getPrototypeOf(currentObj);
     depth++;
@@ -83,7 +83,7 @@ let jevalx_core = async(js,ctx,options={})=>{
         rst = await rst;
         done = true;
         if (!json_output){
-          if (findEvil(rst)) throw {message:'EvilProtoX',js};//@r4
+          if (findEvil(rst)) throw {message:'EvilProtoX',js};//@(r4,t1)
           //if (rst) {delete rst.then;delete rst.toString;delete rst.toJSON}//@Q15
         }
       }catch(ex){
