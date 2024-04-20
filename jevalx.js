@@ -12,7 +12,7 @@ function findEvil(obj,maxdepth=3) {
   let currentObj = obj;
   let depth = 0;
   while (currentObj !== null && currentObj!==undefined && depth < maxdepth) {
-    const properties = ['message','code','constructor','then'];
+    const properties = ['message','code','constructor','then','toString'];
     for (let i = 0; i < properties.length; i++) {
       let prop = properties[i];
       const descriptor = Object_getOwnPropertyDescriptor(currentObj, prop);
@@ -20,6 +20,7 @@ function findEvil(obj,maxdepth=3) {
         return true;
       }
       if (prop=='then' && typeof currentObj[prop]=='function') return true;
+      if (prop=='toString' && currentObj[prop]){ delete currentObj[prop] }
     }
     currentObj = Object_getPrototypeOf(currentObj);
     depth++;
@@ -81,8 +82,10 @@ let jevalx_core = async(js,ctx,options={})=>{
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
         rst = await rst;
         done = true;
-        if (findEvil(rst)) throw {message:'EvilProtoX',js};//@r4
-        if (rst) {delete rst.then;delete rst.toString;delete rst.toJSON}//@Q15
+        if (!json_output){
+          if (findEvil(rst)) throw {message:'EvilProtoX',js};//@r4
+          //if (rst) {delete rst.then;delete rst.toString;delete rst.toJSON}//@Q15
+        }
       }catch(ex){
         done = true;
         if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc',ex};
