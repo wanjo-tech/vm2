@@ -1573,6 +1573,30 @@ throw {message: 'EvilXd', code: class{
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
+t4:async function(){ let case_id = arguments.callee.name; var code=`
+let c=2;
+({__proto__:{get then(){return c-->0?1:r=>{
+	(async()=>{
+		throw {
+			get message() {
+				r();
+				(async()=>{
+					for(let i=0;i<4;i++) await Promise.resolve();
+					import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t4","");
+				})();
+			}
+		}
+	})();
+}}}})
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 tpl:async function(){ let case_id = arguments.callee.name; var code=`
 `
      try{

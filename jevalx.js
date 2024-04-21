@@ -32,10 +32,16 @@ let jevalx_core = async(js,ctx,options={})=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
   let last_reject;
   let onError = (ex, tag)=>{
-    if (ex) Object.setPrototypeOf(ex,Object.prototype);//clear intended __proto__
     if (!err) {
-      ex = {message:String(ex?.message||''),code:(AllowTypeSet.has(typeof(ex?.code))?ex.code:undefined)}//
-      err={message:ex?.message||'EvilX',js,code:ex?.code,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
+      let message = 'EvilX', code;
+      if (ex) {
+        Object.setPrototypeOf(ex,Object.prototype);//clear intended __proto__
+        let message_desc = Object_getOwnPropertyDescriptor(ex,'message');
+        if (!message_desc && ex.message) message = ex.message;
+        let code_desc = Object_getOwnPropertyDescriptor(ex,'code');
+        if (!code_desc && ex.code) code = ex.code;
+      }
+      err={message,code,js,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
       if (!done && last_reject) { last_reject(err); }
     }
   };
@@ -65,7 +71,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     });
   }catch(ex){ done=true; onError(ex,'Xd') }//@Q7x
   finally{
-    done ? eval(S_EXIT) : console.log('DEBUG finally not done?');
+    done ? eval(S_EXIT) : console.error('ERROR finally not done?');
     processWtf.removeListener('unhandledRejection',onError);
     //processWtf.removeListener('uncaughtException',onError)//Xa
   }
