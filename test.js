@@ -880,7 +880,7 @@ f()
   try{
     console.log('Q27 result=',await jevalx(code));
   }catch(ex){
-    console.log('Q27 ex=',ex.message,JSON.stringify(ex.js));
+    console.log('Q27 ex=',ex,JSON.stringify(ex.js));
   }
   console.log('Q27 check=',typeof(process),typeof(Promise));
 
