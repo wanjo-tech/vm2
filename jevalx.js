@@ -29,6 +29,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
   let last_reject;
   let onError = (ex, tag)=>{
+    if (ex) Object.setPrototypeOf(ex,Object.prototype);//clear intended __proto__
     ex = {message:String(ex?.message||''),code:(['number','string'].indexOf(typeof(ex?.code))>0?ex.code:undefined)}//
     if (!err) err={message:ex?.message||'EvilX',js,code:ex?.code,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
     if (!done && last_reject) { last_reject(err); }
