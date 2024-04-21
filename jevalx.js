@@ -13,13 +13,13 @@ let is_sandbox = 'function'!=typeof clearTimeout;
 let Object_defineProperty = Object.defineProperty;
 Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
 if (is_sandbox){
-  let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set']);
+  let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);
   for (let v of Object.getOwnPropertyNames(this)){if(!WhiteList.has(v))delete this[v]}
 };
 `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')
 +`
-setTimeout = (f,t)=>Promise.delay(t).then(f);
-for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return [Promise,Object,Function]})()`;
+Object_defineProperty(this,'setTimeout',{get(){return (f,t)=>Promise.delay(t).then(f)}});
+for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return [Promise,Object,Function,console,globalThis]})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=_${v};`).join('');
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
@@ -35,7 +35,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   try{
     processWtf.addListener('unhandledRejection',exHandler);
     //processWtf.addListener('uncaughtException',exHandler)//Xa
-    let _Promise,_Object,_Function;
+    let _Promise,_Object,_Function,_console;
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
       setTimeout(()=>{done=true;j({message:'TimeoutX',js})},timeout+666);//Q7x
@@ -43,9 +43,9 @@ let jevalx_core = async(js,ctx,options={})=>{
         if (ctx && vm.isContext(ctx)) ctxx = ctx;
         else {
           ctxx = vm.createContext(new function(){});
-          [ctxx,[_Promise,_Object,_Function]] = jevalx_raw(S_SETUP,ctxx);
+          [ctxx,[_Promise,_Object,_Function,_console]] = jevalx_raw(S_SETUP,ctxx);
           _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
-          ctxx.console = {log: console.log};
+          _console.log = console.log;
           if (ctx) Object.assign(ctxx,ctx);
         }
         eval(S_ENTER);
