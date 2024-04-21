@@ -1492,6 +1492,32 @@ t1:async function(){ let case_id = arguments.callee.name; var code=`
    }
    console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
 },
+t2:async function(){ let case_id = arguments.callee.name; var code=`
+const obj = {};
+function t(r) {
+	obj.then = undefined;
+	f();
+	r(obj);
+	try {
+		import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t2","");
+	} catch (e) {}
+}
+async function f() {
+	await Promise.resolve();
+	await Promise.resolve();
+	obj.then = t;
+}
+obj.then = t;
+obj
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
 tpl:async function(){ let case_id = arguments.callee.name; var code=`
 `
@@ -1502,6 +1528,7 @@ tpl:async function(){ let case_id = arguments.callee.name; var code=`
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+
   x1:async function(){ let case_id = arguments.callee.name; var code=`
 const i = import('');
 //console.log('i='+typeof i);
@@ -1548,6 +1575,7 @@ LAST:(async()=>{ //normal case:
   console.log('ASSERT 81 == x**y',await jevalx('(async()=>(x**y))()',{x:3,y:4}));
   //assertWtf.equal( 81 , await jevalx('x**y',{x:3,y:4}) );
   console.log('ASSERT 8, ()=>x**y',await jevalx('()=>x**y',{x:2,y:3}));
+  console.log('ASSERT [2,3], ()=>x**y',await jevalx('()=>[x,y]',{x:2,y:3}));
 
   console.log('ASSERT 19683 == new Promise(r=>r(x**y**z))',await jevalx('new Promise(r=>r(x**y**z))',{x:3,y:3,z:2}));
 

@@ -119,6 +119,6 @@ let jevalx_core = async(js,ctx,options={})=>{
 let jevalx = jevalx_core;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
 X,findEvil,
-VER:'prod'
+VER:'rc3d'
 }
 
