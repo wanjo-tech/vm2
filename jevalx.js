@@ -37,7 +37,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       if (ex) {
         Object.setPrototypeOf(ex,Object.prototype);//clear intended __proto__
         let message_desc = Object_getOwnPropertyDescriptor(ex,'message');
-        if (!message_desc && ex.message) message = ex.message;
+        if (!message_desc && ex.message) message = ex.message;//@t4
         let code_desc = Object_getOwnPropertyDescriptor(ex,'code');
         if (!code_desc && ex.code) code = ex.code;
       }
