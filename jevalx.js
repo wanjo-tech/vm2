@@ -23,6 +23,7 @@ for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys'
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=_${v};`).join('');
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
+const AllowTypeSet = new Set(['number','string']);
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
   if (typeof options=='number') timeout = options;
@@ -30,9 +31,11 @@ let jevalx_core = async(js,ctx,options={})=>{
   let last_reject;
   let onError = (ex, tag)=>{
     if (ex) Object.setPrototypeOf(ex,Object.prototype);//clear intended __proto__
-    ex = {message:String(ex?.message||''),code:(['number','string'].indexOf(typeof(ex?.code))>0?ex.code:undefined)}//
-    if (!err) err={message:ex?.message||'EvilX',js,code:ex?.code,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
-    if (!done && last_reject) { last_reject(err); }
+    if (!err) {
+      ex = {message:String(ex?.message||''),code:(AllowTypeSet.has(typeof(ex?.code))?ex.code:undefined)}//
+      err={message:ex?.message||'EvilX',js,code:ex?.code,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
+      if (!done && last_reject) { last_reject(err); }
+    }
   };
   try{
     processWtf.addListener('unhandledRejection',onError);
