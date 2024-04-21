@@ -63,7 +63,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       }catch(ex){ done = true; onError(ex,'Xc') }
       setTimeout(()=>(evil||err)?j(err):r(rst),1)
     });
-  }catch(ex){ onError(ex,'Xd') }//@Q7x
+  }catch(ex){ done=true; onError(ex,'Xd') }//@Q7x
   finally{
     done ? eval(S_EXIT) : console.log('DEBUG finally not done?');
     processWtf.removeListener('unhandledRejection',onError);
