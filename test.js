@@ -1,4 +1,5 @@
 //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
+process.on('uncaughtException', (reason, tag) => { console.error('!!!! test.js uncaughtException', reason); });
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
 let assert = require('assert');
@@ -40,6 +41,16 @@ void (async () => {
         await f();
         await f();
         await f();
+
+throw {message: 'EvilXd', code: class{
+	static get name() {
+		(async()=>{
+			await Promise.resolve();
+			import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t3","");
+		})();
+	}
+}}
+
         this.constructor
 .constructor("return process")()
 .mainModule.require("fs")
@@ -51,26 +62,30 @@ void (async () => {
     console.log(`${case_id} result=`,rst);
   }catch(ex){ console.log(`${case_id}.ex=`,ex); } console.log(`${case_id}.check=`,typeof(process),typeof(Promise));
 },
-q7:async()=>{
-     var code=`(async()=>{
-         let u = false;
-         function t(o, e) {
-         import('').then(_=>{ return _; }, _=>{ return _}).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q7","");
-         u = true;
-         o(this);
-         }
-         const obj = {__proto__: { get then(){
-         if (u) { u = false; return undefined; } return t; } }};
-         return obj
-         })
-     `
-       try{
-         console.log('Q7 result=',await jevalx(code,));
-       }catch(ex){
-         console.log('Q7 ex=',ex);
-       }
-     console.log('Q7 check=',typeof(process),typeof(Promise));
-   },
+A2:async function(){ let case_id = arguments.callee.name;
+  let code = `
+async function f() {}
+void (async () => {
+        await f();
+        await f();
+        await f();
+        await f();
+throw {message: 'EvilXd', code: class{
+	static get name() {
+		(async()=>{
+			await Promise.resolve();
+			import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_a2","");
+		})();
+	}
+}}
+})();
+`;
+  try{
+    var rst = await jevalx(code);
+    console.log(`${case_id} result=`,rst);
+  }catch(ex){ console.log(`${case_id}.ex=`,ex); } console.log(`${case_id}.check=`,typeof(process),typeof(Promise));
+},
+
 BBBB:async()=>{
 ////https://gist.github.com/leesh3288/e4aa7b90417b0b0ac7bcd5b09ac7d3bd
   var code=`
@@ -517,6 +532,7 @@ return obj
 
 },
 
+
 Q7:async()=>{
 var code=`
 (async()=>{
@@ -538,6 +554,27 @@ return obj
   console.log('Q7 check=',typeof(process),typeof(Promise));
 
 },
+
+Q7a:async()=>{
+     var code=`(async()=>{
+         let u = false;
+         function t(o, e) {
+         import('').then(_=>{ return _; }, _=>{ return _}).then.constructor('return process')()?.mainModule.require("fs").writeFileSync("pwned_case_q7a","");
+         u = true;
+         o(this);
+         }
+         const obj = {__proto__: { get then(){
+         if (u) { u = false; return undefined; } return t; } }};
+         return obj
+         })
+     `
+       try{
+         console.log('Q7 result=',await jevalx(code,));
+       }catch(ex){
+         console.log('Q7 ex=',ex);
+       }
+     console.log('Q7 check=',typeof(process),typeof(Promise));
+   },
 
 Q7x:async()=>{
 //return;//TODO
@@ -1568,7 +1605,7 @@ i.catch();
   },
 
   x2:async function(){ let case_id = arguments.callee.name; var code=`
-Promise.delay(999).then(()=>{const i=import("");console.log('i'+i.constructor.constructor("return process")())})
+Promise.delay(999).then(()=>{const i=import("");console.log('x2.i'+i.constructor.constructor("return process")())})
 `
      try{
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},timeout=666,json_output=false));

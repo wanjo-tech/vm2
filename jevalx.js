@@ -28,13 +28,14 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
   let last_reject;
-  let exHandler = (ex, obj)=>{
-    if (!err) err={message:ex?.message||'EvilX',js,code:ex?.code,tag:obj?'Xb':'Xa',ex};
+  let onError = (ex, tag)=>{
+    ex = {message:String(ex?.message||''),code:(['number','string'].indexOf(typeof(ex?.code))>0?ex.code:undefined)}//
+    if (!err) err={message:ex?.message||'EvilX',js,code:ex?.code,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
     if (!done && last_reject) { last_reject(err); }
   };
   try{
-    processWtf.addListener('unhandledRejection',exHandler);
-    //processWtf.addListener('uncaughtException',exHandler)//Xa
+    processWtf.addListener('unhandledRejection',onError);
+    //processWtf.addListener('uncaughtException',onError)//Xa
     let _Promise,_Object,_Function,_console;
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
@@ -49,25 +50,18 @@ let jevalx_core = async(js,ctx,options={})=>{
           if (ctx) Object.assign(ctxx,ctx);
         }
         eval(S_ENTER);
-        [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor;}return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject({message:String(ex?.message||''),code:(['number','string'].indexOf(typeof(ex?.code))>0?ex.code:undefined)})}})()`,ctxx,timeout);
+        [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor;}return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
         rst = await rst;
+        done = true;
         if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);//clear intended __proto__
-      }catch(ex){
-        if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc'};
-        err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
-      }
-      done = true;
+      }catch(ex){ done = true; onError(ex,'Xc') }
       setTimeout(()=>(evil||err)?j(err):r(rst),1)
     });
-  }catch(ex){
-    done = true;
-    if (!err) err = {message:ex?.message||'EvilXd',js,code:ex?.code,tag:'Xd'};
-    err.message=='EvilXd' && console.log('EvilXd=>',ex,'<=',jss) //currently only TimeoutX @Q7x
-  }
+  }catch(ex){ onError(ex,'Xd') }//@Q7x
   finally{
     done ? eval(S_EXIT) : console.log('DEBUG finally not done?');
-    processWtf.removeListener('unhandledRejection',exHandler);
-    //processWtf.removeListener('uncaughtException',exHandler)//Xa
+    processWtf.removeListener('unhandledRejection',onError);
+    //processWtf.removeListener('uncaughtException',onError)//Xa
   }
   if (err) {
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
