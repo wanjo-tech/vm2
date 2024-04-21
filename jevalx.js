@@ -13,8 +13,8 @@ let is_sandbox = 'function'!=typeof clearTimeout;
 let Object_defineProperty = Object.defineProperty;
 Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
 if (is_sandbox){
-  let WhiteList = ['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String'];
-  for (let v of Object.getOwnPropertyNames(this)){ if (WhiteList.indexOf(v)<0) delete this[v]; };
+  let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set']);
+  for (let v of Object.getOwnPropertyNames(this)){if(!WhiteList.has(v))delete this[v]}
 };
 `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')
 +`
