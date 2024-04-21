@@ -26,7 +26,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
   let last_reject;
-  let tmpHandler = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilXa',js,code:ex?.code,tag:Promise?'Xb':'Xa',ex};
+  let tmpHandler = (ex, promise)=>{ if (!err) err={message:ex?.message||'EvilX',js,code:ex?.code,tag:Promise?'Xb':'Xa',ex};
     if (!done && last_reject) { last_reject(err); }
   };
   try{
@@ -48,14 +48,14 @@ let jevalx_core = async(js,ctx,options={})=>{
         eval(jevalx_host_name_a.map(v=>`${v}.prototype.constructor=_${v};`).join(''));
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor;}return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
         rst = await rst;
-        done = true;
         if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);//clear intended __proto__
       }catch(ex){
-        done = true;
         if (!err) err={message:typeof(ex)=='string'?ex:(ex?.message|| 'EvilXc'),js,code:ex?.code,tag:'Xc',ex};
         err.message=='EvilXc' && console.log('EvilXc=>',ex,'<=',jss)
       }
-      delay(1).then(()=>(evil||err)?j(err):r(rst))
+      done = true;
+      //delay(1).then(()=>(evil||err)?j(err):r(rst)) //@AAAA
+      await delay(1);(evil||err)?j(err):r(rst)
     });
   }catch(ex){
     done = true;
