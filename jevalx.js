@@ -2,6 +2,8 @@ Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
+const X=function(){}
+//Object.setPrototypeOf(X,new X);
 const vm = require('node:vm');
 const processWtf = require('process');
 const timers = require('timers');
@@ -21,7 +23,7 @@ if (is_sandbox){
 Object_defineProperty(this,'setTimeout',{get(){return (f,t)=>Promise.delay(t).then(f)}});
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return [Promise,Object,Function,console,globalThis]})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
-const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=_${v};`).join('');
+const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('');//
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
 const AllowTypeSet = new Set(['number','string']);
 let jevalx_core = async(js,ctx,options={})=>{
