@@ -80,7 +80,14 @@ let jevalx_core = async(js,ctx,options={})=>{
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
   finally{
     //PollutionProtect
-    if (rst && rst.then) { rst=undefined; }//L0+@(Q7x,t3)
+    if (rst) {
+      let then_desc = Object_getOwnPropertyDescriptor(rst,'then');
+      if (then_desc || rst.then){
+        console.log('119 finally',js);
+        rst=undefined;
+      }
+    }
+
     if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);
     if(rst){delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
     done = true;
