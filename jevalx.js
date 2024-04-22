@@ -86,8 +86,6 @@ let jevalx_core = async(js,ctx,options={})=>{
         rst=undefined;
       }
     }
-    if (typeof rst=='object') Object_setPrototypeOf(rst,rst.constructor.prototype);
-    if(rst){delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
 
     //HOUSEKEEP
     done = true;
