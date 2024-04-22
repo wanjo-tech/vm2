@@ -36,9 +36,10 @@ let jevalx_core = async(js,ctx,options={})=>{
       let message = 'EvilX', code;
       if (ex) {
         Object.setPrototypeOf(ex,Object.prototype);//clear intended __proto__
-        let message_desc = Object_getOwnPropertyDescriptor(ex,'message');
-        if (!message_desc && ex.message) message = ex.message;//@t4
-        let code_desc = Object_getOwnPropertyDescriptor(ex,'code');
+        let message_desc = Object_getOwnPropertyDescriptor(ex,'message');//@t4
+        if (message_desc && (message_desc.get || message_desc.set)){
+        } else if(ex.message) { message = ex.message; }
+        let code_desc = Object_getOwnPropertyDescriptor(ex,'code');//@t3
         if (!code_desc && ex.code) code = ex.code;
       }
       err={message,code,js,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
@@ -62,14 +63,14 @@ let jevalx_core = async(js,ctx,options={})=>{
           if (ctx) Object.assign(ctxx,ctx);
         }
         eval(S_ENTER);
-        [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor;}return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
-        rst = await rst;
-        done = true;
+        [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
+        rst = await rst; done = true;
         if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);//clear intended __proto__
       }catch(ex){ done = true; onError(ex,'Xc') }
-      setTimeout(()=>(evil||err)?j(err):r(rst),1)
+      setTimeout(()=>(evil||err)?j(err):r(rst),1)//
     });
-  }catch(ex){ done=true; onError(ex,'Xd') }//@Q7x
+    if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log later.
+  }catch(ex){ done=true; onError(ex,'Xd') }//@(Q7x,r4)
   finally{
     done ? eval(S_EXIT) : console.error('ERROR finally not done?');
     processWtf.removeListener('unhandledRejection',onError);
