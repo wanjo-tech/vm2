@@ -46,7 +46,7 @@ throw {message: 'EvilXd', code: class{
 	static get name() {
 		(async()=>{
 			await Promise.resolve();
-			import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t3","");
+			import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_AAAA","");
 		})();
 	}
 }}
@@ -1685,10 +1685,34 @@ function t(r) {
 	} catch (e) {}
 }
 async function f() {
-	await Promise.resolve();
-	await Promise.resolve();
-	await Promise.resolve();
-	await Promise.resolve();
+	await Promise.resolve(); obj.then = t;
+	await Promise.resolve(); obj.then = t;
+	await Promise.resolve(); obj.then = t;
+	await Promise.resolve(); obj.then = t;
+	await Promise.resolve(); obj.then = t;
+	await Promise.resolve(); obj.then = t;
+}
+f();
+obj
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+t9:async function(){ let case_id = arguments.callee.name; var code=`
+const obj = {};
+function t(r) {
+	obj.then = undefined;
+	f();
+	r(obj);
+	try {
+		import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t9","");
+	} catch (e) {}
+}
+async function f() {
 	await Promise.resolve();
 	obj.then = t;
 }

@@ -46,8 +46,8 @@ let jevalx_core = async(js,ctx,options={})=>{
         } else if(ex.message) { message = ex.message; }
         let code_desc = Object_getOwnPropertyDescriptor(ex,'code');//@t3
         if (!code_desc && ex.code) code = ex.code;
-      }
-      err={message,code,js,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
+        err={message,code,js,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
+      }else{ err=ex }
       if (!done && last_reject) { last_reject(err); }
     }
   };
@@ -72,19 +72,17 @@ let jevalx_core = async(js,ctx,options={})=>{
         eval(S_ENTER);
 
         //SANDBOX
-        [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
+        [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(${!!json_output})rst=JSON.stringify(z);(async()=>0)().then(r=>{throw(r)});return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
         rst = await rst;
-        //PollutionProtect
-        if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log later.
       }catch(ex){ onError(ex,'Xc') }
       setTimeout(()=>(err)?j(err):r(rst),1)
     });
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
   finally{
     //PollutionProtect
+    if (rst && rst.then) { rst=undefined; }//L0+@(Q7x,t3)
     if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);
-    if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log later.
-
+    if(rst){delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
     done = true;
     eval(S_EXIT);
     processWtf.removeListener('unhandledRejection',onError);
