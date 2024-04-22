@@ -1,4 +1,4 @@
-//ProtoPollution
+//PollutionProtect
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 
@@ -34,7 +34,7 @@ const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).joi
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
   if (typeof options=='number') timeout = options;
-  let ctxx,rst,err,evil=0,jss= JSON.stringify(js),done=false;
+  let ctxx,rst,err,jss= JSON.stringify(js),done=false;
   let last_reject;
   let onError = (ex, tag)=>{
     if (!err) {
@@ -57,12 +57,12 @@ let jevalx_core = async(js,ctx,options={})=>{
     let _console,_Promise,_Object,_Function;
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
-      setTimeout(()=>{done=true;j({message:'TimeoutX',js})},timeout+666);//Q7x
+      setTimeout(()=>{j({message:'TimeoutX',js})},timeout+666);//Q7x
       try{
         //SESSION
         if (ctx && vm.isContext(ctx)) ctxx = ctx;
+        //BIGBANG
         else {
-          //BIGBANG
           ctxx = vm.createContext(new function(){});
           [ctxx,[_console,_Promise,_Object,_Function]] = jevalx_raw(S_SETUP,ctxx);
           _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
@@ -73,17 +73,20 @@ let jevalx_core = async(js,ctx,options={})=>{
 
         //SANDBOX
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
-        rst = await rst; done = true;
-
-        //ProtoPollution
-        if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);
-      }catch(ex){ done = true; onError(ex,'Xc') }
-      setTimeout(()=>(evil||err)?j(err):r(rst),1)//
+        rst = await rst;
+        //PollutionProtect
+        if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log later.
+      }catch(ex){ onError(ex,'Xc') }
+      setTimeout(()=>(err)?j(err):r(rst),1)
     });
-    if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log later.
-  }catch(ex){ done=true; onError(ex,'Xd') }//@(Q7x,r4)
+  }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
   finally{
-    done ? eval(S_EXIT) : console.error('ERROR finally not done??');
+    //PollutionProtect
+    if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);
+    if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log later.
+
+    done = true;
+    eval(S_EXIT);
     processWtf.removeListener('unhandledRejection',onError);
     //processWtf.removeListener('uncaughtException',onError)//Xa
   }
@@ -94,7 +97,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     if (!err?.time) err.time = new Date().getTime();
     if (!err?.id) err.id = err.time;
   }
-  if (evil || err) throw err;
+  if (err) throw err;
   if (return_ctx) return [ctxx,rst];
   return rst;
 }

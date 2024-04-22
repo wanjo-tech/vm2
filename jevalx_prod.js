@@ -1,4 +1,4 @@
-//ProtoPollutionProtect
+//PollutionProtect
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 
@@ -74,12 +74,14 @@ let jevalx_core = async(js,ctx,options={})=>{
         //SANDBOX
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
         rst = await rst;
+        //PollutionProtect
+        if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log later.
       }catch(ex){ onError(ex,'Xc') }
       setTimeout(()=>(err)?j(err):r(rst),1)
     });
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
   finally{
-    //ProtoPollutionProtect
+    //PollutionProtect
     if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);
     if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log later.
 
