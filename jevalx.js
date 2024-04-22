@@ -71,6 +71,8 @@ let jevalx_core = async(js,ctx,options={})=>{
         //SANDBOX
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(${!!json_output})rst=JSON.stringify(z);(async()=>0)().then(r=>{throw(r)});return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
         rst = await rst;
+        if (typeof rst=='object') Object_setPrototypeOf(rst,rst.constructor.prototype);
+        if(rst){delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
       }catch(ex){ onError(ex,'Xc') }
       setTimeout(()=>(err)?j(err):r(rst),1)
     });
