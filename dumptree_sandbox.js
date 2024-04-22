@@ -1,6 +1,6 @@
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
-});
+//process.on('unhandledRejection', (reason, promise) => {
+//  console.error('!!!! WARNING unhandledRejection', promise, 'reason:', reason);
+//});
 
 var {jevalx,S_SETUP} = require('./jevalx');
 
