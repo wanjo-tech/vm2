@@ -53,7 +53,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   };
   try{
     processWtf.addListener('unhandledRejection',onError);
-    //processWtf.addListener('uncaughtException',onError)//Xa
+    processWtf.addListener('uncaughtException',onError)//Xa-and-0
     let _console,_Promise,_Object,_Function;
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
@@ -86,7 +86,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     done = true;
     eval(S_EXIT);
     processWtf.removeListener('unhandledRejection',onError);
-    //processWtf.removeListener('uncaughtException',onError)//Xa
+    processWtf.removeListener('uncaughtException',onError)//Xa
   }
   if (err) {
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
