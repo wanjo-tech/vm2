@@ -1,15 +1,20 @@
+//ProtoPollution
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
+
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_getPrototypeOf = Object.getPrototypeOf;
 const X=function(){}
-//Object.setPrototypeOf(X,new X);
+
 const vm = require('node:vm');
 const processWtf = require('process');
 const timers = require('timers');
 const setTimeout = timers.setTimeout;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
+
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
+
+//Host-Object-Protection
 const S_SETUP = `(()=>{
 let is_sandbox = 'function'!=typeof clearTimeout;
 let Object_defineProperty = Object.defineProperty;
@@ -21,11 +26,11 @@ if (is_sandbox){
 `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')
 +`
 Object_defineProperty(this,'setTimeout',{get(){return (f,t)=>Promise.delay(t).then(f)}});
-for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return [Promise,Object,Function,console,globalThis]})()`;
+for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return [console,Promise,Object,Function,globalThis]})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('');//
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
-const AllowTypeSet = new Set(['number','string']);
+
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
   if (typeof options=='number') timeout = options;
@@ -49,30 +54,36 @@ let jevalx_core = async(js,ctx,options={})=>{
   try{
     processWtf.addListener('unhandledRejection',onError);
     //processWtf.addListener('uncaughtException',onError)//Xa
-    let _Promise,_Object,_Function,_console;
+    let _console,_Promise,_Object,_Function;
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
       setTimeout(()=>{done=true;j({message:'TimeoutX',js})},timeout+666);//Q7x
       try{
+        //SESSION
         if (ctx && vm.isContext(ctx)) ctxx = ctx;
         else {
+          //BIGBANG
           ctxx = vm.createContext(new function(){});
-          [ctxx,[_Promise,_Object,_Function,_console]] = jevalx_raw(S_SETUP,ctxx);
+          [ctxx,[_console,_Promise,_Object,_Function]] = jevalx_raw(S_SETUP,ctxx);
           _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
           _console.log = console.log;
           if (ctx) Object.assign(ctxx,ctx);
         }
         eval(S_ENTER);
+
+        //SANDBOX
         [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return ${!!json_output}?JSON.stringify(z):z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
         rst = await rst; done = true;
-        if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);//clear intended __proto__
+
+        //ProtoPollution
+        if (typeof rst=='object') Object.setPrototypeOf(rst,rst.constructor.prototype);
       }catch(ex){ done = true; onError(ex,'Xc') }
       setTimeout(()=>(evil||err)?j(err):r(rst),1)//
     });
     if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log later.
   }catch(ex){ done=true; onError(ex,'Xd') }//@(Q7x,r4)
   finally{
-    done ? eval(S_EXIT) : console.error('ERROR finally not done?');
+    done ? eval(S_EXIT) : console.error('ERROR finally not done??');
     processWtf.removeListener('unhandledRejection',onError);
     //processWtf.removeListener('uncaughtException',onError)//Xa
   }
