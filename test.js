@@ -1674,6 +1674,35 @@ obj
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+t8:async function(){ let case_id = arguments.callee.name; var code=`
+const obj = {};
+function t(r) {
+	obj.then = undefined;
+	f();
+	r(obj);
+	try {
+		import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t8","");
+	} catch (e) {}
+}
+async function f() {
+	await Promise.resolve();
+	await Promise.resolve();
+	await Promise.resolve();
+	await Promise.resolve();
+	await Promise.resolve();
+	obj.then = t;
+}
+f();
+obj
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
 
 tpl:async function(){ let case_id = arguments.callee.name; var code=`
