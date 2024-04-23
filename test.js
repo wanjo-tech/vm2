@@ -1,5 +1,5 @@
 //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
-process.on('uncaughtException', (reason, tag) => { console.error('!!!! test.js uncaughtException', reason); });
+process.on('uncaughtException', (reason, tag) => { console.error('????test.js uncaughtException', reason); });
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
 let assert = require('assert');
@@ -1866,9 +1866,16 @@ if (require.main === module) {
     //console.log('test_cases',test_cases);
     let case_id = argo.case;
     if (case_id) {
+
       console.log(`-------------- test case ${case_id} ---------------`);
-      if (!test_cases[case_id]) throw 'not has '+case_id;
-      await test_cases[case_id]();
+      for (let k of case_id.split(',')){
+        console.log(`-------------- test ${k} start---------------`);
+        await test_cases[k]();
+        console.log(`-------------- test ${k} end ---------------`);
+      }
+      //if (!test_cases[case_id]) throw 'not has '+case_id;
+      //await test_cases[case_id]();
+
 console.log('-------------- test pwn* after sleep ---------------');
 await searchFiles('.',/pwn*/);
     }else{
