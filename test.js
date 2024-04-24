@@ -1816,32 +1816,23 @@ Promise.delay(999).then(()=>{const i=import("");console.log('x2.i'+i.constructor
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
-//none-stop-loop...
-x3:async function(){ let case_id = arguments.callee.name; var code=`
-//(async()=>110)().then(async(r)=>{ throw(r) });
-//Promise.delay(1).then(async(r)=>{ throw(r) });
-(async()=>11003)().then(async(r)=>{
-  while(true){
-    console.log('x3',new Date());
-    await Promise.delay(555); await Promise.resolve();//!!!
-  }
-});
-888
-`
-     try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
-     }catch(ex){
-       console.log(`${case_id} ex=`,ex);
-     }
-     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
-},
+
+
 x4:async function(){ let case_id = arguments.callee.name; var code=`
 //(async()=>110)().then(async(r)=>{ throw(r) });
 //Promise.delay(1).then(async(r)=>{ throw(r) });
 (async()=>11004)().then(async(r)=>{
+  let loop=1;
   while(true){
-    console.log('x3',new Date());
+    console.log('x4',new Date());
+    try {
+import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_x4_"+loop,"");
+console.log('x4yes?',loop)
+} catch (e) {
+console.log('x4.e',e)
+}
     await Promise.delay(555);
+    loop++;
   }
 });
 888
