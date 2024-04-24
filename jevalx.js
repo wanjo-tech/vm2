@@ -27,9 +27,7 @@ const processWtf = require('process');
 const timers = require('timers');
 const setTimeout = timers.setTimeout;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
-
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
-
 let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
   if (typeof options=='number') timeout = options;
@@ -70,28 +68,14 @@ let jevalx_core = async(js,ctx,options={})=>{
           if (ctx) Object.assign(ctxx,ctx);
         }
         //SANDBOX
-        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'&&!Array.isArray(z))z={...z};if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst;
-          //PROTECT
-          if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
-          if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
+        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'&&!Array.isArray(z)){z={...z};delete z.then}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst;
         });
         done=true;
       }catch(ex){ done=true; onError(ex,'Xc') }
-      ////if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
-      ////if(rst){delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
       setTimeout(()=>(err)?j(err):r(rst),1)
-      //()=>(err)?j(err):r(rst)
     });
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
   finally{
-    //PROTECT+(TO REMOVE SOON)
-    if (rst) {
-      let then_desc = Object_getOwnPropertyDescriptor(rst,'then');
-      if (then_desc || rst.then){
-        console.log('119 finally:',jss);//
-        rst=undefined;
-      }
-    }
     //HOUSEKEEP
     eval(S_EXIT);
     processWtf.removeListener('unhandledRejection',onError);
@@ -109,9 +93,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (return_ctx) return [ctxx,rst];
   return rst;
 }
-
 let jevalx = jevalx_core;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
 VER:'rc4'
 }
-
