@@ -1,4 +1,4 @@
-//process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
+process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
 process.on('uncaughtException', (reason, tag) => { console.error('????test.js uncaughtException', reason); });
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
@@ -11,6 +11,7 @@ let jevalxModule;
 
 jevalxModule = require(`./jevalx${argo.ver?('_'+argo.ver):''}.js`);
 let jevalx = jevalxModule.jevalx;
+let jevalx_raw = jevalxModule.jevalx_raw;
 
 const fs = require('fs').promises;
 const path = require('path');
@@ -1817,34 +1818,66 @@ Promise.delay(999).then(()=>{const i=import("");console.log('x2.i'+i.constructor
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
-
+//DDOS(denial of service attack) + escape
 x4:async function(){ let case_id = arguments.callee.name; var code=`
-//(async()=>110)().then(async(r)=>{ throw(r) });
-//Promise.delay(1).then(async(r)=>{ throw(r) });
 (async()=>11004)().then(async(r)=>{
   let loop=1;
-  while(true){
-    console.log('x4',new Date());
+  while(true)
+  {
+    //console.log('x4',loop,new Date());
     try {
-import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_x4_"+loop,"");
-console.log('x4yes?',loop)
-} catch (e) {
-console.log('x4.e',e)
-}
-    await Promise.delay(555);
+      import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_x4",""+loop);
+      console.log('x4yes?',loop)
+    } catch (e) {
+      //console.log('x4.e',e)
+    }
+    //await Promise.delay(111);
+    //await Promise.resolve();//
+    //await 0;
+    //await (async()=>0)();//
     loop++;
   }
 });
-888
+11004
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666}));
+       //console.log(`${case_id} result(raw)=`,await jevalx_raw(code,require('vm').createContext({console}),111));//TMP TEST
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+},
+x3:async function(){ let case_id = arguments.callee.name; var code=`
+(async()=>110031)().then(r=>{throw({r})});
+(async()=>110032)().then(async(r)=>{
+  let loop=1;
+  while(true)
+  {
+    //console.log('x3',loop,new Date());
+    try {
+      import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_x3",""+loop);
+      console.log('x3yes?',loop)
+    } catch (e) {
+      //console.log('x4.e',e)
+    }
+    loop++;
+  }
+});
+11003
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666}));
+       //console.log(`${case_id} result(raw)=`,await jevalx_raw(code,require('vm').createContext({console}),111));//TMP TEST
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
 },
 
+
+//TODO https://github.com/nodejs/node/blob/main/test/known_issues/test-vm-timeout-escape-queuemicrotask.js
+//TODO https://github.com/nodejs/node/blob/main/test/known_issues/test-vm-timeout-escape-nexttick.js
 
 LAST:(async()=>{ //normal case:
 
@@ -1883,7 +1916,31 @@ LAST:(async()=>{ //normal case:
   // quick testing return a function that hacks:
 
   // core doesn't pass the ddos-alike codes:
-  try{ console.log('deadloop',await jevalx(`(async()=>{while(1)0})`)) }catch(ex){ console.log('deadloop.ex',ex); }
+  try{ console.log('deadloop',await jevalx(`(async()=>{while(1);})`)) }catch(ex){ console.log('deadloop.ex',ex); }
+
+  //try{ console.log('deadloop2',await jevalx(`(async()=>{let lp=1;while(1){console.log(lp++,new Date());await Promise.resolve(11)};})();true`)) }catch(ex){ console.log('deadloop2.ex',ex); }
+
+  //try{ console.log('deadloop3a',await jevalx(`(async()=>{let lp=1;while(lp){console.error(lp++,new Date());};})();true`)) }catch(ex){ console.log('deadloop3a.ex',ex); }
+
+  //{microtaskMode: 'afterEvaluate'} !!
+  //try{ console.log('deadloop3a',await jevalx_raw(`(async()=>{let lp=1;while(lp){console.error('deadloop3a',lp++,new Date());await lp};})();true`,require('vm').createContext({console},{microtaskMode: 'afterEvaluate'}),666)) }catch(ex){ console.log('deadloop3a.ex',ex); }
+
+  //try{ console.log('deadloop3a',await jevalx(`(async()=>{let lp=1;while(lp){console.error(lp++,new Date());await 0};})();true`)) }catch(ex){ console.log('deadloop3a.ex',ex); }
+
+  //TODO
+  //try{ console.log('deadloop3',await jevalx(`(async()=>{let lp=1;while(lp){console.error(lp++,new Date());await (async()=>0)()};})();true`)) }catch(ex){ console.log('deadloop3.ex',ex); }
+
+  //try{ console.log('deadloop4',await jevalx(`(async()=>{let lp=1;while(1){console.log(lp++,new Date())}})();true`)) }catch(ex){ console.log('deadloop4.ex',ex)}
+  //try{ console.log('deadloop4',await jevalx(`(async()=>{let lp=1;while(1){console.log(lp++)}})();true`,{console:{log:()=>{}}},999)) }catch(ex){ console.log('deadloop4.ex',ex)}//TMP OK
+/*
+  try{ console.log('deadloop4',await jevalx(`(async()=>{let lp=1;while(1){console.error('deadloop4',lp++)}})();true`,{console:{
+//log:console.log
+error:console.error,
+log(...args){
+  console.error(...args) //wtf, the log() has bug then error ????
+}
+}},999)) }catch(ex){ console.log('deadloop4.ex',ex)}
+*/
 }),
 
 }
