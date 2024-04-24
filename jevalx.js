@@ -75,6 +75,7 @@ let jevalx_core = async(js,ctx,options={})=>{
           if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
           if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
         });
+        done=true;
       }catch(ex){ done=true; onError(ex,'Xc') }
       ////if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
       ////if(rst){delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
@@ -83,15 +84,16 @@ let jevalx_core = async(js,ctx,options={})=>{
     });
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
   finally{
-    done = true;
-    ////PROTECT+
-    ////if (rst) {
-    ////  let then_desc = Object_getOwnPropertyDescriptor(rst,'then');
-    ////  if (then_desc || rst.then){
-    ////    console.log('119 finally:',jss);//
-    ////    rst=undefined;
-    ////  }
-    ////}
+    //done = true;
+
+    //PROTECT+
+    if (rst) {
+      let then_desc = Object_getOwnPropertyDescriptor(rst,'then');
+      if (then_desc || rst.then){
+        console.log('119 finally:',jss);//
+        rst=undefined;
+      }
+    }
     //HOUSEKEEP
     eval(S_EXIT);
     processWtf.removeListener('unhandledRejection',onError);
