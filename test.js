@@ -1773,6 +1773,26 @@ t12:async function(){ let case_id = arguments.callee.name; var code=`
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+t13:async function(){ let case_id = arguments.callee.name; var code=`
+const old=Promise.prototype.then;
+Promise.prototype.then=function(r,e){return old.call(this,v=>{try{r(v)}catch(e){}},e)};
+({
+	get then() {
+		(async()=>{
+			for(let i=0;i<10;i++)await Promise.resolve();
+			try{import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t13","");}catch(e){}
+		})();
+		return undefined;
+	}
+})
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 

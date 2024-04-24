@@ -57,24 +57,34 @@ let jevalx_core = async(js,ctx,options={})=>{
       last_resolve = r, last_reject = j;
       setTimeout(()=>{j({message:'TimeoutX',js})},timeout+666);//Q7x
       try{
+        eval(S_ENTER);//PROTECT
         //SESSION
         if (ctx && vm.isContext(ctx)) ctxx = ctx;
         //BIGBANG
         else {
-          ctxx = vm.createContext(new function(){});
+          ctxx = vm.createContext(new function(){},{microtaskMode: 'afterEvaluate'});
           [ctxx,[_console,_Promise,_Object,_Function]] = jevalx_raw(S_SETUP,ctxx);
           _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
           _console.log = console.log;
+	  _console.error = console.error;
           if (ctx) Object.assign(ctxx,ctx);
         }
-        eval(S_ENTER);
+        //eval(S_ENTER);
         //SANDBOX
-        [ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(${!!json_output})rst=JSON.stringify(z);(async()=>0)().then(r=>{throw(r)});return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
-        rst = await rst;
+        //[ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(${!!json_output})z=JSON.stringify(z);(async()=>0)().then(r=>{throw(r)});return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
+        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}finally{}})()`,ctxx,timeout)[1].then(r=>{ rst = r;
+        //PROTECT
+        if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
+        if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
+//console.log('here rst',rst);
+});
+        //rst = await rst;
+      }catch(ex){
+done=true;
+onError(ex,'Xc') }
         //PROTECT
         if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
         if(rst){delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
-      }catch(ex){ onError(ex,'Xc') }
       setTimeout(()=>(err)?j(err):r(rst),1)
     });
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
