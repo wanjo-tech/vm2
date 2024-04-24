@@ -1674,6 +1674,7 @@ obj
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+
 t8:async function(){ let case_id = arguments.callee.name; var code=`
 const obj = {};
 function t(r) {
@@ -1815,6 +1816,43 @@ Promise.delay(999).then(()=>{const i=import("");console.log('x2.i'+i.constructor
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+//none-stop-loop...
+x3:async function(){ let case_id = arguments.callee.name; var code=`
+//(async()=>110)().then(async(r)=>{ throw(r) });
+//Promise.delay(1).then(async(r)=>{ throw(r) });
+(async()=>11003)().then(async(r)=>{
+  while(true){
+    console.log('x3',new Date());
+    await Promise.delay(555); await Promise.resolve();//!!!
+  }
+});
+888
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+},
+x4:async function(){ let case_id = arguments.callee.name; var code=`
+//(async()=>110)().then(async(r)=>{ throw(r) });
+//Promise.delay(1).then(async(r)=>{ throw(r) });
+(async()=>11004)().then(async(r)=>{
+  while(true){
+    console.log('x3',new Date());
+    await Promise.delay(555);
+  }
+});
+888
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+},
 
 
 LAST:(async()=>{ //normal case:
