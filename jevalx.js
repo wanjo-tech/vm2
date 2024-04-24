@@ -69,35 +69,29 @@ let jevalx_core = async(js,ctx,options={})=>{
 	  _console.error = console.error;
           if (ctx) Object.assign(ctxx,ctx);
         }
-        //eval(S_ENTER);
         //SANDBOX
-        //[ctxx,rst] = jevalx_raw(`(async()=>{try{return await(async z=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(${!!json_output})z=JSON.stringify(z);(async()=>0)().then(r=>{throw(r)});return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout);
-        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}finally{}})()`,ctxx,timeout)[1].then(r=>{ rst = r;
-        //PROTECT
-        if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
-        if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
-//console.log('here rst',rst);
-});
-        //rst = await rst;
-      }catch(ex){
-done=true;
-onError(ex,'Xc') }
-        //PROTECT
-        if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
-        if(rst){delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
+        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst;
+          //PROTECT
+          if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
+          if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
+        });
+      }catch(ex){ done=true; onError(ex,'Xc') }
+      ////if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
+      ////if(rst){delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
       setTimeout(()=>(err)?j(err):r(rst),1)
+      //()=>(err)?j(err):r(rst)
     });
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
   finally{
     done = true;
-    //PROTECT+
-    if (rst) {
-      let then_desc = Object_getOwnPropertyDescriptor(rst,'then');
-      if (then_desc || rst.then){
-        console.log('119 finally:',jss);
-        rst=undefined;
-      }
-    }
+    ////PROTECT+
+    ////if (rst) {
+    ////  let then_desc = Object_getOwnPropertyDescriptor(rst,'then');
+    ////  if (then_desc || rst.then){
+    ////    console.log('119 finally:',jss);//
+    ////    rst=undefined;
+    ////  }
+    ////}
     //HOUSEKEEP
     eval(S_EXIT);
     processWtf.removeListener('unhandledRejection',onError);

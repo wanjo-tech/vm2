@@ -1,5 +1,5 @@
-process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
-process.on('uncaughtException', (reason, tag) => { console.error('????test.js uncaughtException', reason); });
+//process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
+//process.on('uncaughtException', (reason, tag) => { console.error('????test.js uncaughtException', reason); });
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
 let assert = require('assert');
