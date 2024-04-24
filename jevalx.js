@@ -70,7 +70,7 @@ let jevalx_core = async(js,ctx,options={})=>{
           if (ctx) Object.assign(ctxx,ctx);
         }
         //SANDBOX
-        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst;
+        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'&&!Array.isArray(z))z={...z};if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst;
           //PROTECT
           if (typeof rst=='object') Object_setPrototypeOf(rst,Array.isArray(rst)?Array.prototype:Object.prototype);
           if(rst){delete rst.then;delete rst.toString;delete rst.toJSON;delete rst.constructor;}//TODO report to log.
@@ -84,9 +84,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     });
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
   finally{
-    //done = true;
-
-    //PROTECT+
+    //PROTECT+(TO REMOVE SOON)
     if (rst) {
       let then_desc = Object_getOwnPropertyDescriptor(rst,'then');
       if (then_desc || rst.then){

