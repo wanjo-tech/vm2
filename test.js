@@ -10,8 +10,7 @@ let argo = argv2o();
 let jevalxModule;
 
 jevalxModule = require(`./jevalx${argo.ver?('_'+argo.ver):''}.js`);
-let jevalx = jevalxModule.jevalx;
-let jevalx_raw = jevalxModule.jevalx_raw;
+let {jevalx,jevalx_raw,delay} = jevalxModule;
 
 const fs = require('fs').promises;
 const path = require('path');
@@ -1454,7 +1453,7 @@ false
 `
      try{
        //console.log(`${case_id} code=`,JSON.stringify(code));
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1465,7 +1464,7 @@ r25:async function(){ let case_id = arguments.callee.name; var code=`
 {then: {get: Function.bind(null, "import('fs').then(m=>m.writeFileSync('pwned_case_r25', ''))")}}
 `
    try{
-     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
    }catch(ex){
      console.log(`${case_id} ex=`,ex);
    }
@@ -1475,7 +1474,7 @@ r26:async function(){ let case_id = arguments.callee.name; var code=`
 {then:[].reduce.bind([1,2], Function.call.bind(Function.call), Function.apply.bind(Function, null, ["import('fs').then(m=>m.writeFileSync('pwned_r26', ''))"]))}
 `
    try{
-     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
    }catch(ex){
      console.log(`${case_id} ex=`,ex);
    }
@@ -1486,7 +1485,7 @@ o={__proto__:{get then(){return [].reduce.bind([1,2], Function.call.bind(Functio
 o
 `
    try{
-     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
    }catch(ex){
      console.log(`${case_id} ex=`,ex);
    }
@@ -1496,7 +1495,7 @@ r28:async function(){ let case_id = arguments.callee.name; var code=`
 import('').catch(e=>{e.constructor.prototype.__defineSetter__('constructor', c=>c.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_r28", ""))});
 `
    try{
-     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
    }catch(ex){
      console.log(`${case_id} ex=`,ex);
    }
@@ -1513,7 +1512,7 @@ f.register({});
 false
 `
    try{
-     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
    }catch(ex){
      console.log(`${case_id} ex=`,ex);
    }
@@ -1524,7 +1523,7 @@ t1:async function(){ let case_id = arguments.callee.name; var code=`
 ({then:1,__proto__:{then:async(r)=>{r();for(let i=0;i<9;i++)await Promise.resolve();import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_t1","")}}})
 `;
    try{
-     console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+     console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
    }catch(ex){
      console.log(`${case_id} ex=`,ex);
    }
@@ -1549,7 +1548,7 @@ obj.then = t;
 obj
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1567,7 +1566,7 @@ throw {message: 'EvilXd', code: class{
 }}
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1591,7 +1590,7 @@ let c=2;
 }}}})
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1616,7 +1615,7 @@ f();
 obj
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1642,7 +1641,7 @@ f();
 obj
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1669,7 +1668,7 @@ f();
 obj
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1698,7 +1697,7 @@ f();
 obj
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1722,7 +1721,7 @@ f();
 obj
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1737,7 +1736,7 @@ t10:async function(){ let case_id = arguments.callee.name; var code=`
 }})
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1752,7 +1751,7 @@ t11:async function(){ let case_id = arguments.callee.name; var code=`
 }}})
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1767,7 +1766,7 @@ t12:async function(){ let case_id = arguments.callee.name; var code=`
 }}}})
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1787,7 +1786,7 @@ Promise.prototype.then=function(r,e){return old.call(this,v=>{try{r(v)}catch(e){
 })
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1806,7 +1805,7 @@ d(()=>d(()=>{o.then=w(t)}));
 o
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1825,7 +1824,7 @@ d(()=>d(()=>{o.then=w(t)}));
 o
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1844,7 +1843,7 @@ d(()=>d(()=>{o.then=w(t)}));
 [o]
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:true}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:true}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1856,7 +1855,18 @@ d(()=>d(()=>{o.then=w(t)}));
 tpl:async function(){ let case_id = arguments.callee.name; var code=`
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{dumptree:require('./dumptree')},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
+x5:async function(){ let case_id = arguments.callee.name; var code=`
+(async()=>{ await delay(1234); return [1,2]})()
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{delay},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
