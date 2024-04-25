@@ -1,3 +1,16 @@
+function getAllPrototypeMethods(obj) {
+    let props = [];
+    let currentObj = obj;
+    do {
+        props = props.concat(Object.getOwnPropertyNames(currentObj));
+    } while ((currentObj = Object.getPrototypeOf(currentObj)));
+
+    return props.sort().filter(function(e, i, arr) { 
+       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
+    });
+}
+//await jevalx(`getAllPrototypeMethods(this)`,{getAllPrototypeMethods})
+
 //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! =======> unhandledRejection', promise, 'reason:', reason); });
 //process.on('uncaughtException', (reason, tag) => { console.error('???? ========> test.js uncaughtException', reason); });
 
@@ -1855,6 +1868,37 @@ d(()=>d(()=>{o.then=w(t)}));
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s1:async function(){ let case_id = arguments.callee.name; var code=`
+f=()=>{try{toString.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s1","")}catch(e){Promise.resolve().then(toString.call.bind(f.call,f,0))}}
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+s2:async function(){ let case_id = arguments.callee.name; var code=`
+f=()=>{try{valueOf.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s2","")}catch(e){Promise.resolve().then(valueOf.call.bind(f.call,f,0))}}
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+s3:async function(){ let case_id = arguments.callee.name; var code=`
+f=()=>{try{eval.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s3","")}catch(e){Promise.resolve().then(eval.call.bind(f.call,f,0))}}
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
 
 
@@ -1862,6 +1906,18 @@ tpl:async function(){ let case_id = arguments.callee.name; var code=`
 `
      try{
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
+
+x6:async function(){ let case_id = arguments.callee.name; var code=`
+[Object.getOwnPropertyNames(this),getPrototypeOf(this),getAllPrototypeMethods(this)]
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{getPrototypeOf:Object.getPrototypeOf,getAllPrototypeMethods,dumptree:require('./dumptree')},{microtaskMode:false,timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -2095,18 +2151,6 @@ When you use `__proto__`, you're looking up properties and methods on an object'
 
 __proto__ almost is getPrototypeOf() but sometime not exactly...same... most pollution came from there.
 
-NOTES: list hidden method of ...
-function getAllPrototypeMethods(obj) {
-    let props = [];
-    let currentObj = obj;
-    do {
-        props = props.concat(Object.getOwnPropertyNames(currentObj));
-    } while ((currentObj = Object.getPrototypeOf(currentObj)));
-
-    return props.sort().filter(function(e, i, arr) { 
-       if (e!=arr[i+1] && typeof obj[e] == 'function') return true;
-    });
-}
 console.log(getAllPrototypeMethods(constructor));
 
 old helper.
