@@ -72,9 +72,9 @@ let jevalx_core = async(js,ctx,options={})=>{
         //SANDBOX
         jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst; done=true; r(rst) }).catch(ex=>{ j(err);done=true; });
       }catch(ex){
-        if (ex && ex.code!='ERR_SCRIPT_EXECUTION_TIMEOUT'){
+        //if (ex && ex.code!='ERR_SCRIPT_EXECUTION_TIMEOUT'){
           done=true; onError(ex,'Xc');//TODO
-        }
+        //}
       }
     });
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
