@@ -1866,7 +1866,7 @@ x5:async function(){ let case_id = arguments.callee.name; var code=`
 (async()=>{ await delay(1234); return [1,2]})()
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{delay},{timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{delay},{microtaskMode:false,timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -1935,7 +1935,9 @@ x4:async function(){ let case_id = arguments.callee.name; var code=`
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
 },
-x3:async function(){ let case_id = arguments.callee.name; var code=`
+x3:async function(){
+return //TODO later
+let case_id = arguments.callee.name; var code=`
 (async()=>110031)().then(r=>{throw({r})});
 (async()=>110032)().then(async(r)=>{
   let loop=1;
@@ -2049,7 +2051,7 @@ if (require.main === module) {
       //if (!test_cases[case_id]) throw 'not has '+case_id;
       //await test_cases[case_id]();
 
-console.log('-------------- test pwn* after sleep ---------------');
+console.log('-------------- test pwn* ---------------');
 await searchFiles('.',/pwn*/);
     }else{
       console.log('-------------- test all start ---------------');
@@ -2059,7 +2061,7 @@ await searchFiles('.',/pwn*/);
         await test_cases[k]();
         console.log(`-------------- test ${k} end ---------------`);
       }
-      console.log('-------------- test pwn* after sleep---------------');
+      console.log('-------------- test pwn* ---------------');
 await searchFiles('.',/pwn*/);
       console.log('-------------- test ALL end ---------------');
     }

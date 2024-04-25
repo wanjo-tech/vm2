@@ -29,7 +29,8 @@ const setTimeout = timers.setTimeout;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 let jevalx_core = async(js,ctx,options={})=>{
-  let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined}=(typeof options=='object'?options:{});
+  let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined,microtaskMode='afterEvaluate'}=(typeof options=='object'?options:{});
+  if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,jss= JSON.stringify(js),done=false,last_reject;
   let onError = (ex, tag)=>{
@@ -41,7 +42,8 @@ let jevalx_core = async(js,ctx,options={})=>{
         if (message_desc && (message_desc.get || message_desc.set)){
         } else if(ex.message) { message = ex.message; }
         let code_desc = Object_getOwnPropertyDescriptor(ex,'code');//@t3
-        if (!code_desc && ex.code) code = ex.code;
+        if (code_desc && (code_desc.get || code_desc.set)){
+        }else if(ex.code) { code = ex.code }
         err={message,code,js,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
       }
       if (!done && last_reject) { last_reject(err); }
@@ -53,26 +55,27 @@ let jevalx_core = async(js,ctx,options={})=>{
     let _console,_Promise,_Object,_Function;
     await new Promise(async(r,j)=>{
       last_resolve = r, last_reject = j;
-      setTimeout(()=>{j({message:'TimeoutX',js})},timeout+666);//Q7x
+      setTimeout(()=>{j({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout+666);//Q7x
       try{
-        eval(S_ENTER);//PROTECT
         //SESSION
         if (ctx && vm.isContext(ctx)) ctxx = ctx;
         //BIGBANG
         else {
-          ctxx = vm.createContext(new function(){},{microtaskMode: 'afterEvaluate'});
+          ctxx = vm.createContext(new function(){},{microtaskMode});
           [ctxx,[_console,_Promise,_Object,_Function]] = jevalx_raw(S_SETUP,ctxx);
-          _Promise.delay = (t,r)=>new _Promise((rr,jj)=>delay(t).then(()=>(done||rr(r))));
           _console.log = console.log;
 	  _console.error = console.error;
           if (ctx) Object.assign(ctxx,ctx);
         }
+        //PROTECT
+        eval(S_ENTER);
         //SANDBOX
-        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst;
-        });
-        done=true;
-      }catch(ex){ done=true; onError(ex,'Xc') }
-      setTimeout(()=>(err)?j(err):r(rst),1)
+        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst; done=true; r(rst) }).catch(ex=>{ j(err);done=true; });
+      }catch(ex){
+        if (ex && ex.code!='ERR_SCRIPT_EXECUTION_TIMEOUT'){
+          done=true; onError(ex,'Xc');//TODO
+        }
+      }
     });
   }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
   finally{
@@ -97,3 +100,9 @@ let jevalx = jevalx_core;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
 VER:'rc4'
 }
+
+/**
+TODO
+var {delay,jevalx,jevalx_raw} = require('./jevalx');
+await jevalx_raw(`(async()=>{await delay(1111);return 1})()`,vm.createContext({delay}))[1]
+*/
