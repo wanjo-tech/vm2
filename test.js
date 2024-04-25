@@ -1,4 +1,4 @@
-process.on('unhandledRejection', (reason, promise) => { console.error('!!!! =======> unhandledRejection', promise, 'reason:', reason); });
+//process.on('unhandledRejection', (reason, promise) => { console.error('!!!! =======> unhandledRejection', promise, 'reason:', reason); });
 process.on('uncaughtException', (reason, tag) => { console.error('???? ========> test.js uncaughtException', reason); });
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
@@ -2047,6 +2047,7 @@ if (require.main === module) {
     //console.log('test_cases',test_cases);
     let case_id = argo.case;
     if (case_id) {
+      process.on('unhandledRejection', (reason, promise) => { console.error('!!!! =======> unhandledRejection', promise, 'reason:', reason); });
 
       console.log(`-------------- test case ${case_id} ---------------`);
       for (let k of case_id.split(',')){
