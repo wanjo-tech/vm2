@@ -1,3 +1,10 @@
+const processWtf = require('process');
+let onError_jevalx = (p,rs)=>{
+if (processWtf.env.debug_jevalx>2) console.error('-----------jevalx.Uncaught {',[p,rs],'} ---------------')
+};
+processWtf.addListener('unhandledRejection',onError_jevalx);
+processWtf.addListener('uncaughtException',onError_jevalx)
+
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_setPrototypeOf = Object.setPrototypeOf;
 const X=function(){}
@@ -23,7 +30,6 @@ const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join(
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
 
 const vm = require('node:vm');
-const processWtf = require('process');
 const timers = require('timers');
 const setTimeout = timers.setTimeout;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
@@ -32,8 +38,8 @@ let jevalx_core = async(js,ctx,options={})=>{
   let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined,microtaskMode='afterEvaluate'}=(typeof options=='object'?options:{});
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;
-  let ctxx,rst,err,jss= JSON.stringify(js),done=false,last_reject;
-  let onError = (ex, tag)=>{
+  let ctxx,rst,err,jss= JSON.stringify(js),last_reject;
+  let filterError = (ex) =>{
     if (!err) {
       let message = 'EvilX', code;
       if (ex) {
@@ -44,47 +50,30 @@ let jevalx_core = async(js,ctx,options={})=>{
         let code_desc = Object_getOwnPropertyDescriptor(ex,'code');//@t3
         if (code_desc && (code_desc.get || code_desc.set)){
         }else if(ex.code) { code = ex.code }
-        err={message,code,js,tag:typeof tag=='string'?tag:tag?'Xb':'Xa'};
+        err={message,jss};
+        if (code) err.code = code;
       }
-      if (!done && last_reject) { last_reject(err); }
     }
-  };
-  try{
-    processWtf.addListener('unhandledRejection',onError);
-    processWtf.addListener('uncaughtException',onError)//Xa-and-0
-    let _console,_Promise,_Object,_Function;
-    await new Promise(async(r,j)=>{
-      last_resolve = r, last_reject = j;
-      setTimeout(()=>{j({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout+666);//Q7x
-      try{
-        //SESSION
-        if (ctx && vm.isContext(ctx)) ctxx = ctx;
-        //BIGBANG
-        else {
-          ctxx = vm.createContext(new function(){},{microtaskMode});
-          [ctxx,[_console,_Promise,_Object,_Function]] = jevalx_raw(S_SETUP,ctxx);
-          _console.log = console.log;
-	  _console.error = console.error;
-          if (ctx) Object.assign(ctxx,ctx);
-        }
-        //PROTECT
-        eval(S_ENTER);
-        //SANDBOX
-        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst; done=true; r(rst) }).catch(ex=>{ j(err);done=true; });
-      }catch(ex){
-        //if (ex && ex.code!='ERR_SCRIPT_EXECUTION_TIMEOUT'){
-          done=true; onError(ex,'Xc');//TODO
-        //}
-      }
-    });
-  }catch(ex){ onError(ex,'Xd') }//@(Q7x,r4)
-  finally{
-    //HOUSEKEEP
-    eval(S_EXIT);
-    processWtf.removeListener('unhandledRejection',onError);
-    processWtf.removeListener('uncaughtException',onError)//Xa
+    return err;
   }
-  //FINETUNE
+  try{
+    let _console,_Promise,_Object,_Function;
+    await new Promise(async(resolve,reject)=>{
+      setTimeout(()=>{reject({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout);//Q7x
+      let onError = (ex, tag)=>{ reject(filterError(ex)); };
+      if (ctx && vm.isContext(ctx)) ctxx = ctx;
+      else {
+        ctxx = vm.createContext(new function(){},{microtaskMode});
+        [ctxx,[_console,_Promise,_Object,_Function]] = jevalx_raw(S_SETUP,ctxx);
+        _console.log = console.log;
+        _console.error = console.error;
+        if (ctx) Object.assign(ctxx,ctx);
+      }
+      eval(S_ENTER);
+      jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst; resolve(rst) }).catch(ex=>{ reject(ex);});
+    });
+  }catch(ex){ err = filterError(ex); }
+  finally{ eval(S_EXIT); }
   if (err) {
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
@@ -100,9 +89,3 @@ let jevalx = jevalx_core;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
 VER:'rc4'
 }
-
-/**
-TODO
-var {delay,jevalx,jevalx_raw} = require('./jevalx');
-await jevalx_raw(`(async()=>{await delay(1111);return 1})()`,vm.createContext({delay}))[1]
-*/

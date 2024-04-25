@@ -1,5 +1,5 @@
 //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! =======> unhandledRejection', promise, 'reason:', reason); });
-process.on('uncaughtException', (reason, tag) => { console.error('???? ========> test.js uncaughtException', reason); });
+//process.on('uncaughtException', (reason, tag) => { console.error('???? ========> test.js uncaughtException', reason); });
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
 let assert = require('assert');
@@ -1942,7 +1942,6 @@ x4:async function(){ let case_id = arguments.callee.name; var code=`
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
 },
 x3:async function(){
-return //TODO later
 let case_id = arguments.callee.name; var code=`
 (async()=>110031)().then(r=>{throw({r})});
 (async()=>110032)().then(async(r)=>{
@@ -1997,7 +1996,7 @@ LAST:(async()=>{ //normal case:
   //console.log('ASSERT undefined == process:',await jevalx('[].constructor.constructor("return typeof(process)")()'));
 
   //console.log('check "this"',await jevalx('[this,2**3]'));
-  console.log('ASSERT 3 == await jevalx(`++this.rst`,{rst:2},666)',await jevalx(`this.rst++`,{rst:2}));
+  console.log('ASSERT 3 == await jevalx(`++this.rst`,{rst:2},666)',await jevalx(`++this.rst`,{rst:2}));
   console.log("ASSERT object,function', typeof(process),typeof(Promise) =",typeof(process),typeof(Promise));
   console.log('Object',Object);
   console.log('Promise',Promise);
@@ -2047,7 +2046,7 @@ if (require.main === module) {
     //console.log('test_cases',test_cases);
     let case_id = argo.case;
     if (case_id) {
-      process.on('unhandledRejection', (reason, promise) => { console.error('!!!! =======> unhandledRejection', promise, 'reason:', reason); });
+      //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! =======> unhandledRejection', promise, 'reason:', reason); });
 
       console.log(`-------------- test case ${case_id} ---------------`);
       for (let k of case_id.split(',')){
@@ -2126,3 +2125,10 @@ await jevalx(`dumptree(this)`,{dumptree:require('./dumptree')})
 Object.defineProperty(globalThis,'AsyncFunction',{value:(async()=>{}).constructor,writable:false,enumerable:false,configurable:false});// TOOL
 
 */
+
+/**
+TODO
+var {delay,jevalx,jevalx_raw} = require('./jevalx');
+await jevalx_raw(`(async()=>{await delay(1111);return 1})()`,vm.createContext({delay}))[1]
+*/
+
