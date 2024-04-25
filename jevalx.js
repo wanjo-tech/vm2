@@ -1,9 +1,10 @@
 const processWtf = require('process');
-let onError_jevalx = (p,rs)=>{
-if (processWtf.env.debug_jevalx>2) console.error('-----------jevalx.Uncaught {',[p,rs],'} ---------------')
+let onError_jevalx = (e,rs)=>{
+if (processWtf.env.debug_jevalx>1)
+console.error('----------- onError_jevalx {',[e,rs],'} ---------------')
 };
 processWtf.addListener('unhandledRejection',onError_jevalx);
-processWtf.addListener('uncaughtException',onError_jevalx)
+//processWtf.addListener('uncaughtException',onError_jevalx)
 
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_setPrototypeOf = Object.setPrototypeOf;
@@ -23,7 +24,7 @@ if (is_sandbox){
 };
 `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')
 +`
-Object_defineProperty(this,'setTimeout',{get(){return (f,t)=>Promise.delay(t).then(f)}});
+//Object_defineProperty(this,'setTimeout',{get(){return (f,t)=>Promise.delay(t).then(f)}});
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return [console,Promise,Object,Function,globalThis]})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('');//
@@ -35,7 +36,8 @@ const setTimeout = timers.setTimeout;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 let jevalx_core = async(js,ctx,options={})=>{
-  let {timeout=666,json_output=false,return_ctx=false,user_import_handler=undefined,microtaskMode='afterEvaluate'}=(typeof options=='object'?options:{});
+  let call_id = 'jevalx_'+new Date().getTime();
+  let {timeout=666,json_output=false,return_arr=false,user_import_handler=undefined,microtaskMode='afterEvaluate'}=(typeof options=='object'?options:{});
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,jss= JSON.stringify(js),last_reject;
@@ -70,7 +72,9 @@ let jevalx_core = async(js,ctx,options={})=>{
         if (ctx) Object.assign(ctxx,ctx);
       }
       eval(S_ENTER);
-      jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout)[1].then(tmp_rst=>{ rst = tmp_rst; resolve(rst) }).catch(ex=>{ reject(ex);});
+      try{
+      jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,{filename:call_id})[1].then(tmp_rst=>{ rst = tmp_rst; resolve(rst) }).catch(ex=>{ reject(ex);});
+      }catch(ex){ err = filterError(ex); }
     });
   }catch(ex){ err = filterError(ex); }
   finally{ eval(S_EXIT); }
@@ -78,11 +82,10 @@ let jevalx_core = async(js,ctx,options={})=>{
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
     if (err?.code=='ERR_SCRIPT_EXECUTION_TIMEOUT') {err.message = 'Timeout'+timeout;err.code='TIMEOUT';}
-    if (!err?.time) err.time = new Date().getTime();
-    if (!err?.id) err.id = err.time;
+    if (!err?.id) err.id = call_id;
   }
   if (err) throw err;
-  if (return_ctx) return [ctxx,rst];
+  if (return_arr) return [ctxx,rst,call_id,js];
   return rst;
 }
 let jevalx = jevalx_core;
