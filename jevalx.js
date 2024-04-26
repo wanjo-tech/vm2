@@ -78,7 +78,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       setTimeout(()=>{reject({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout+11);//Q7x
       if (ctx && vm.isContext(ctx)) {
         ctxx = ctx;
-        //TODO SESSION have problems to fix...
+        //TODO SESSION might have problems to fix...
         [_console,_Promise,_Object,_Function] = jevalx_raw(S_SESSION,ctxx)[1];
       }
       else {
@@ -89,18 +89,21 @@ let jevalx_core = async(js,ctx,options={})=>{
         if (ctx) Object.assign(ctxx,ctx);
       }
       let _Promise_prototype_then = _Promise.prototype.then;
+      //let _Promise_prototype_catch = _Promise.prototype.catch;
       eval(S_ENTER);
       try{
         delete Promise.prototype.catch;//@s9
         delete _Promise.prototype.then;//@s*
-        delete _Promise.prototype.catch;
+        //delete _Promise.prototype.catch;
         let promise = jevalx_raw(`(async({},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})((()=>({}))(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
-        _Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
+        Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
       }catch(ex){ reject(ex);
       }finally{
         if (Promise.prototype.catch != Promise_prototype_catch) {
           Promise.prototype.catch = Promise_prototype_catch;//
         }
+        _Promise.prototype.then=_Promise_prototype_then;//TEST SESSION...
+        //_Promise.prototype.catch =_Promise_prototype_catch;//TEST SESSION...
       }
     });
   }catch(ex){ err = filterError(ex,err,jss) }
