@@ -78,8 +78,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       eval(S_ENTER);
       try{
         jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject);
-        delete _Promise.prototype.then;//@s4
-      }catch(ex){reject(ex)}
+      }catch(ex){ reject(ex) }finally{ delete _Promise.prototype.then; }
     });
   }catch(ex){ err = filterError(ex,err,jss) }
   finally{ eval(S_EXIT); }
