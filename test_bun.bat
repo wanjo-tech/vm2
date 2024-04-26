@@ -1,1 +1,1 @@
-bun run test_jevalx.js && git status
+bun run test.js

@@ -25,7 +25,7 @@ if (is_sandbox){
 `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')
 +`
 //Object_defineProperty(this,'setTimeout',{get(){return (f,t)=>Promise.delay(t).then(f)}});
-Object.setPrototypeOf(this,null);
+//try{Object.setPrototypeOf(this,null);}catch(e){}
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return [console,Promise,Object,Function,globalThis]})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('');//
@@ -42,6 +42,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,jss= JSON.stringify(js),last_reject;
+  //TODO filterError moved to outer level for boosting
   let filterError = (ex) =>{
     if (!err) {
       let message = 'EvilX', code;
@@ -67,7 +68,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       if (ctx && vm.isContext(ctx)) ctxx = ctx;
       else {
         ctxx = vm.createContext(new function(){},{microtaskMode});
-        Object_setPrototypeOf(ctxx,null);
+        //Object_setPrototypeOf(ctxx,null);
         [ctxx,[_console,_Promise,_Object,_Function]] = jevalx_raw(S_SETUP,ctxx);
         _console.log = console.log;
         _console.error = console.error;
