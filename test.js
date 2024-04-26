@@ -1941,6 +1941,18 @@ throw f();
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
+s7:async function(){ let case_id = arguments.callee.name; var code=`
+h=console.log;
+t=Promise.prototype.then;
+f=()=>{Promise.prototype.then=t;try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s7","")}catch(e){console.error('d');Promise.resolve().then(h.call.bind(f.call,f,0))}}
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
