@@ -59,6 +59,8 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,jss= JSON.stringify(js),last_reject;
+  let Promise_prototype_catch = Promise.prototype.catch;
+  let Promise_prototype_then = Promise.prototype.then;
   try{
     let _console,_Promise,_Object,_Function;
     rst = await new Promise(async(resolve,reject)=>{
@@ -73,8 +75,14 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
+        delete Promise.prototype.catch;//@s9
+        delete Promise.prototype.then;
         jevalx_raw(`(async({Promise_prototype_then,Promise_prototype_catch},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z()))); Promise.prototype.then=Promise_prototype_then;Promise.prototype.catch=Promise_prototype_catch;return(${!!json_output})?JSON.stringify(z):safeCopy(z)})((()=>{let Promise_prototype_then=Promise.prototype.then,Promise_prototype_catch=Promise.prototype.catch;delete Promise.prototype.then;delete Promise.prototype.catch;return{Promise_prototype_then,Promise_prototype_catch}})(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject);
-      }catch(ex){ reject(ex) }//finally{delete _Promise.prototype.then}
+      }catch(ex){reject(ex)}finally{
+        //delete _Promise.prototype.then;
+        Promise.prototype.catch = Promise_prototype_catch;
+        Promise.prototype.then= Promise_prototype_then; 
+      }
     });
   }catch(ex){ err = filterError(ex,err,jss) }
   finally{ eval(S_EXIT); }
