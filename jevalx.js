@@ -1,9 +1,6 @@
 const processWtf = require('process');
-let onError_jevalx = (e,rs)=>{
-if (processWtf.env.debug_jevalx>1)
-console.error('----------- onError_jevalx {',[e,rs],'} ---------------')
-};
-processWtf.addListener('unhandledRejection',onError_jevalx);
+let onError_jevalx = (e,rs)=>{ console.error('----------- onError_jevalx {',[e,rs],'} ---------------') };
+processWtf.addListener('unhandledRejection',(processWtf.env?.debug_jevalx>1)?onError_jevalx:()=>0);
 //processWtf.addListener('uncaughtException',onError_jevalx)
 
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -38,7 +35,6 @@ const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).joi
 const vm = require('node:vm');
 const timers = require('timers');
 const setTimeout = timers.setTimeout;
-const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 let filterError = (ex,err,jss) =>{
   if (!err) {
@@ -93,6 +89,6 @@ let jevalx_core = async(js,ctx,options={})=>{
   return rst;
 }
 let jevalx = jevalx_core;
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,
 VER:'rc5'
 }
