@@ -18,6 +18,10 @@ const S_SETUP = `(()=>{
 let is_sandbox = 'function'!=typeof clearTimeout;
 let Object_defineProperty = Object.defineProperty;
 Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
+
+const safeCopy = obj => obj === null || typeof obj !== 'object' ? obj : Array.isArray(obj) ? obj.map(safeCopy) : Object.fromEntries(Object.entries(obj).filter(([key]) => !['then', 'toString', 'toJSON', 'constructor'].includes(key)).map(([key, value]) => [key, safeCopy(value)]));
+Object_defineProperty(this,'safeCopy',{get(){return safeCopy}});
+
 if (is_sandbox){
   let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);
   for (let v of Object.getOwnPropertyNames(this)){if(!WhiteList.has(v))delete this[v]}
@@ -71,7 +75,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
-        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,{filename:call_id})[1].then(tmp_rst=>{ delete _Promise.prototype.then;rst=tmp_rst;resolve()}).catch(ex=>{reject(ex)})
+        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,{filename:call_id})[1].then(tmp_rst=>{delete _Promise.prototype.then;rst=tmp_rst;resolve()}).catch(ex=>{reject(ex)})
       }catch(ex){ err = filterError(ex,err,jss); reject(err); }
     });
   }catch(ex){ err = filterError(ex,err,jss) }
