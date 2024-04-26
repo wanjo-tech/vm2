@@ -2008,6 +2008,19 @@ h=console.log;
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s12:async function(){ let case_id = arguments.callee.name; var code=`
+h=console.log;
+f=async()=>{try{ h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s12","")}catch(e){ await{then:h.call.bind(f.call,f,0)}}}
+f();
+1
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:1111,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
@@ -2027,17 +2040,6 @@ x6:async function(){ let case_id = arguments.callee.name; var code=`
 `
      try{
        console.log(`${case_id} result(raw)=`,await jevalx(code,{getPrototypeOf:Object.getPrototypeOf,getAllPrototypeMethods,dumptree:require('./dumptree')},{microtaskMode:false,timeout:666,json_output:false}));
-     }catch(ex){
-       console.log(`${case_id} ex=`,ex);
-     }
-     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
-  },
-
-x5:async function(){ let case_id = arguments.callee.name; var code=`
-(async()=>{ await delay(1234); return [1,2]})()
-`
-     try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{delay},{microtaskMode:false,timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
@@ -2076,6 +2078,34 @@ Promise.delay(999).then(()=>{const i=import("");console.log('x2.i'+i.constructor
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
+x3:async function(){
+let case_id = arguments.callee.name; var code=`
+(async()=>110031)().then(r=>{throw({r})});
+(async()=>110032)().then(async(r)=>{
+  let loop=1;
+  while(true)
+  {
+    //console.log('x3',loop,new Date());
+    try {
+      import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_x3",""+loop);
+      console.log('x3yes?',loop)
+    } catch (e) {
+      //console.log('x3.e',e)
+    }
+    loop++;
+  }
+});
+11003
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666}));
+       //console.log(`${case_id} result(raw)=`,await jevalx_raw(code,require('vm').createContext({console}),111));//TMP TEST
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+},
+
 //DDOS(denial of service attack) + escape
 x4:async function(){ let case_id = arguments.callee.name; var code=`
 (async()=>11004)().then(async(r)=>{
@@ -2106,33 +2136,35 @@ x4:async function(){ let case_id = arguments.callee.name; var code=`
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
 },
-x3:async function(){
-let case_id = arguments.callee.name; var code=`
-(async()=>110031)().then(r=>{throw({r})});
-(async()=>110032)().then(async(r)=>{
-  let loop=1;
-  while(true)
-  {
-    //console.log('x3',loop,new Date());
-    try {
-      import('').catch(_=>_).constructor.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_x3",""+loop);
-      console.log('x3yes?',loop)
-    } catch (e) {
-      //console.log('x4.e',e)
-    }
-    loop++;
-  }
-});
-11003
+x5:async function(){ let case_id = arguments.callee.name; var code=`
+(async()=>{ await delay(1234); return [1,2]})()
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666}));
-       //console.log(`${case_id} result(raw)=`,await jevalx_raw(code,require('vm').createContext({console}),111));//TMP TEST
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{delay},{microtaskMode:false,timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
-},
+  },
+x6:async function(){ let case_id = arguments.callee.name; var code=`
+h=console.log;
+f=async()=>{try{
+console.error('cc',new Date());
+throw 999
+}catch(e){
+console.error('dd',new Date());
+await{then:h.call.bind(f.call,f,0)}}}
+f();
+1
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{delay},{microtaskMode:false,timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
 
 //TODO https://github.com/nodejs/node/blob/main/test/known_issues/test-vm-timeout-escape-queuemicrotask.js

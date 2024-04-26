@@ -9,6 +9,10 @@ const X=function(){}
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 
+let Promise_prototype_catch = Promise.prototype.catch;
+let Promise_prototype_then = Promise.prototype.then;
+let Promise_prototype_finally = Promise.prototype.finally;
+
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
 let is_sandbox = 'function'!=typeof clearTimeout;
@@ -69,9 +73,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,jss= JSON.stringify(js),last_reject;
-  let Promise_prototype_catch = Promise.prototype.catch;
-  let Promise_prototype_then = Promise.prototype.then;
-  let Promise_prototype_finally = Promise.prototype.finally;
+  //let done=false;
   try{
     let _console,_Promise,_Object,_Function;
     rst = await new Promise(async(resolve,reject)=>{
@@ -91,6 +93,23 @@ let jevalx_core = async(js,ctx,options={})=>{
       let _Promise_prototype_then = _Promise.prototype.then;
       //let _Promise_prototype_catch = _Promise.prototype.catch;
       eval(S_ENTER);
+      //RangeError.prototype.constructor=function(...args){
+      //  console.log('TODO RangeError constructor',{args,this_:this});
+      //  while(1);
+      //}
+      //TypeError.prototype.constructor=function(...args){
+      //  console.log('TODO TypeError constructor',{args,this_:this});
+      //  while(1);
+      //}
+      //@s12 tmp solution ( not yet found a termination method to the node:vm ...)
+      Function.prototype.constructor=function(...args){
+        //console.log('TODO Function constructor',{args,this_:this});
+        if (this != Promise_prototype_then) Object_setPrototypeOf(this,null);//urgent lock, until new solution found!
+        rst = undefined;
+        err = {message:'EvilXX',jss}
+        reject(err);
+        //while(1);//make a dead loop...
+      };
       try{
         delete Promise.prototype.catch;//@s9
         delete _Promise.prototype.then;//@s*
@@ -108,6 +127,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     });
   }catch(ex){ err = filterError(ex,err,jss) }
   finally{ eval(S_EXIT); }
+  //done = true;
   if (err) {
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
