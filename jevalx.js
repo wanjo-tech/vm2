@@ -42,7 +42,8 @@ if (is_sandbox){
 `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')
 +`
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return ${S_SESSION}})()`;
-let jevalx_host_name_a=['Promise','Object','Function'];
+//let jevalx_host_name_a=['Promise','Object','Function'];
+let jevalx_host_name_a=['Promise','Object'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('');//
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
 
@@ -73,7 +74,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,jss= JSON.stringify(js),last_reject;
-  //let done=false;
+  let done=false;
   try{
     let _console,_Promise,_Object,_Function;
     rst = await new Promise(async(resolve,reject)=>{
@@ -103,12 +104,11 @@ let jevalx_core = async(js,ctx,options={})=>{
       //}
       //@s12 tmp solution ( not yet found a termination method to the node:vm ...)
       Function.prototype.constructor=function(...args){
-        //console.log('TODO Function constructor',{args,this_:this});
+        console.log('TODO Function constructor',{args,this_:this,jss,call_id});
         if (this != Promise_prototype_then) Object_setPrototypeOf(this,null);//urgent lock, until new solution found!
-        rst = undefined;
-        err = {message:'EvilXX',jss}
-        reject(err);
-        //while(1);//make a dead loop...
+        //reject({message:'EvilX',jss});
+        jevalx_raw(`while(1);`,ctxx,1)[1];//tmp trick
+        //while(1) { console.error('!!!!',new Date(),jss); }
       };
       try{
         delete Promise.prototype.catch;//@s9
@@ -127,7 +127,7 @@ let jevalx_core = async(js,ctx,options={})=>{
     });
   }catch(ex){ err = filterError(ex,err,jss) }
   finally{ eval(S_EXIT); }
-  //done = true;
+  done = true;
   if (err) {
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
