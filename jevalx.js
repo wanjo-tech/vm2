@@ -73,8 +73,8 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
-        jevalx_raw(`(async({Promise_prototype_then},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z()))); Promise.prototype.then = Promise_prototype_then; return(${!!json_output})?JSON.stringify(z):safeCopy(z)})((()=>{let Promise_prototype_then=Promise.prototype.then;delete Promise.prototype.then;return{Promise_prototype_then}})(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject);
-      }catch(ex){ reject(ex) }finally{ delete _Promise.prototype.then; }
+        jevalx_raw(`(async({Promise_prototype_then,Promise_prototype_catch},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z()))); Promise.prototype.then=Promise_prototype_then;Promise.prototype.catch=Promise_prototype_catch;return(${!!json_output})?JSON.stringify(z):safeCopy(z)})((()=>{let Promise_prototype_then=Promise.prototype.then,Promise_prototype_catch=Promise.prototype.catch;delete Promise.prototype.then;delete Promise.prototype.catch;return{Promise_prototype_then,Promise_prototype_catch}})(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject);
+      }catch(ex){ reject(ex) }//finally{delete _Promise.prototype.then}
     });
   }catch(ex){ err = filterError(ex,err,jss) }
   finally{ eval(S_EXIT); }
