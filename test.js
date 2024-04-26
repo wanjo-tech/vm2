@@ -1976,8 +1976,22 @@ f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileS
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
-
-
+s10:async function(){ let case_id = arguments.callee.name; var code=`
+h=console.log;
+(async()=>{
+	while(!Promise.prototype.then) await Promise.resolve();
+	f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s10","")}catch(e){Promise.resolve().then(h.call.bind(f.call,f,0))}}
+	f();
+})();
+1
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
