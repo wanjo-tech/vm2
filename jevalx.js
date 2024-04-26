@@ -9,6 +9,7 @@ const X=function(){}
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 
+const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
 let is_sandbox = 'function'!=typeof clearTimeout;
 let Object_defineProperty = Object.defineProperty;
@@ -21,22 +22,22 @@ const safeCopy = obj =>
         Object.getOwnPropertyNames(obj) .filter(key => !BlackList.has(key)) .map(key => [key, safeCopy(obj[key])])
     );
 Object_defineProperty(this,'safeCopy',{get:()=>safeCopy});
-//Promise.delay = async(t)=>{
-//  let i=0;
-//  if (t>0){
-//    let t0 = new Date().getTime();
-//    while(new Date().getTime()<t0+t) ++i;
-//  }
-//  return i
-//};
-//Object_defineProperty(this,'delay',{get:()=>delay});
+const delay = async(t)=>{
+  let i=0;
+  if (t>0){
+    let t0 = new Date().getTime();
+    while(new Date().getTime()<t0+t) ++i;
+  }
+  return i
+};
+Object_defineProperty(this,'delay',{get:()=>delay});
 if (is_sandbox){
   let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);
   for (let v of Object.getOwnPropertyNames(this)){if(!WhiteList.has(v))delete this[v]}
 };
 `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')
 +`
-for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return [console,Promise,Object,Function,globalThis]})()`;
+for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return ${S_SESSION}})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('');//
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
@@ -75,7 +76,10 @@ let jevalx_core = async(js,ctx,options={})=>{
     let _console,_Promise,_Object,_Function;
     rst = await new Promise(async(resolve,reject)=>{
       setTimeout(()=>{reject({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout+111);//Q7x
-      if (ctx && vm.isContext(ctx)) ctxx = ctx;
+      if (ctx && vm.isContext(ctx)) {
+        ctxx = ctx;
+        [_console,_Promise,_Object,_Function] = jevalx_raw(S_SESSION,ctxx)[1];
+      }
       else {
         ctxx = vm.createContext(new function(){},{microtaskMode});
         [ctxx,[_console,_Promise,_Object,_Function]] = jevalx_raw(S_SETUP,ctxx);
@@ -83,14 +87,14 @@ let jevalx_core = async(js,ctx,options={})=>{
         _console.error = console.error;
         if (ctx) Object.assign(ctxx,ctx);
       }
+      let _Promise_prototype_then = _Promise.prototype.then;
       eval(S_ENTER);
       try{
-        _Promise.resolve = (x)=>{ resolve(x); };
-        _Promise.reject = (x)=>{ reject(x); };
-        delete Promise.prototype.catch;
+        delete Promise.prototype.catch;//@s9
+        delete _Promise.prototype.then;//@s*
         delete _Promise.prototype.catch;
-        delete _Promise.prototype.then;
-        jevalx_raw(`(async({},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return Promise.resolve(z)})((()=>({}))(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject);
+        let promise = jevalx_raw(`(async({},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})((()=>({}))(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]//.then(resolve).catch(reject);
+        let promise_then = _Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
       }catch(ex){ reject(ex);
       }finally{
         if (Promise.prototype.catch != Promise_prototype_catch) {
