@@ -21,6 +21,15 @@ const safeCopy = obj =>
         Object.getOwnPropertyNames(obj) .filter(key => !BlackList.has(key)) .map(key => [key, safeCopy(obj[key])])
     );
 Object_defineProperty(this,'safeCopy',{get:()=>safeCopy});
+//Promise.delay = async(t)=>{
+//  let i=0;
+//  if (t>0){
+//    let t0 = new Date().getTime();
+//    while(new Date().getTime()<t0+t) ++i;
+//  }
+//  return i
+//};
+//Object_defineProperty(this,'delay',{get:()=>delay});
 if (is_sandbox){
   let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);
   for (let v of Object.getOwnPropertyNames(this)){if(!WhiteList.has(v))delete this[v]}
@@ -76,17 +85,17 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
-        delete Promise.prototype.catch;//@s9
-        delete Promise.prototype.then;
-        delete Promise.prototype.finally;
-        jevalx_raw(`(async({Promise_prototype_then,Promise_prototype_catch},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z()))); Promise.prototype.then=Promise_prototype_then;Promise.prototype.catch=Promise_prototype_catch;return(${!!json_output})?JSON.stringify(z):safeCopy(z)})((()=>{let Promise_prototype_then=Promise.prototype.then,Promise_prototype_catch=Promise.prototype.catch;delete Promise.prototype.then;delete Promise.prototype.catch;return{Promise_prototype_then,Promise_prototype_catch}})(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject);
-      }catch(ex){reject(ex)}finally{
-        delete _Promise.prototype.then;//@s10
+        _Promise.resolve = (x)=>{ resolve(x); };
+        _Promise.reject = (x)=>{ reject(x); };
+        delete Promise.prototype.catch;
         delete _Promise.prototype.catch;
-        delete _Promise.prototype.finally;
-        Promise.prototype.catch = Promise_prototype_catch;
-        Promise.prototype.then= Promise_prototype_then; 
-        Promise.prototype.finally = Promise_prototype_finally; 
+        delete _Promise.prototype.then;
+        jevalx_raw(`(async({},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return Promise.resolve(z)})((()=>({}))(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject);
+      }catch(ex){ reject(ex);
+      }finally{
+        if (Promise.prototype.catch != Promise_prototype_catch) {
+          Promise.prototype.catch = Promise_prototype_catch;//
+        }
       }
     });
   }catch(ex){ err = filterError(ex,err,jss) }
