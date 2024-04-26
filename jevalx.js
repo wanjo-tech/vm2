@@ -69,7 +69,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   let ctxx,rst,err,jss= JSON.stringify(js),last_reject;
   try{
     let _console,_Promise,_Object,_Function;
-    await new Promise(async(resolve,reject)=>{
+    rst = await new Promise(async(resolve,reject)=>{
       setTimeout(()=>{reject({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout+111);//Q7x
       if (ctx && vm.isContext(ctx)) ctxx = ctx;
       else {
@@ -81,8 +81,9 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
-        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))}catch(ex){return Promise.reject(safeCopy(ex))}})()`,ctxx,timeout,{filename:call_id})[1].then(tmp_rst=>{delete _Promise.prototype.then;rst=tmp_rst;resolve()}).catch(ex=>{reject(ex)})
-      }catch(ex){ err = filterError(ex,err,jss); reject(err); }
+        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))}catch(ex){return Promise.reject(safeCopy(ex))}})()`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject)
+        delete _Promise.prototype.then;//@s4
+      }catch(ex){reject(ex)}
     });
   }catch(ex){ err = filterError(ex,err,jss) }
   finally{ eval(S_EXIT); }

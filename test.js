@@ -1913,9 +1913,13 @@ f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileS
 s5:async function(){
 let case_id = arguments.callee.name; var code=`
 h=console.log;
-f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s5","")}catch(e){(async()=>0)().then(h.call.bind(f.call,f,0))}};
-f()
-1
+//f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s5","")}catch(e){(async()=>0)().then(h.call.bind(f.call,f,0))}};
+f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s5","")}catch(e){(async()=>{
+console.error('d');
+(async()=>0).then(h.call.bind(f.call,f,0))
+//h.call.bind(f.call,f,0)
+})()//.then(h.call.bind(f.call,f,0))
+}};
 `
      try{
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
