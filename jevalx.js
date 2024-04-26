@@ -9,8 +9,6 @@ processWtf.addListener('unhandledRejection',onError_jevalx);
 const Object_getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const Object_setPrototypeOf = Object.setPrototypeOf;
 const X=function(){}
-
-//PROTECT
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 
@@ -18,7 +16,6 @@ const S_SETUP = `(()=>{
 let is_sandbox = 'function'!=typeof clearTimeout;
 let Object_defineProperty = Object.defineProperty;
 Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
-
 let BlackList = new Set(['then', 'toString', 'toJSON', 'constructor']);
 const safeCopy = obj => 
     obj === null || typeof obj !== 'object' ? obj : 
@@ -27,7 +24,6 @@ const safeCopy = obj =>
         Object.getOwnPropertyNames(obj) .filter(key => !BlackList.has(key)) .map(key => [key, safeCopy(obj[key])])
     );
 Object_defineProperty(this,'safeCopy',{get:()=>safeCopy});
-
 if (is_sandbox){
   let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);
   for (let v of Object.getOwnPropertyNames(this)){if(!WhiteList.has(v))delete this[v]}
@@ -81,7 +77,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
-        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))}catch(ex){return Promise.reject(safeCopy(ex))}})()`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject)
+        jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1].then(resolve).catch(reject);
         delete _Promise.prototype.then;//@s4
       }catch(ex){reject(ex)}
     });
@@ -99,5 +95,5 @@ let jevalx_core = async(js,ctx,options={})=>{
 }
 let jevalx = jevalx_core;
 if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,delay,
-VER:'rc4'
+VER:'rc5'
 }
