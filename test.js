@@ -1898,6 +1898,34 @@ f=()=>{try{eval.constructor('return process')().mainModule.require("fs").writeFi
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s4:async function(){
+let case_id = arguments.callee.name; var code=`
+h=console.log;
+f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s4","")}catch(e){Promise.resolve().then(h.call.bind(f.call,f,0))}}
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+s5:async function(){
+let case_id = arguments.callee.name; var code=`
+h=console.log;
+//f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s5","")}catch(e){Promise.resolve().then(h.call.bind(f.call,f,0))}};
+f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s5","")}catch(e){console.error('d');(async()=>0)().then(h.call.bind(f.call,f,0))}};
+f()
+1
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+
 
 
 

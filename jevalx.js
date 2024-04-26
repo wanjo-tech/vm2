@@ -37,7 +37,7 @@ const setTimeout = timers.setTimeout;
 const delay = (t,rt)=>new Promise((r,j)=>setTimeout(()=>r(rt),t));
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 let jevalx_core = async(js,ctx,options={})=>{
-  let call_id = 'jevalx_'+new Date().getTime();
+  let call_id = 'code'+new Date().getTime();
   let {timeout=666,json_output=false,return_arr=false,user_import_handler=undefined,microtaskMode='afterEvaluate'}=(typeof options=='object'?options:{});
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;
@@ -62,7 +62,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   try{
     let _console,_Promise,_Object,_Function;
     await new Promise(async(resolve,reject)=>{
-      setTimeout(()=>{reject({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout);//Q7x
+      setTimeout(()=>{reject({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout+111);//Q7x
       let onError = (ex, tag)=>{ reject(filterError(ex)); };
       if (ctx && vm.isContext(ctx)) ctxx = ctx;
       else {
@@ -75,10 +75,10 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
-      jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,{filename:call_id})[1].then(tmp_rst=>{ rst = tmp_rst; resolve(rst) }).catch(ex=>{ reject(ex);});
-      }catch(ex){ err = filterError(ex); }
+        jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));if(typeof(z)=='object'){z=Array.isArray(z)?[...z]:{...z}}if(z){delete z.then;delete z.toString;delete z.toJSON;delete z.constructor}if(${!!json_output})z=JSON.stringify(z);return z})(eval(${jss}))}catch(ex){return Promise.reject(ex)}})()`,ctxx,timeout,{filename:call_id})[1].then(tmp_rst=>{ delete _Promise.prototype.then;rst=tmp_rst;resolve()}).catch(ex=>{reject(ex)})
+      }catch(ex){ err = filterError(ex); reject(err); }
     });
-  }catch(ex){ err = filterError(ex); }
+  }catch(ex){ if (!err) { err = filterError(ex) } }
   finally{ eval(S_EXIT); }
   if (err) {
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
