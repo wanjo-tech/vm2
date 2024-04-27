@@ -111,6 +111,10 @@ let jevalx_core = async(js,ctx,options={})=>{
         //while(1) { console.error('!!!!',new Date(),jss); }
       };
       try{
+//import()=>host Promise.
+Object_setPrototypeOf(Promise.prototype.catch,null);
+Object_setPrototypeOf(Promise.prototype.then,null);
+Object_setPrototypeOf(Promise.prototype.finally,null);
         delete Promise.prototype.catch;//@s9
         delete _Promise.prototype.then;//@s*
         //delete _Promise.prototype.catch;
