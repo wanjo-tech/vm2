@@ -2065,17 +2065,7 @@ let case_id = arguments.callee.name; var code=`
   },
 
 
-x6:async function(){ let case_id = arguments.callee.name; var code=`
-[Object.getOwnPropertyNames(this),getPrototypeOf(this),getAllPrototypeMethods(this)]
-`
-     try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{getPrototypeOf:Object.getPrototypeOf,getAllPrototypeMethods,dumptree:require('./dumptree')},{microtaskMode:false,timeout:666,json_output:false}));
-     }catch(ex){
-       console.log(`${case_id} ex=`,ex);
-     }
-     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
-  },
-
+//////////////////////
   x1:async function(){ let case_id = arguments.callee.name; var code=`
 const i = import('');
 //console.log('i='+typeof i);
@@ -2176,8 +2166,9 @@ x5:async function(){ let case_id = arguments.callee.name; var code=`
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+
+//pure dead loop
 x6:async function(){
-//return;//TODO ddos?
 let case_id = arguments.callee.name; var code=`
 h=console.log;
 f=async()=>{try{
@@ -2190,7 +2181,7 @@ f();
 1
 `
      try{
-       console.log(`${case_id} result(raw)=`,await jevalx(code,{delay},{microtaskMode:false,timeout:666,json_output:false}));
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }

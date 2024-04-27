@@ -13,6 +13,11 @@ let Promise_prototype_catch = Promise.prototype.catch;
 let Promise_prototype_then = Promise.prototype.then;
 let Promise_prototype_finally = Promise.prototype.finally;
 
+//import()=>host Promise.
+Object_setPrototypeOf(Promise.prototype.then,null);
+//Object_setPrototypeOf(Promise.prototype.catch,null);
+//Object_setPrototypeOf(Promise.prototype.finally,null);
+
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
 let is_sandbox = 'function'!=typeof clearTimeout;
@@ -111,15 +116,12 @@ let jevalx_core = async(js,ctx,options={})=>{
         //while(1) { console.error('!!!!',new Date(),jss); }
       };
       try{
-//import()=>host Promise.
-Object_setPrototypeOf(Promise.prototype.catch,null);
-Object_setPrototypeOf(Promise.prototype.then,null);
-Object_setPrototypeOf(Promise.prototype.finally,null);
         delete Promise.prototype.catch;//@s9
         delete _Promise.prototype.then;//@s*
         //delete _Promise.prototype.catch;
         let promise = jevalx_raw(`(async({},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})((()=>({}))(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
-        Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
+        //Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
+        _Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
       }catch(ex){ reject(ex);
       }finally{
         if (Promise.prototype.catch != Promise_prototype_catch) {
