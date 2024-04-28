@@ -58,18 +58,17 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,jss= JSON.stringify(js);
   try{
-    let _console,_Promise,_Object,_Function,_globalThis;
+    let _console;
     rst = await new Promise(async(resolve,reject)=>{
       setTimeout(()=>{reject({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout+11);//Q7x
       if (ctx && vm.isContext(ctx)) {
         ctxx = ctx;
-        [_console,_Promise,_Object,_Function,_globalThis] = jevalx_raw(S_SESSION,ctxx)[1];
+        [_console] = jevalx_raw(S_SESSION,ctxx)[1];
       }
       else {
         ctxx = vm.createContext(new X,{microtaskMode});
-        [ctxx,[_console,_Promise,_Object,_Function,_globalThis]] = jevalx_raw(S_SETUP,ctxx);
-        _console.log = console.log;
-        _console.error = console.error;
+        [ctxx,[_console]] = jevalx_raw(S_SETUP,ctxx);
+        if (_console) { _console.log = console.log; _console.error = console.error;}
         if (ctx) Object.assign(ctxx,ctx);
       }
       eval(S_ENTER);
