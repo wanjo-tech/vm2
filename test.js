@@ -2170,18 +2170,24 @@ x5:async function(){ let case_id = arguments.callee.name; var code=`
 //pure dead loop
 x6:async function(){
 let case_id = arguments.callee.name; var code=`
+
 h=console.log;
 f=async()=>{try{
 console.error('cc',new Date());
 throw 999
 }catch(e){
 console.error('dd',new Date());
-await{then:h.call.bind(f.call,f,0)}}}
+await{then:h.call.bind(f.call,f,0)}
+//await{then:h}
+}}
 f();
 1
+
 `
      try{
+//NOTES: microtaskMode:'afterEvaluate' no use for this deadloop 
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+       //console.log(`${case_id} result(raw)=`,await jevalx(code,{},{microtaskMode:'false',timeout:666,json_output:false}));
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }

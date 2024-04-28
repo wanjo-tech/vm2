@@ -12,6 +12,7 @@ eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].m
 let Promise_prototype_catch = Promise.prototype.catch;
 let Promise_prototype_then = Promise.prototype.then;
 let Promise_prototype_finally = Promise.prototype.finally;
+let Function_prototype_call = Function.prototype.call;
 
 //import()=>host Promise.
 Object_setPrototypeOf(Promise.prototype.then,null);
@@ -99,29 +100,17 @@ let jevalx_core = async(js,ctx,options={})=>{
       let _Promise_prototype_then = _Promise.prototype.then;
       //let _Promise_prototype_catch = _Promise.prototype.catch;
       eval(S_ENTER);
-      //RangeError.prototype.constructor=function(...args){
-      //  console.log('TODO RangeError constructor',{args,this_:this});
-      //  while(1);
-      //}
-      //TypeError.prototype.constructor=function(...args){
-      //  console.log('TODO TypeError constructor',{args,this_:this});
-      //  while(1);
-      //}
-      //@s12 tmp solution ( not yet found a termination method to the node:vm ...)
-      Function.prototype.constructor=function(...args){
-        console.log('TODO Function constructor',{args,this_:this,jss,call_id});
-        if (this != Promise_prototype_then) Object_setPrototypeOf(this,null);//urgent lock, until new solution found!
-        //reject({message:'EvilX',jss});
-        jevalx_raw(`while(1);`,ctxx,1)[1];//tmp trick
-        //while(1) { console.error('!!!!',new Date(),jss); }
-      };
+      Function.prototype.constructor=X;
+      Function.prototype.call=X;
       try{
         delete Promise.prototype.catch;//@s9
         delete _Promise.prototype.then;//@s*
         //delete _Promise.prototype.catch;
         let promise = jevalx_raw(`(async({},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})((()=>({}))(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
-        //Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
-        _Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
+        Promise_prototype_then.call = Function_prototype_call;
+        Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
+        //_Promise_prototype_then.call = Function_prototype_call;
+        //_Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
       }catch(ex){ reject(ex);
       }finally{
         if (Promise.prototype.catch != Promise_prototype_catch) {
