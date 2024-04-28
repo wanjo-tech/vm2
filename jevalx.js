@@ -13,6 +13,7 @@ let Promise_prototype_catch = Promise.prototype.catch;
 let Promise_prototype_then = Promise.prototype.then;
 let Promise_prototype_finally = Promise.prototype.finally;
 let Function_prototype_call = Function.prototype.call;
+let Function_prototype_apply = Function.prototype.apply;
 
 //import()=>host Promise.
 Object_setPrototypeOf(Promise.prototype.then,null);
@@ -48,10 +49,15 @@ if (is_sandbox){
 `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')
 +`
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return ${S_SESSION}})()`;
-//let jevalx_host_name_a=['Promise','Object','Function'];
-let jevalx_host_name_a=['Promise','Object'];
-const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('');//
-const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
+let jevalx_host_name_a=['Promise','Object','Function'];
+const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('') +`
+  Function.prototype.call=X;
+  Function.prototype.apply=X;
+`;
+const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('')+`
+  Function.prototype.call = Function_prototype_call;
+  Function.prototype.apply = Function_prototype_apply;
+`;
 
 const vm = require('node:vm');
 const timers = require('timers');
@@ -97,28 +103,12 @@ let jevalx_core = async(js,ctx,options={})=>{
         _console.error = console.error;
         if (ctx) Object.assign(ctxx,ctx);
       }
-      let _Promise_prototype_then = _Promise.prototype.then;
-      //let _Promise_prototype_catch = _Promise.prototype.catch;
       eval(S_ENTER);
-      Function.prototype.constructor=X;
-      Function.prototype.call=X;
       try{
-        delete Promise.prototype.catch;//@s9
-        delete _Promise.prototype.then;//@s*
-        //delete _Promise.prototype.catch;
         let promise = jevalx_raw(`(async({},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})((()=>({}))(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
         Promise_prototype_then.call = Function_prototype_call;
         Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
-        //_Promise_prototype_then.call = Function_prototype_call;
-        //_Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
-      }catch(ex){ reject(ex);
-      }finally{
-        if (Promise.prototype.catch != Promise_prototype_catch) {
-          Promise.prototype.catch = Promise_prototype_catch;//
-        }
-        _Promise.prototype.then=_Promise_prototype_then;//TEST SESSION...
-        //_Promise.prototype.catch =_Promise_prototype_catch;//TEST SESSION...
-      }
+      }catch(ex){reject(ex)}//finally{}
     });
   }catch(ex){ err = filterError(ex,err,jss) }
   finally{ eval(S_EXIT); }
