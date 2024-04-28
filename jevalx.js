@@ -17,7 +17,7 @@ let Object_defineProperty = Object.defineProperty;
 Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
 let BlackList = new Set(['then', 'toString', 'toJSON', 'constructor']);
 const safeCopy = obj => obj === null || typeof obj !== 'object' ? obj : Array.isArray(obj) ? obj.map(safeCopy) : 
-  Object.fromEntries(Object.getOwnPropertyNames(obj).filter(key =>!BlackList.has(key)).map(key=>[key,safeCopy(obj[key])]));
+  Object.fromEntries(Object.getOwnPropertyNames(obj).filter(key =>!BlackList.has(key)&&obj[key]!=obj).map(key=>[key,safeCopy(obj[key])]));
 Object_defineProperty(this,'safeCopy',{get:()=>safeCopy});
 Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//DEV-ONLY
 if (is_sandbox){
@@ -73,7 +73,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
-        let promise = jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):z==globalThis?globalThis:safeCopy(z);return z})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
+        let promise = jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
         Promise_prototype_then.call(promise,resolve,reject);
       }catch(ex){reject(ex)}
     });
