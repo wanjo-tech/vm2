@@ -8,6 +8,7 @@ const X=function(){}
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 
+let Function_prototype_bind = Function.prototype.bind;
 let Function_prototype_call = Function.prototype.call;
 let Function_prototype_apply = Function.prototype.apply;
 let Promise_prototype_then = Promise.prototype.then;
@@ -32,8 +33,8 @@ if (is_sandbox){
 +`
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return ${S_SESSION}})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
-const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('') +`Function.prototype.call=X;Function.prototype.apply=X;`;
-const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('')+`Function.prototype.call=Function_prototype_call;Function.prototype.apply=Function_prototype_apply;`;
+const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('') +`Function.prototype.bind=Function.prototype.call=Function.prototype.apply=X;`;
+const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('')+`Function.prototype.bind=Function_prototype_bind;Function.prototype.call=Function_prototype_call;Function.prototype.apply=Function_prototype_apply;`;
 
 const vm = require('node:vm');
 const timers = require('timers');
@@ -77,10 +78,10 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
-        let promise = jevalx_raw(`(async({},z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})((()=>({}))(),eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
+        let promise = jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
         Promise_prototype_then.call = Function_prototype_call;
-        Promise_prototype_then.call(promise,z=>resolve(z),zz=>reject(zz));
-      }catch(ex){reject(ex)}//finally{}
+        Promise_prototype_then.call(promise,resolve,reject);
+      }catch(ex){reject(ex)}
     });
   }catch(ex){ err = filterError(ex,err,jss) }
   finally{ eval(S_EXIT); }
@@ -90,11 +91,11 @@ let jevalx_core = async(js,ctx,options={})=>{
     if (err?.code=='ERR_SCRIPT_EXECUTION_TIMEOUT') {err.message = 'Timeout'+timeout;err.code='TIMEOUT';}
     if (!err?.id) err.id = call_id;
   }
+  if (return_arr) return [err,rst,ctxx,call_id,js];
   if (err) throw err;
-  if (return_arr) return [ctxx,rst,call_id,js];
   return rst;
 }
 let jevalx = jevalx_core;
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_core,jevalx_raw,S_SETUP,S_ENTER,S_EXIT,X,
 VER:'rc5'
 }
