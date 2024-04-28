@@ -2197,7 +2197,8 @@ f();
 //"Error: async hook stack has become corrupted"
 x7:async function(){
 let case_id = arguments.callee.name; var code=`
-(f=async()=>{try{throw 1}catch(e){await{then:f}}})()
+//(f=async()=>{try{throw 1}catch(e){await{then:f}}})()
+(f=async()=>{try{console.error(new Date());import('fs').then(m=>m.writeFileSync("pwned_x7",""))}catch(e){await{then:f}}})()
 `
      try{
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));

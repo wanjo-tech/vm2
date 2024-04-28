@@ -8,27 +8,20 @@ const X=function(){}
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 
-//let Function_prototype_bind = Function.prototype.bind;
-//let Function_prototype_call = Function.prototype.call;
-//let Function_prototype_apply = Function.prototype.apply;
 let Promise_prototype_then = Promise.prototype.then;
-//let Promise_prototype_catch = Promise.prototype.catch;
-//let Promise_prototype_finally = Promise.prototype.finally;
 
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
-delete Function.prototype.call;
-delete Function.prototype.bind;
-delete Function.prototype.apply;
 let is_sandbox = 'function'!=typeof clearTimeout;
 let Object_defineProperty = Object.defineProperty;
 Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
 let BlackList = new Set(['then', 'toString', 'toJSON', 'constructor']);
 const safeCopy = obj => obj === null || typeof obj !== 'object' ? obj : Array.isArray(obj) ? obj.map(safeCopy) : 
-  Object.fromEntries(Object.getOwnPropertyNames(obj).filter(key =>!BlackList.has(key)).map(key=>[key,safeCopy(obj[key])]));
+  Object.fromEntries(Object.getOwnPropertyNames(obj).filter(key =>!BlackList.has(key)&&obj[key]!=obj).map(key=>[key,safeCopy(obj[key])]));
 Object_defineProperty(this,'safeCopy',{get:()=>safeCopy});
 Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//DEV-ONLY
 if (is_sandbox){
+  Object.getOwnPropertyNames(Function.prototype).forEach(prop=>{delete Function.prototype[prop]});
   let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);
   for (let v of Object.getOwnPropertyNames(this)){if(!WhiteList.has(v))delete this[v]}
 };
@@ -37,9 +30,7 @@ if (is_sandbox){
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return ${S_SESSION}})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
-//+`Function.prototype.bind=Function.prototype.call=Function.prototype.apply=X;`;
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('')
-//+`Function.prototype.bind=Function_prototype_bind;Function.prototype.call=Function_prototype_call;Function.prototype.apply=Function_prototype_apply;`;
 
 const vm = require('node:vm');
 const timers = require('timers');
@@ -67,25 +58,22 @@ let jevalx_core = async(js,ctx,options={})=>{
   if (typeof options=='number') timeout = options;
   let ctxx,rst,err,jss= JSON.stringify(js);
   try{
-    let _console,_Promise,_Object,_Function,_globalThis;
+    let _console;
     rst = await new Promise(async(resolve,reject)=>{
       setTimeout(()=>{reject({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout+11);//Q7x
       if (ctx && vm.isContext(ctx)) {
         ctxx = ctx;
-        [_console,_Promise,_Object,_Function,_globalThis] = jevalx_raw(S_SESSION,ctxx)[1];
+        [_console] = jevalx_raw(S_SESSION,ctxx)[1];
       }
       else {
         ctxx = vm.createContext(new X,{microtaskMode});
-        [ctxx,[_console,_Promise,_Object,_Function,_globalThis]] = jevalx_raw(S_SETUP,ctxx);
-        _console.log = console.log;
-        _console.error = console.error;
+        [ctxx,[_console]] = jevalx_raw(S_SETUP,ctxx);
+        if (_console) { _console.log = console.log; _console.error = console.error;}
         if (ctx) Object.assign(ctxx,ctx);
       }
       eval(S_ENTER);
       try{
-        let promise = jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
-        //Promise_prototype_then.call = Function_prototype_call;
-        Promise_prototype_then.call(promise,resolve,reject);
+        Promise_prototype_then.call(jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1],resolve,reject);
       }catch(ex){reject(ex)}
     });
   }catch(ex){ err = filterError(ex,err,jss) }
