@@ -73,7 +73,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       try{
-        let promise = jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
+        let promise = jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):z==globalThis?globalThis:safeCopy(z);return z})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
         Promise_prototype_then.call(promise,resolve,reject);
       }catch(ex){reject(ex)}
     });
