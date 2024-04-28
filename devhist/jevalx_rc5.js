@@ -8,10 +8,18 @@ const X=function(){}
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__'].map(v=>'delete '+v+';').join(''));
 
+//let Function_prototype_bind = Function.prototype.bind;
+//let Function_prototype_call = Function.prototype.call;
+//let Function_prototype_apply = Function.prototype.apply;
 let Promise_prototype_then = Promise.prototype.then;
+//let Promise_prototype_catch = Promise.prototype.catch;
+//let Promise_prototype_finally = Promise.prototype.finally;
 
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
+delete Function.prototype.call;
+delete Function.prototype.bind;
+delete Function.prototype.apply;
 let is_sandbox = 'function'!=typeof clearTimeout;
 let Object_defineProperty = Object.defineProperty;
 Object_defineProperty(Object.prototype,'__proto__',{get(){},set(newValue){}});
@@ -21,7 +29,6 @@ const safeCopy = obj => obj === null || typeof obj !== 'object' ? obj : Array.is
 Object_defineProperty(this,'safeCopy',{get:()=>safeCopy});
 Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//DEV-ONLY
 if (is_sandbox){
-  Object.getOwnPropertyNames(Function.prototype).forEach(prop=>{delete Function.prototype[prop]});
   let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);
   for (let v of Object.getOwnPropertyNames(this)){if(!WhiteList.has(v))delete this[v]}
 };
@@ -30,7 +37,9 @@ if (is_sandbox){
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return ${S_SESSION}})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
+//+`Function.prototype.bind=Function.prototype.call=Function.prototype.apply=X;`;
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('')
+//+`Function.prototype.bind=Function_prototype_bind;Function.prototype.call=Function_prototype_call;Function.prototype.apply=Function_prototype_apply;`;
 
 const vm = require('node:vm');
 const timers = require('timers');
@@ -75,6 +84,7 @@ let jevalx_core = async(js,ctx,options={})=>{
       eval(S_ENTER);
       try{
         let promise = jevalx_raw(`(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));z=(${!!json_output})?JSON.stringify(z):safeCopy(z);return z})(eval(${jss}))`,ctxx,timeout,{filename:call_id})[1]
+        //Promise_prototype_then.call = Function_prototype_call;
         Promise_prototype_then.call(promise,resolve,reject);
       }catch(ex){reject(ex)}
     });
