@@ -1915,7 +1915,6 @@ let case_id = arguments.callee.name; var code=`
 h=console.log;
 //f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s5","")}catch(e){(async()=>0)().then(h.call.bind(f.call,f,0))}};
 f=()=>{try{h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s5","")}catch(e){(async()=>{
-console.error('d');
 (async()=>0).then(h.call.bind(f.call,f,0))
 //h.call.bind(f.call,f,0)
 })()//.then(h.call.bind(f.call,f,0))
@@ -2173,10 +2172,10 @@ let case_id = arguments.callee.name; var code=`
 
 h=console.log;
 f=async()=>{try{
-console.error('cc',new Date());
+console.log('cc',new Date());
 throw 999
 }catch(e){
-console.error('dd',new Date());
+console.log('dd',new Date());
 await{then:h.call.bind(f.call,f,0)}
 //await{then:h}
 }}
@@ -2198,7 +2197,7 @@ f();
 x7:async function(){
 let case_id = arguments.callee.name; var code=`
 //(f=async()=>{try{throw 1}catch(e){await{then:f}}})()
-(f=async()=>{try{console.error(new Date());import('fs').then(m=>m.writeFileSync("pwned_x7",""))}catch(e){await{then:f}}})()
+(f=async()=>{try{console.log(new Date());import('fs').then(m=>m.writeFileSync("pwned_x7",""))}catch(e){await{then:f}}})()
 `
      try{
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));

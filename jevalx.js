@@ -38,7 +38,7 @@ let jevalx_core = async(js,ctx,options={})=>{
   let ctxx,rst,err,jss= JSON.stringify(js);
   try{rst = await new Promise((resolve,reject)=>{try{
     let _console;
-    setTimeout(()=>{reject({message:'TimeoutX',code:'ERR_SCRIPT_EXECUTION_TIMEOUT',js})},timeout+11);//Q7x
+    setTimeout(()=>{reject({message:'TimeoutX',code:'TIMEOUTX',js})},timeout+11);//Q7x
     if (ctx && vm.isContext(ctx)) {ctxx = ctx;[_console] = jevalx_raw(S_SESSION,ctxx)[1]}
     else {
       ctxx = vm.createContext(new X,{microtaskMode});
