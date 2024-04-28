@@ -2194,10 +2194,18 @@ f();
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
-
-
-//TODO https://github.com/nodejs/node/blob/main/test/known_issues/test-vm-timeout-escape-queuemicrotask.js
-//TODO https://github.com/nodejs/node/blob/main/test/known_issues/test-vm-timeout-escape-nexttick.js
+//"Error: async hook stack has become corrupted"
+x7:async function(){
+let case_id = arguments.callee.name; var code=`
+(f=async()=>{try{throw 1}catch(e){await{then:f}}})()
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 LAST:(async()=>{ //normal case:
 
