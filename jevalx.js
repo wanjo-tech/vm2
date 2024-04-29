@@ -20,7 +20,10 @@ for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys'
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
-['call','bind','apply'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null)});
+['call','bind','apply'].forEach(prop=>{
+  Object.setPrototypeOf(Function.prototype[prop],null);
+  Object.freeze(Function.prototype[prop])
+});
 const vm = require('node:vm');
 const timers = require('timers');
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
