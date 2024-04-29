@@ -18,7 +18,7 @@ const safeCopy = obj => obj === null || typeof obj !== 'object' ? obj : Array.is
 Object_defineProperty(this,'safeCopy',{get:()=>safeCopy});
 Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//DEV-ONLY
 if (is_sandbox){
-  Object.getOwnPropertyNames(Function.prototype).forEach(prop=>{delete Function.prototype[prop]});
+  ['call','bind','apply'].forEach(prop=>{delete Function.prototype[prop]});
   let WhiteList = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);
   for (let v of Object.getOwnPropertyNames(this)){if(!WhiteList.has(v))delete this[v]}
 };

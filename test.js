@@ -2197,7 +2197,11 @@ f();
 x7:async function(){
 let case_id = arguments.callee.name; var code=`
 //(f=async()=>{try{throw 1}catch(e){await{then:f}}})()
-(f=async()=>{try{console.log(new Date());import('fs').then(m=>m.writeFileSync("pwned_x7",""))}catch(e){await{then:f}}})()
+//(f=async()=>{try{console.log(new Date());import('fs').then(m=>m.writeFileSync("pwned_x7",""))}catch(e){await{then:f}}})()
+//(f=async()=>{try{console.log(new Date());eval("import('fs').then(m=>m.writeFileSync('pwned_x7',''))")}catch(e){await{then:f}}})()
+f=async()=>{try{console.log(new Date());eval("import('fs').then(m=>m.writeFileSync('pwned_x7',''))")}catch(e){await{then:f}}}
+f()
+1
 `
      try{
        console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
