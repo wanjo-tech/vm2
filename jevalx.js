@@ -19,7 +19,8 @@ if ('function'!=typeof clearTimeout){
 for(let k of Object.getOwnPropertyNames(Object)){if(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'].indexOf(k)<0){delete Object[k]}}return ${S_SESSION}})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
-const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('')
+const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
+['call','bind','apply'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null)});
 const vm = require('node:vm');
 const timers = require('timers');
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
