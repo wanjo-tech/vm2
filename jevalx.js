@@ -1,4 +1,4 @@
-const processWtf = require('process');
+const processWtf = require('process'),vm = require('node:vm'),timers = require('timers');
 let onError_jevalx = (e,rs)=>{ console.error('----------- onError_jevalx {',[e,rs],'} ---------------') };
 processWtf.addListener('unhandledRejection',(processWtf.env?.debug_jevalx>1)?onError_jevalx:()=>0);
 const X=function(){}
@@ -6,6 +6,8 @@ Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join(''));
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
+//let AsyncFunction = (async()=>0).constructor;
+//Object.freeze(AsyncFunction);
 let BlackListCopy = new Set(['then', 'toString', 'toJSON', 'constructor']);
 const safeCopy = obj => obj === null || typeof obj !== 'object' ? obj : Array.isArray(obj) ? obj.map(safeCopy) : 
   Object.fromEntries(Object.getOwnPropertyNames(obj).filter(key =>!BlackListCopy.has(key)&&obj[key]!=obj).map(key=>[key,safeCopy(obj[key])]));
@@ -20,8 +22,10 @@ for(let k of Object.getOwnPropertyNames(Object)){if(!WhiteListObject.has(k)){del
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
-['call','bind','apply'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null);Object.freeze(Function.prototype[prop])});
-const vm = require('node:vm'),timers = require('timers');
+//['call','bind','apply'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null);Object.freeze(Function.prototype[prop])});
+let Function_prototype_call = Function.prototype.call;
+let Function_prototype_bind = Function.prototype.bind;
+let Function_prototype_apply = Function.prototype.apply;
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 let jevalx= async(js,ctx,options={})=>{
   let call_id = 'code'+new Date().getTime(),ctxx,rst,err,jss= JSON.stringify(js);
@@ -39,8 +43,12 @@ let jevalx= async(js,ctx,options={})=>{
       if (ctx) Object.assign(ctxx,ctx);
     }
     eval(S_ENTER);
+    Function.prototype.call = function(...args){
+      if ('AsyncFunction'==this.constructor.name){throw {message:'EvilAsyncFunction'}}//disable AsyncFunction.call() in sandbox
+      Function_prototype_call.apply(this,args);
+    };
     Promise.prototype.then.call(jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))}catch(ex){return Promise.reject(safeCopy(ex))}})()`,ctxx,timeout,{filename:call_id})[1],resolve,reject);
-  }catch(ex){reject(ex)}})}catch(ex){err=ex}finally{eval(S_EXIT)}
+  }catch(ex){reject(ex)}})}catch(ex){err=ex}finally{eval(S_EXIT);Function.prototype.call=Function_prototype_call;}
   if (err) {
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
