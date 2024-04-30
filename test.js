@@ -2094,6 +2094,21 @@ f();
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s18:async function(){
+let case_id = arguments.callee.name; var code=`
+h=console.log;
+c=10;
+f=async()=>c--==0?h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s18",""):await{then:[_=>f()].map(h.bind,h.call)[0]}
+f();
+1
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 tpl:async function(){
