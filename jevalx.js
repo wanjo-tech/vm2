@@ -1,8 +1,7 @@
-const processWtf = require('process'),vm = require('node:vm'),timers = require('timers');
+const processWtf = require('process'),vm = require('node:vm'),timers = require('timers'),X=function(){};
 let onError_jevalx = (e,rs)=>{ console.error('----------- onError_jevalx {',[e,rs],'} ---------------') };
 processWtf.addListener('unhandledRejection',(processWtf.env?.debug_jevalx>1)?onError_jevalx:()=>0);
 //processWtf.addListener('unhandledException',onError_jevalx);
-const X=function(){}
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join(''));
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
@@ -30,7 +29,7 @@ let Function_prototype_bind = Function.prototype.bind;
 let Function_prototype_apply = Function.prototype.apply;
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 let jevalx= async(js,ctx,options={})=>{
-  let call_id = 'code'+new Date().getTime(),ctxx,rst,err,jss= JSON.stringify(js);
+  let call_id = 'code'+new Date().getTime(),ctxx,rst,err,jss=JSON.stringify(js);
   let {timeout=666,json_output=false,return_arr=false,user_import_handler=undefined,microtaskMode='afterEvaluate'}=(typeof options=='object'?options:{});
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;

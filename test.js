@@ -2009,7 +2009,10 @@ h=console.log;
   },
 s12:async function(){ let case_id = arguments.callee.name; var code=`
 h=console.log;
-f=async()=>{try{ h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s12","")}catch(e){ await{then:h.call.bind(f.call,f,0)}}}
+f=async()=>{try{ h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s12","")}catch(e){
+console.error('e',e,h.call);
+await{then:h.call.bind(f.call,f,0)}}
+}
 f();
 1
 `
@@ -2251,7 +2254,6 @@ throw 999
 }catch(e){
 console.log('dd',new Date());
 await{then:h.call.bind(f.call,f,0)}
-//await{then:h}
 }}
 f();
 1
