@@ -52,7 +52,7 @@ let jevalx= async(js,ctx,options={})=>{
     else if (Promise_prototype_catch.call != Function_prototype_call){ reject({message:'EvilPromiseCatch'}) }
     else if (Promise_prototype_finally.call != Function_prototype_call){ reject({message:'EvilPromiseFinally'}) }
     else {
-      Promise_prototype_catch.call(promise,reject);//for an async-promise-rejection warning message.
+      //Promise_prototype_catch.call(promise,reject);//for an async-promise-rejection warning message, but failed s23. to-investigate-later.
       timers.setTimeout(()=>{Promise_prototype_then.call(promise,resolve,reject)},1)
     }
   }catch(ex){reject(ex)}})}catch(ex){err=ex}finally{eval(S_EXIT);
