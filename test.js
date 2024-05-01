@@ -2192,6 +2192,38 @@ throw 1;
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s24:async function(){
+let case_id = arguments.callee.name; var code=`
+h=console.log;
+c=10;
+import('').catch.call=1;
+f=async()=>c--==0?h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s24",""):await{then:[_=>f()].map(h.bind,h.apply)[0]}
+f();
+throw 1;
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+s25:async function(){
+let case_id = arguments.callee.name; var code=`
+h=console.log;
+c=10;
+import('').then.call=1;
+f=async()=>c--==0?h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s25",""):await{then:[_=>f()].map(h.bind,h.apply)[0]}
+f();
+throw 1;
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
