@@ -2384,6 +2384,22 @@ f()
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+x8:async function(){
+let case_id = arguments.callee.name; var code=`
+(async()=>await tmp)()
+`;
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{tmp:(async()=>Math.random())()},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     try{
+       console.log(`${case_id} (!microtaskMode) result(raw)=`,await jevalx(code,{tmp:(async()=>1)()},{timeout:666,json_output:false,microtaskMode:''}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 LAST:(async()=>{ //normal case:
 
