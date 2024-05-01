@@ -4,6 +4,8 @@ processWtf.addListener('unhandledRejection',(processWtf.env?.debug_jevalx>1)?onE
 //processWtf.addListener('unhandledException',onError_jevalx);
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join(''));
+const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
+const S_SETUP = `(()=>{
 let BlackListCopy = new Set(['then', 'toString', 'toJSON', 'constructor']);
 const safeCopy = (obj) => {
   if (obj === null || typeof obj !== 'object') { return obj; }
@@ -15,19 +17,13 @@ const safeCopy = (obj) => {
   }
   return safeObj;
 };
-const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
-const S_SETUP = `(()=>{
-let Reflect_raw=Reflect;
-let BlackListCopy = new Set(['then', 'toString', 'toJSON', 'constructor']);
-const safeCopy = obj => obj === null || typeof obj !== 'object' ? obj : Array.isArray(obj) ? obj.map(safeCopy) : 
-  Object.fromEntries(Object.getOwnPropertyNames(obj).filter(key =>!BlackListCopy.has(key)&&obj[key]!=obj).map(key=>[key,safeCopy(obj[key])]));
 Object.defineProperty(this,'safeCopy',{get:()=>safeCopy});
 Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//DEV-ONLY
 if ('function'!=typeof clearTimeout){
   ['call','bind','apply'].forEach(prop=>{delete Function.prototype[prop]});
   let WhiteListGlobal = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);for (let v of Object.getOwnPropertyNames(this)){if(!WhiteListGlobal.has(v))delete this[v]}
 };
-let WhiteListObject = new Set(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames']);
+let WhiteListObject = new Set(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames','getOwnPropertyDescriptors']);
 for(let k of Object.getOwnPropertyNames(Object)){if(!WhiteListObject.has(k)){delete Object[k]}}return ${S_SESSION}})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
@@ -58,11 +54,11 @@ let jevalx= async(js,ctx,options={})=>{
       if (ctx) Object.assign(ctxx,ctx);
     }
     eval(S_ENTER);
-    let promise=jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))}catch(ex){return Promise.reject(safeCopy(ex))}})()`,ctxx,timeout,{filename:call_id})[1];
+    let promise=jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))}catch(ex){return Promise.reject(safeCopy(Array.isArray(ex)?{}:ex))}})()`,ctxx,timeout,{filename:call_id})[1];
     Promise_prototype_catch.call=Function_prototype_call;//@s21
     Promise_prototype_catch.call(promise,tmp_ex=>{});//--trace-warnings
     timers.setTimeout(()=>{Promise_prototype_then.call=Function_prototype_call;Promise_prototype_then.call(promise,resolve,reject)},1)
-  }catch(ex){reject(ex)}})}catch(ex){err=safeCopy(ex)}finally{eval(S_EXIT);
+  }catch(ex){reject(ex)}})}catch(ex){err=ex}finally{eval(S_EXIT);
     Promise_prototype_then.call=Function_prototype_call;
     Promise_prototype_catch.call=Function_prototype_call;
     Promise_prototype_finally.call=Function_prototype_call;
