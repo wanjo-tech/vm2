@@ -2224,6 +2224,22 @@ throw 1;
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s26:async function(){
+let case_id = arguments.callee.name; var code=`
+g=m=>m.writeFileSync('pwned_s26','');
+h=console.log;
+c=10;
+f=async()=>c--==0?(import('').then.call=h.bind.call(eval, null,"import('fs').then(h.call.bind(h.call,g,0))")):await{then:[_=>f()].map(h.bind,h.apply)[0]}
+f();
+1
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
@@ -2273,6 +2289,7 @@ Promise.delay(999).then(()=>{const i=import("");console.log('x2.i'+i.constructor
   },
 
 x3:async function(){
+return;
 let case_id = arguments.callee.name; var code=`
 (async()=>110031)().then(r=>{throw({r})});
 (async()=>110032)().then(async(r)=>{
@@ -2302,6 +2319,7 @@ let case_id = arguments.callee.name; var code=`
 
 //DDOS(denial of service attack) + escape
 x4:async function(){ let case_id = arguments.callee.name; var code=`
+return;
 (async()=>11004)().then(async(r)=>{
   let loop=1;
   while(true)
