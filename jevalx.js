@@ -44,9 +44,16 @@ let jevalx= async(js,ctx,options={})=>{
       if (ctx) Object.assign(ctxx,ctx);
     }
     eval(S_ENTER);
+    Function.prototype.call = X;
+    Function.prototype.bind = X;
+    Function.prototype.apply = X;
     let promise=jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))}catch(ex){return Promise.reject(safeCopy(ex))}})()`,ctxx,timeout,{filename:call_id})[1];
-    timers.setTimeout(()=>{ Promise_prototype_then.call(promise,resolve,reject); },1);
-  }catch(ex){reject(ex)}})}catch(ex){err=ex}finally{eval(S_EXIT);Function.prototype.call=Function_prototype_call;}
+    timers.setTimeout(()=>{Promise_prototype_then.call=Function_prototype_call;Promise_prototype_then.call(promise,resolve,reject)},1)
+  }catch(ex){reject(ex)}})}catch(ex){err=ex}finally{eval(S_EXIT);
+    Function.prototype.call=Function_prototype_call;
+    Function.prototype.bind=Function_prototype_bind;
+    Function.prototype.apply=Function_prototype_apply;
+  }
   if (err) {
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
