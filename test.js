@@ -2240,6 +2240,17 @@ f();
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s27:async function(){
+let case_id = arguments.callee.name; var code=`
+throw{get code(){try{console.log.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s27","")}catch{throw this}}}
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 

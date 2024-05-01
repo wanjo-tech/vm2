@@ -4,6 +4,17 @@ processWtf.addListener('unhandledRejection',(processWtf.env?.debug_jevalx>1)?onE
 //processWtf.addListener('unhandledException',onError_jevalx);
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join(''));
+let BlackListCopy = new Set(['then', 'toString', 'toJSON', 'constructor']);
+const safeCopy = (obj) => {
+  if (obj === null || typeof obj !== 'object') { return obj; }
+  if (Array.isArray(obj)) { return obj.map(safeCopy); }
+  const descriptors = Object.getOwnPropertyDescriptors(obj);
+  const safeObj = {};
+  for (const [key, descriptor] of Object.entries(descriptors)) {
+    if (!descriptor.get && !BlackListCopy.has(key) && obj[key] !== obj) { safeObj[key] = safeCopy(descriptor.value); }
+  }
+  return safeObj;
+};
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
 let Reflect_raw=Reflect;
@@ -51,15 +62,17 @@ let jevalx= async(js,ctx,options={})=>{
     Promise_prototype_catch.call=Function_prototype_call;//@s21
     Promise_prototype_catch.call(promise,tmp_ex=>{});//--trace-warnings
     timers.setTimeout(()=>{Promise_prototype_then.call=Function_prototype_call;Promise_prototype_then.call(promise,resolve,reject)},1)
-  }catch(ex){reject(ex)}})}catch(ex){err=ex}finally{eval(S_EXIT);
+  }catch(ex){reject(ex)}})}catch(ex){err=safeCopy(ex)}finally{eval(S_EXIT);
     Promise_prototype_then.call=Function_prototype_call;
     Promise_prototype_catch.call=Function_prototype_call;
     Promise_prototype_finally.call=Function_prototype_call;
   }
   if (err) {
+    //if (typeof err.code!='string') delete err.code;
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
     if (err?.code=='ERR_SCRIPT_EXECUTION_TIMEOUT') {err.message = 'Timeout'+timeout;err.code='TIMEOUT';}
+    if (!err.code) err.code = 'EvilX';
     err.id = call_id; err.jss = jss;
   }
   if (return_arr) return [err,rst,ctxx,call_id,js]; if (err) throw err; return rst;
