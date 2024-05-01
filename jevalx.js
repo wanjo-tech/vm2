@@ -22,8 +22,11 @@ let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
 //['call','bind','apply'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null);Object.freeze(Function.prototype[prop])});
-let Promise_prototype_then  = Promise.prototype.then;
+//let Promise_getPrototypeOf = Object.getPrototypeOf(Promise);
 //Object.freeze(Promise.prototype);
+let Promise_prototype_then  = Promise.prototype.then;
+let Promise_prototype_catch  = Promise.prototype.catch;
+let Promise_prototype_finally  = Promise.prototype.finally;
 let Function_prototype_call = Function.prototype.call;
 let Function_prototype_bind = Function.prototype.bind;
 let Function_prototype_apply = Function.prototype.apply;
@@ -44,15 +47,22 @@ let jevalx= async(js,ctx,options={})=>{
       if (ctx) Object.assign(ctxx,ctx);
     }
     eval(S_ENTER);
-    Function.prototype.call = X;
-    Function.prototype.bind = X;
-    Function.prototype.apply = X;
+    //Function.prototype.call = X;
+    //Function.prototype.bind = X;
+    //Function.prototype.apply = X;
     let promise=jevalx_raw(`(async()=>{try{return await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return(${!!json_output})?JSON.stringify(z):safeCopy(z)})(eval(${jss}))}catch(ex){return Promise.reject(safeCopy(ex))}})()`,ctxx,timeout,{filename:call_id})[1];
+    if (Promise_prototype_then.call != Function_prototype_call){ reject({message:'EvilPromiseThen'}) }
+    else if (Promise_prototype_catch.call != Function_prototype_call){ reject({message:'EvilPromiseCatch'}) }
+    else if (Promise_prototype_finally.call != Function_prototype_call){ reject({message:'EvilPromiseFinally'}) }
+    else
     timers.setTimeout(()=>{Promise_prototype_then.call=Function_prototype_call;Promise_prototype_then.call(promise,resolve,reject)},1)
   }catch(ex){reject(ex)}})}catch(ex){err=ex}finally{eval(S_EXIT);
-    Function.prototype.call=Function_prototype_call;
-    Function.prototype.bind=Function_prototype_bind;
-    Function.prototype.apply=Function_prototype_apply;
+    Promise_prototype_then.call=Function_prototype_call;
+    Promise_prototype_catch.call=Function_prototype_call;
+    Promise_prototype_finally.call=Function_prototype_call;
+    //Function.prototype.call=Function_prototype_call;
+    //Function.prototype.bind=Function_prototype_bind;
+    //Function.prototype.apply=Function_prototype_apply;
   }
   if (err) {
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
