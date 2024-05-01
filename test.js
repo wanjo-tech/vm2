@@ -609,6 +609,16 @@ Q7x:async()=>{
   console.log('Q7x check=',typeof(process),typeof(Promise));
 
 },
+Q7x2:async()=>{
+  var code=`(async()=>({ then:()=>{} }))() `
+  try{
+    console.log('Q7x2 result=',await jevalx(code,{},{microtaskMode:'false'}));
+  }catch(ex){
+    console.log('Q7x2 ex=',ex);
+  }
+  console.log('Q7x2 check=',typeof(process),typeof(Promise));
+
+},
 Q8:(async()=>{
 var code=`
 let u = false;
@@ -2167,6 +2177,21 @@ import('').finally.call=h.bind.call(eval, null,"import('fs').then(h.call.bind(h.
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s23:async function(){
+let case_id = arguments.callee.name; var code=`
+h=console.log;
+c=10;
+f=async()=>c--==0?h.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s23",""):await{then:[_=>f()].map(h.bind,h.apply)[0]}
+f();
+throw 1;
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code,{},{timeout:666,json_output:false}));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
@@ -2402,30 +2427,21 @@ if (require.main === module) {
     let case_id = argo.case;
     if (case_id) {
       //process.on('unhandledRejection', (reason, promise) => { console.error('!!!! =======> unhandledRejection', promise, 'reason:', reason); });
-
       console.log(`-------------- test case ${case_id} ---------------`);
       for (let k of case_id.split(',')){
         console.log(`-------------- test ${k} start---------------`);
         await test_cases[k]();
-        console.log(`-------------- test ${k} end ---------------`);
       }
-      //if (!test_cases[case_id]) throw 'not has '+case_id;
-      //await test_cases[case_id]();
-
-console.log('-------------- test pwn* ---------------');
-await searchFiles('.',/pwn*/);
     }else{
       console.log('-------------- test all start ---------------');
       for (let k in test_cases){
         console.log(`-------------- test ${k} start---------------`);
-//
         await test_cases[k]();
         console.log(`-------------- test ${k} end ---------------`);
       }
-      console.log('-------------- test pwn* ---------------');
-await searchFiles('.',/pwn*/);
-      console.log('-------------- test ALL end ---------------');
     }
+console.log('-------------- test pwn* ---------------');
+await searchFiles('.',/^pwn/);
   })().then(()=>{
     console.log('command line:',argo,'VER:',jevalxModule.VER);
   }).catch(ex=>{
