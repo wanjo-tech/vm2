@@ -9,7 +9,7 @@ const S_SETUP = `(()=>{
 let BlackListCopy = new Set(['then', 'toString', 'toJSON', 'constructor']);
 const safeCopy = (obj) => {
   if (obj === null || typeof obj !== 'object') { return obj; }
-  if (Array.isArray(obj)) { return obj.map(safeCopy); }
+  if (Array.isArray(obj)) { let rt =[]; for (let v of [...obj]){rt.push(safeCopy(v))};return rt }
   const descriptors = Object.getOwnPropertyDescriptors(obj);
   const safeObj = {};
   for (const [key, descriptor] of Object.entries(descriptors)) {
