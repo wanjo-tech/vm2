@@ -28,7 +28,7 @@ for(let k of Object.getOwnPropertyNames(Object)){if(!WhiteListObject.has(k)){del
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
-//['call','bind','apply'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null);Object.freeze(Function.prototype[prop])});
+['call','bind','apply'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null);Object.freeze(Function.prototype[prop])});
 //let Promise_getPrototypeOf = Object.getPrototypeOf(Promise);
 //Object.freeze(Promise.prototype);
 let Promise_prototype_then  = Promise.prototype.then;

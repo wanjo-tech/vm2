@@ -2262,6 +2262,43 @@ throw((a=[1]).map=_=>a[0]-->0?a:{get code(){console.log.constructor('return proc
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s29:async function(){
+let case_id = arguments.callee.name; var code=`
+h=console.log;
+(a=[1]).map=_=>a;
+x=h.call.bind(a.then=r=>{
+	a.then=1;
+	r(a);
+	try{console.log.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s29","")}catch{a.then=x}
+},0);
+a
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
+s30:async function(){
+let case_id = arguments.callee.name; var code=`
+h=console.log;
+h.call.bind=h.bind;
+(a=[1]).map=_=>a;
+x=h.call.bind(a.then=r=>{
+	a.then=1;
+	r(a);
+	try{console.log.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s30","")}catch{a.then=x}
+},0);
+a
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
