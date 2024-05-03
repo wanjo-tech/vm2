@@ -22,8 +22,10 @@ const safeCopy = (obj) => {
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
 Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//DEV-ONLY
+//Object.freeze(Promise.prototype);
+Object.freeze(Promise.prototype.then);
 if ('function'!=typeof clearTimeout){
-  ['call','bind','apply'].forEach(prop=>{delete Function.prototype[prop]});
+  //['call','bind','apply'].forEach(prop=>{delete Function.prototype[prop]});
   let WhiteListGlobal = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);for (let v of Object.getOwnPropertyNames(this)){if(!WhiteListGlobal.has(v))delete this[v]}
 };
 let WhiteListObject = new Set(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames','getOwnPropertyDescriptors']);
@@ -31,15 +33,17 @@ for(let k of Object.getOwnPropertyNames(Object)){if(!WhiteListObject.has(k)){del
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
+
+//@s1
 ['call','bind','apply'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null);Object.freeze(Function.prototype[prop])});
-//let Promise_getPrototypeOf = Object.getPrototypeOf(Promise);
-//Object.freeze(Promise.prototype);
-let Promise_prototype_then  = Promise.prototype.then;
-let Promise_prototype_catch  = Promise.prototype.catch;
-let Promise_prototype_finally  = Promise.prototype.finally;
-let Function_prototype_call = Function.prototype.call;
-let Function_prototype_bind = Function.prototype.bind;
-let Function_prototype_apply = Function.prototype.apply;
+
+//@s25
+Object.freeze(Promise.prototype.then);
+Object.freeze(Promise.prototype.catch);
+Object.freeze(Promise.prototype.finally);
+Object.freeze(Promise.prototype);
+//Object.freeze(Promise);
+
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 let jevalx= async(js,ctx,options={})=>{
   let call_id = 'code'+new Date().getTime(),ctxx,rst,err,jss=JSON.stringify(js);
@@ -59,20 +63,11 @@ let jevalx= async(js,ctx,options={})=>{
       }
       eval(S_ENTER);
       let promise=jevalx_raw(`(async()=>await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return z})(eval(${jss})))()`,ctxx,timeout,{filename:call_id})[1];
-      Promise_prototype_catch.call=Function_prototype_call;//@s21
-      Promise_prototype_catch.call(promise,tmp_ex=>{});//@s23,--trace-warnings
-      timers.setTimeout(()=>{
-        Promise_prototype_then.call=Function_prototype_call;
-        Promise_prototype_then.call(promise,tmp=>resolve(safeCopy(tmp)),reject)
-      },1)
+      Promise.prototype.catch.call(promise,tmp_ex=>{});//@s23,--trace-warnings
+      timers.setTimeout(()=>{Promise.prototype.then.call(promise,tmp=>resolve(safeCopy(tmp)),reject)},1)
     }catch(ex){reject(ex)}});
-  }catch(ex){err=safeCopy(ex)}finally{eval(S_EXIT);
-    Promise_prototype_then.call=Function_prototype_call;
-    Promise_prototype_catch.call=Function_prototype_call;
-    Promise_prototype_finally.call=Function_prototype_call;
-  }
+  }catch(ex){err=safeCopy(ex)}finally{eval(S_EXIT)}
   if (err) {
-    //if (typeof err.code!='string') delete err.code;
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
     if (err?.code=='ERR_SCRIPT_EXECUTION_TIMEOUT') {err.message = 'Timeout'+timeout;err.code='TIMEOUT';}
@@ -81,4 +76,4 @@ let jevalx= async(js,ctx,options={})=>{
   }
   if (return_arr) return [err,rst,ctxx,call_id,js]; if (err) throw err; return rst;
 }
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1'}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1.0.1'}
