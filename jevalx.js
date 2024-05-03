@@ -2,8 +2,10 @@ const processWtf = require('process'),vm = require('node:vm'),timers = require('
 let onError_jevalx = (e,rs)=>{ console.error('----------- onError_jevalx {',[e,rs],'} ---------------') };
 processWtf.addListener('unhandledRejection',(processWtf.env?.debug_jevalx>1)?onError_jevalx:()=>0);
 //processWtf.addListener('unhandledException',onError_jevalx);
-Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')},set(newValue){console.log('911_set',newValue)}});
+Object.defineProperty(Object.prototype,'__proto__',{get(){console.error('911_get')},set(newValue){console.error('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join(''));
+RangeError.prototype.constructor=X;
+TypeError.prototype.constructor=X;
 
 const Array_isArray = Array.isArray;
 const Array_from = Array.from;
@@ -21,6 +23,8 @@ const safeCopy = (obj) => {
 
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
+Object.defineProperty(Object.prototype,'__proto__',{get(){console.error('911_get')},set(newValue){console.error('911_set',newValue)}});
+`+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')+`
 Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//DEV-ONLY
 //Object.freeze(Promise.prototype);
 Object.freeze(Promise.prototype.then);
@@ -28,14 +32,14 @@ if ('function'!=typeof clearTimeout){
   //['call','bind','apply'].forEach(prop=>{delete Function.prototype[prop]});
   let WhiteListGlobal = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);for (let v of Object.getOwnPropertyNames(this)){if(!WhiteListGlobal.has(v))delete this[v]}
 };
-let WhiteListObject = new Set(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames','getOwnPropertyDescriptors']);
+let WhiteListObject = new Set(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames']);
 for(let k of Object.getOwnPropertyNames(Object)){if(!WhiteListObject.has(k)){delete Object[k]}}return ${S_SESSION}})()`;
 let jevalx_host_name_a=['Promise','Object','Function'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
 
 //@s1
-['call','bind','apply'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null);Object.freeze(Function.prototype[prop])});
+['call','bind','apply','toString','valueOf'].forEach(prop=>{Object.setPrototypeOf(Function.prototype[prop],null);Object.freeze(Function.prototype[prop])});
 
 //@s25
 Object.freeze(Promise.prototype.then);
@@ -76,4 +80,4 @@ let jevalx= async(js,ctx,options={})=>{
   }
   if (return_arr) return [err,rst,ctxx,call_id,js]; if (err) throw err; return rst;
 }
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1.0.1'}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1'}
