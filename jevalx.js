@@ -6,10 +6,12 @@ Object.defineProperty(Object.prototype,'__proto__',{get(){console.log('911_get')
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join(''));
 const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{
+const Array_isArray = Array.isArray;
+const Array_from = Array.from;
 let BlackListCopy = new Set(['then', 'toString', 'toJSON', 'constructor']);
 const safeCopy = (obj) => {
   if (obj === null || typeof obj !== 'object') { return obj; }
-  if (Array.isArray(obj)) { let rt =[]; for (let v of [...obj]){rt.push(safeCopy(v))};return rt }
+  if (Array_isArray(obj)) return Array_from(obj,v=>safeCopy(v));
   const descriptors = Object.getOwnPropertyDescriptors(obj);
   const safeObj = {};
   for (const [key, descriptor] of Object.entries(descriptors)) {

@@ -2319,6 +2319,23 @@ a
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+s32:async function(){
+let case_id = arguments.callee.name; var code=`
+h=console.log;
+Array.prototype.push=function(){this.then=r=>(x=[(_,r)=>{
+	this.then=1;
+	r(this);
+	try{console.log.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s32","")}catch{this.then=x}
+}].map(h.bind,h.call)[0])(r)};
+[1]
+`
+     try{
+       console.log(`${case_id} result(raw)=`,await jevalx(code));
+     }catch(ex){
+       console.log(`${case_id} ex=`,ex);
+     }
+     console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
+  },
 
 
 
