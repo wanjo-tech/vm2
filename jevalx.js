@@ -26,8 +26,6 @@ const S_SETUP = `(()=>{
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.error('911_get')},set(newValue){console.error('911_set',newValue)}});
 `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')+`
 Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//DEV-ONLY
-//Object.freeze(Promise.prototype);
-Object.freeze(Promise.prototype.then);
 if ('function'!=typeof clearTimeout){
   //['call','bind','apply'].forEach(prop=>{delete Function.prototype[prop]});
   let WhiteListGlobal = new Set(['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console']);for (let v of Object.getOwnPropertyNames(this)){if(!WhiteListGlobal.has(v))delete this[v]}
@@ -72,6 +70,7 @@ let jevalx= async(js,ctx,options={})=>{
     }catch(ex){reject(ex)}});
   }catch(ex){err=safeCopy(ex)}finally{eval(S_EXIT)}
   if (err) {
+    if (typeof err.code!='string') delete err.code;//@t3
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
     if (err?.code=='ERR_SCRIPT_EXECUTION_TIMEOUT') {err.message = 'Timeout'+timeout;err.code='TIMEOUT';}
