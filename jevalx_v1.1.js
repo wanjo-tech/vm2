@@ -3,6 +3,7 @@ let onError_jevalx = (e,rs)=>{ console.error('----------- onError_jevalx {',[e,r
 processWtf.addListener('unhandledRejection',(processWtf.env?.debug_jevalx>1)?onError_jevalx:()=>0);
 //processWtf.addListener('unhandledException',onError_jevalx);
 
+let AsyncFunction = (async()=>0).constructor;
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.error('911_get_',this)},set(newValue){console.error('911_set_',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join(''));
 
@@ -64,15 +65,17 @@ let jevalx= async(js,ctx,options={})=>{
         let ctxx_proxy = new Proxy(ctx||{}, {
             get(target, prop, receiver) {
               let wrapee = target;
-  //TODO
               if (typeof(prop)!='string'||['toString','constructor','prototype','keys','__defineGetter__','__defineSetter__'].indexOf(prop)>=0) return;
-  let rt = target[prop];
-  //console.error('proxy todo',prop,rt,rt instanceof Promise);
-  if (rt instanceof Promise){
-    return new _Promise((rr,jj)=>{
-      rt.then(rr).catch(jj)//TMP
-    });
-  }
+              let rt = target[prop];
+              //console.error('proxy todo',prop,rt,rt instanceof Promise);
+              if (rt instanceof Promise){
+              return new _Promise((rr,jj)=>{
+                  rt.then(rr).catch(jj)//TMP
+                  });
+              }
+              if (rt instanceof AsyncFunction){
+              return ()=>{ return new _Promise((rr,jj)=>{ rt().then(rr).catch(jj) }); }
+              }
               //if (prop=='toJSON') rt = ()=>{
               //  console.log('wrapee',wrapee);
               //  if (typeof wrapee=='function') return [String(wrapee)];
