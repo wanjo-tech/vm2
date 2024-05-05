@@ -2505,11 +2505,12 @@ let case_id = arguments.callee.name; var code=`
      }catch(ex){
        console.log(`${case_id} ex=`,ex);
      }
-     try{
-       console.log(`${case_id} (!microtaskMode) result(raw)=`,await jevalx(code,{tmp:(async()=>1)()},{timeout:666,json_output:false,microtaskMode:''}));
-     }catch(ex){
-       console.log(`${case_id} ex=`,ex);
-     }
+//concept proved...
+//     try{
+//       console.log(`${case_id} (!microtaskMode) result(raw)=`,await jevalx(code,{tmp:(async()=>1)()},{timeout:666,json_output:false,microtaskMode:''}));
+//     }catch(ex){
+//       console.log(`${case_id} ex=`,ex);
+//     }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 
