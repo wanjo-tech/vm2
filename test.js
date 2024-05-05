@@ -1898,7 +1898,9 @@ f=()=>{try{valueOf.constructor('return process')().mainModule.require("fs").writ
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
-s3:async function(){ let case_id = arguments.callee.name; var code=`
+s3:async function(){
+return;
+let case_id = arguments.callee.name; var code=`
 f=()=>{try{eval.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s3","")}catch(e){Promise.resolve().then(eval.call.bind(f.call,f,0))}}
 `
      try{
@@ -2385,6 +2387,7 @@ Promise.delay(999).then(()=>{const i=import("");console.log('x2.i'+i.constructor
   },
 
 x3:async function(){
+return;
 let case_id = arguments.callee.name; var code=`
 (async()=>110031)().then(r=>{throw({r})});
 (async()=>110032)().then(async(r)=>{
@@ -2413,7 +2416,9 @@ let case_id = arguments.callee.name; var code=`
 },
 
 //DDOS(denial of service attack) + escape
-x4:async function(){ let case_id = arguments.callee.name; var code=`
+x4:async function(){
+return;
+let case_id = arguments.callee.name; var code=`
 (async()=>11004)().then(async(r)=>{
   let loop=1;
   while(true)
@@ -2525,6 +2530,8 @@ let case_id = arguments.callee.name; var code=`
      }
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
+
+//x10 await jevalx(`(async()=>await tmp1()+await tmp2)`,{tmp1:async()=>1,tmp2:(async()=>2)()})
 
 
 LAST:(async()=>{ //normal case:

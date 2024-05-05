@@ -49,7 +49,7 @@ Object.freeze(Promise.prototype);
 let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
 let jevalx= async(js,ctx,options={})=>{
   let call_id = 'code'+new Date().getTime(),ctxx,rst,err,jss=JSON.stringify(js);
-  let {timeout=666,json_output=false,return_arr=false,user_import_handler=undefined,microtaskMode='afterEvaluate'}=(typeof options=='object'?options:{});
+  let {timeout=666,json_output=false,return_arr=false,user_import_handler=undefined,microtaskMode=undefined}=(typeof options=='object'?options:{});
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
   if (typeof options=='number') timeout = options;
   try{
