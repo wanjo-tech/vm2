@@ -1,8 +1,10 @@
-# Replacement for discontinued vm2 (https://github.com/patriksimek/vm2/issues/533)
+# Sandbox to replace the discontinued vm2 (https://github.com/patriksimek/vm2/issues/533)
 
 ## About
 
-sandbox run js in ctx, running so far so good.  Main tricks is Host-Object-Protection.
+a small sandbox run js in ctx, running so far so good.
+
+Main tricks is Host-Object-Protection and Run-In-Worker-Thread.
 
 Challenge still accepted!  If you have escape case, **just show me the code** at the issues(https://github.com/wanjo-tech/vm2/issues/4), I'll investigate and fix ASAP.
 
