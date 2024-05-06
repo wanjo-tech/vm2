@@ -1899,7 +1899,7 @@ f=()=>{try{valueOf.constructor('return process')().mainModule.require("fs").writ
      console.log(`${case_id} check=`,typeof(process),typeof(Promise),Promise);
   },
 s3:async function(){
-return;
+//return;
 let case_id = arguments.callee.name; var code=`
 f=()=>{try{eval.constructor('return process')().mainModule.require("fs").writeFileSync("pwned_s3","")}catch(e){Promise.resolve().then(eval.call.bind(f.call,f,0))}}
 `
@@ -2387,7 +2387,7 @@ Promise.delay(999).then(()=>{const i=import("");console.log('x2.i'+i.constructor
   },
 
 x3:async function(){
-return;
+//return;
 let case_id = arguments.callee.name; var code=`
 (async()=>110031)().then(r=>{throw({r})});
 (async()=>110032)().then(async(r)=>{
@@ -2417,7 +2417,7 @@ let case_id = arguments.callee.name; var code=`
 
 //DDOS(denial of service attack) + escape
 x4:async function(){
-return;
+//return;
 let case_id = arguments.callee.name; var code=`
 (async()=>11004)().then(async(r)=>{
   let loop=1;
@@ -2600,8 +2600,42 @@ log(...args){
 
 }
 
-if (require.main === module) {
-  console.log('commmand line:',argo);
+function fetchWorker(url, options) {
+    const timers = require('timers');
+    let {setTimeout,clearTimeout} = timers;
+    const { Worker } = require('worker_threads');
+
+    const filePath = url.replace('worker://', '');
+    let timeout = options.timeout || 666;
+    return new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(()=>{
+            reject({code:'TIMEOUT'+timeout});
+            worker.terminate();//
+        },timeout);
+        const worker = new Worker(filePath, { workerData: options });
+        worker.on('message', message=>{
+            clearTimeout(timeoutId);
+            resolve(message);
+            worker.terminate();
+        });
+        worker.on('error',reject); 
+        worker.on('exit',(code) => reject({code}));//
+    });
+}
+
+const { isMainThread,parentPort, workerData } = require('worker_threads');
+if (!isMainThread){
+  async function processData(options) {
+    //console.error('TODO processData',options);
+    let {k} = options;
+    let test_cases = require('./test');
+    await test_cases[k]();
+    return options;
+  }
+  processData(workerData).then(data=>{ parentPort.postMessage(data); }).catch(error=>{ parentPort.postMessage(error); });
+}else if (require.main === module) {
+
+  console.log(__filename,'commmand line:',argo);
   (async()=>{
     let test_cases = require('./test');
     //console.log('test_cases',test_cases);
@@ -2611,13 +2645,23 @@ if (require.main === module) {
       console.log(`-------------- test case ${case_id} ---------------`);
       for (let k of case_id.split(',')){
         console.log(`-------------- test ${k} start---------------`);
-        await test_cases[k]();
+        //await test_cases[k]();
+try{
+  await fetchWorker(__filename,{k,timeout:2222});
+}catch(ex){
+  console.error('case_id',case_id,'ex',ex);
+}
       }
     }else{
       console.log('-------------- test all start ---------------');
       for (let k in test_cases){
         console.log(`-------------- test ${k} start---------------`);
-        await test_cases[k]();
+        //await test_cases[k]();
+try{
+  await fetchWorker(__filename,{k,timeout:2222});
+}catch(ex){
+  console.error('case_id',case_id,'ex',ex);
+}
         console.log(`-------------- test ${k} end ---------------`);
       }
     }
@@ -2628,6 +2672,8 @@ await searchFiles('.',/^pwn/);
   }).catch(ex=>{
     console.log('!!!!!!!!!!! main.catch.ex',ex);
   })
+}else{
+  console.error('non-main');
 }
 /**
 e.g..
