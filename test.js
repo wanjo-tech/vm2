@@ -2647,7 +2647,7 @@ if (!isMainThread){
         console.log(`-------------- test ${k} start---------------`);
         //await test_cases[k]();
 try{
-  await fetchWorker(__filename,{k,timeout:2222});
+  await fetchWorker(__filename,{k,timeout:1111});
 }catch(ex){
   console.error('case_id',case_id,'ex',ex);
 }
@@ -2658,7 +2658,7 @@ try{
         console.log(`-------------- test ${k} start---------------`);
         //await test_cases[k]();
 try{
-  await fetchWorker(__filename,{k,timeout:2222});
+  await fetchWorker(__filename,{k,timeout:1111});
 }catch(ex){
   console.error('case_id',case_id,'ex',ex);
 }

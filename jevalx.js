@@ -43,19 +43,17 @@ const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).joi
 Object.freeze(Promise.prototype.then);
 Object.freeze(Promise.prototype.catch);
 Object.freeze(Promise.prototype.finally);
-Object.freeze(Promise.prototype);
+//Object.freeze(Promise.prototype);//
 //Object.freeze(Promise);
 
-let jevalx_raw = (js,ctxx,timeout=666,js_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,{breakOnSigint:true,timeout})];
+let jevalx_raw = (js,ctxx,js_opts,ctx_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,ctx_opts)];
 let jevalx= async(js,ctx,options={})=>{
   let call_id = 'code'+new Date().getTime(),ctxx,rst,err,jss=JSON.stringify(js);
-  let {timeout=666,json_output=false,return_arr=false,user_import_handler=undefined,microtaskMode=undefined}=(typeof options=='object'?options:{});
+  let {json_output=false,return_arr=false,user_import_handler=undefined,microtaskMode=undefined}=(typeof options=='object'?options:{});
   if (microtaskMode!='afterEvaluate') microtaskMode = undefined;
-  if (typeof options=='number') timeout = options;
   try{
     rst = await new Promise((resolve,reject)=>{try{
       let _console;
-      timers.setTimeout(()=>{reject({message:'TimeoutX',code:'TIMEOUTX',js})},timeout+11);//Q7x
       if (ctx && vm.isContext(ctx)) [ctxx,[_console]] = jevalx_raw(S_SESSION,ctx);
       else {
         ctxx = vm.createContext(new X,{microtaskMode});
@@ -64,16 +62,15 @@ let jevalx= async(js,ctx,options={})=>{
         if (ctx) Object.assign(ctxx,ctx);
       }
       eval(S_ENTER);
-      let promise=jevalx_raw(`(async()=>await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return z})(eval(${jss})))()`,ctxx,timeout,{filename:call_id})[1];
+      let promise=jevalx_raw(`(async()=>await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return z})(eval(${jss})))()`,ctxx,{filename:call_id})[1];
       Promise.prototype.catch.call(promise,tmp_ex=>{});//@s23,--trace-warnings
-      timers.setTimeout(()=>{Promise.prototype.then.call(promise,tmp=>resolve(safeCopy(tmp)),reject)},1)
+      timers.setTimeout(()=>{Promise.prototype.then.call(promise,tmp=>resolve(safeCopy(tmp)),reject)},1)//@(s17,s18,s19,s23,s24,s25)
     }catch(ex){reject(ex)}});
   }catch(ex){err=safeCopy(ex)}finally{eval(S_EXIT)}
   if (err) {
     if (typeof err.code!='string') delete err.code;//@t3
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG') { err.message = 'EvilImportX'; err.code='EVIL_IMPORT_FLAG';}
     if (err?.code=='ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING') { err.message = 'EvilImport'; err.code='EVIL_IMPORT';}
-    if (err?.code=='ERR_SCRIPT_EXECUTION_TIMEOUT') {err.message = 'Timeout'+timeout;err.code='TIMEOUT';}
     if (!err.code) err.code = 'EvilX';
     err.id = call_id; err.jss = jss;
   }
