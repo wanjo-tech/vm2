@@ -24,6 +24,12 @@ https://github.com/wanjo-tech/vm2/blob/main/test.js
 
 * I use jevalx() in my [kk project](https://github.com/wanjo-tech/kk)
 
+## Next Version
+
+* see if worker_threads not needed (no solution yet)
+* see if Proxy version better (baseline without eval())
+* performance boosting
+
 ## Suggestion
 
 Even the codes are proven-of-concepts and running fine, we still recommend building the production and public-accessible application run inside docker with removal of danger modules such as process and fs in global scope.

@@ -2534,6 +2534,7 @@ let case_id = arguments.callee.name; var code=`
 
 
 LAST:(async()=>{ //normal case:
+  //console.log('this=',await jevalx('this',{x:2,y:3}));
 
   //try{
   //  assert.equal( 8 , await jevalx('x**y',{x:2,y:3}))
