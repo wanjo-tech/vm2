@@ -4,19 +4,19 @@ processWtf.addListener('unhandledRejection',(processWtf.env?.debug_jevalx>1)?onE
 //processWtf.addListener('unhandledException',onError_jevalx);
 Object.defineProperty(Object.prototype,'__proto__',{get(){console.error('911_get')},set(newValue){console.error('911_set',newValue)}});
 eval(['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join(''));
-RangeError.prototype.constructor=X;
-TypeError.prototype.constructor=X;
 
 const Array_isArray = Array.isArray;
 const Array_from = Array.from;
+const Object_getOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
+const Object_entries= Object.entries;
 let BlackListCopy = new Set(['then', 'toString', 'toJSON', 'constructor']);
 const safeCopy = (obj) => {
   if (obj === null || typeof obj !== 'object') { return obj; }
   if (Array_isArray(obj)) return Array_from(obj,v=>safeCopy(v));
-  const descriptors = Object.getOwnPropertyDescriptors(obj);
+  const descriptors = Object_getOwnPropertyDescriptors(obj);
   const safeObj = {};
-  for (const [key, descriptor] of Object.entries(descriptors)) {
-    if (!descriptor.get && !BlackListCopy.has(key) && obj[key] !== obj) { safeObj[key] = safeCopy(descriptor.value); }
+  for (const [key, descriptor] of Object_entries(descriptors)) {
+    if(!descriptor.get&&!BlackListCopy.has(key)&&obj[key]!==obj){safeObj[key]=safeCopy(descriptor.value)}
   }
   return safeObj;
 };
@@ -32,7 +32,7 @@ if ('function'!=typeof clearTimeout){
 };
 let WhiteListObject = new Set(['name','fromEntries','keys','entries','is','values','getOwnPropertyNames']);
 for(let k of Object.getOwnPropertyNames(Object)){if(!WhiteListObject.has(k)){delete Object[k]}}return ${S_SESSION}})()`;
-let jevalx_host_name_a=['Promise','Object','Function'];
+let jevalx_host_name_a=['Promise','Object','Function','RangeError','TypeError'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
 
@@ -43,7 +43,7 @@ const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).joi
 Object.freeze(Promise.prototype.then);
 Object.freeze(Promise.prototype.catch);
 Object.freeze(Promise.prototype.finally);
-//Object.freeze(Promise.prototype);//
+Object.freeze(Promise.prototype);
 //Object.freeze(Promise);
 
 let jevalx_raw = (js,ctxx,js_opts,ctx_opts)=>[ctxx,vm.createScript(js,js_opts).runInContext(ctxx,ctx_opts)];
@@ -76,4 +76,4 @@ let jevalx= async(js,ctx,options={})=>{
   }
   if (return_arr) return [err,rst,ctxx,call_id,js]; if (err) throw err; return rst;
 }
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1'}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SESSION,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1'}

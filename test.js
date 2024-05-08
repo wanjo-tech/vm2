@@ -18,12 +18,11 @@ var argv2o=(a,m)=>(a||require('process').argv||[]).reduce((r,e)=>((m=e.match(/^(
 let assert = require('assert');
 
 //console.log('fetch+'+fetch);
-let argo = argv2o();
+//let argo = argv2o();
+var argo;
 
-let jevalxModule;
-
-jevalxModule = require(`./jevalx${argo.ver?('_'+argo.ver):''}.js`);
-let {jevalx,jevalx_raw,delay} = jevalxModule;
+var jevalxModule;
+var jevalx,jevalx_raw;
 
 const fs = require('fs').promises;
 const path = require('path');
@@ -2600,40 +2599,56 @@ log(...args){
 
 }
 
-function fetchWorker(url, options) {
-    const timers = require('timers');
-    let {setTimeout,clearTimeout} = timers;
-    const { Worker } = require('worker_threads');
-
-    const filePath = url.replace('worker://', '');
-    let timeout = options.timeout || 666;
-    return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(()=>{
-            reject({code:'TIMEOUT'+timeout});
-            worker.terminate();//
-        },timeout);
-        const worker = new Worker(filePath, { workerData: options });
-        worker.on('message', message=>{
-            clearTimeout(timeoutId);
-            resolve(message);
-            worker.terminate();
-        });
-        worker.on('error',reject); 
-        worker.on('exit',(code) => reject({code}));//
-    });
-}
 
 const { isMainThread,parentPort, workerData } = require('worker_threads');
+
+//jevalxModule = require(`./jevalx${argo.ver?('_'+argo.ver):''}.js`);
+//var {jevalx,jevalx_raw,delay} = jevalxModule;
+
 if (!isMainThread){
+  argo = workerData.argo;
+  console.error('worker argo',argo);
+  jevalxModule = require(`./jevalx${argo.ver?('_'+argo.ver):''}.js`);
+  var {jevalx,jevalx_raw,delay} = jevalxModule;
+
   async function processData(options) {
-    //console.error('TODO processData',options);
-    let {k} = options;
+    var {k} = options;
+    //jevalxModule = require(`./jevalx${argo.ver?('_'+argo.ver):''}.js`);
+    //var {jevalx,jevalx_raw,delay} = jevalxModule;
     let test_cases = require('./test');
-    await test_cases[k]();
+    let fn = test_cases[k];
+    //console.error('debug',options,fn);
+    let rt = await fn();
+    console.error(k,'=>',rt);
     return options;
   }
   processData(workerData).then(data=>{ parentPort.postMessage(data); }).catch(error=>{ parentPort.postMessage(error); });
 }else if (require.main === module) {
+  argo = argv2o();
+  console.error('main argo',argo);
+
+  function fetchWorker(url, options) {
+      const timers = require('timers');
+      let {setTimeout,clearTimeout} = timers;
+      const { Worker } = require('worker_threads');
+
+      const filePath = url.replace('worker://', '');
+      let timeout = options.timeout || 666;
+      return new Promise((resolve, reject) => {
+          const timeoutId = setTimeout(()=>{
+              reject({code:'TIMEOUT'+timeout});
+              worker.terminate();//
+          },timeout);
+          const worker = new Worker(filePath, { workerData: options });
+          worker.on('message', message=>{
+              clearTimeout(timeoutId);
+              resolve(message);
+              worker.terminate();
+          });
+          worker.on('error',reject); 
+          worker.on('exit',(code) => reject({code}));//
+      });
+  }
 
   console.log(__filename,'commmand line:',argo);
   (async()=>{
@@ -2647,7 +2662,7 @@ if (!isMainThread){
         console.log(`-------------- test ${k} start---------------`);
         //await test_cases[k]();
 try{
-  await fetchWorker(__filename,{k,timeout:1111});
+  await fetchWorker(__filename,{argo,k,timeout:1111});
 }catch(ex){
   console.error('case_id',case_id,'ex',ex);
 }
@@ -2658,7 +2673,7 @@ try{
         console.log(`-------------- test ${k} start---------------`);
         //await test_cases[k]();
 try{
-  await fetchWorker(__filename,{k,timeout:1111});
+  await fetchWorker(__filename,{argo,k,timeout:1111});
 }catch(ex){
   console.error('case_id',case_id,'ex',ex);
 }
@@ -2668,7 +2683,7 @@ try{
 console.log('-------------- test pwn* ---------------');
 await searchFiles('.',/^pwn/);
   })().then(()=>{
-    console.log('command line:',argo,'VER:',jevalxModule.VER);
+    console.log('command line:',argo);
   }).catch(ex=>{
     console.log('!!!!!!!!!!! main.catch.ex',ex);
   })
