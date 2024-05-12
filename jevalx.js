@@ -54,15 +54,27 @@ let jevalx= async(js,ctx,options={})=>{
   try{
     rst = await new Promise((resolve,reject)=>{try{
       let _console;
-      if (ctx && vm.isContext(ctx)) [ctxx,[_console]] = jevalx_raw(S_SESSION,ctx);
-      else {
+      if (ctx && vm.isContext(ctx)){
+/** kinda Proxy way ;)
+let ctx={console};
+let ctxx= require('vm').createContext(new Proxy(ctx,{get(target,prop,receiver){
+  //console.error(prop,target[prop],'==>',[receiver,target,receiver==target]);
+  if (prop in target) return target[prop];//
+  console.error('Proxy',typeof prop,prop,'==>',target[prop]);
+}}));
+ctx.evalx = (js)=>jevalx_raw(js,ctxx)[1];//
+*/
+        [ctxx,[_console]] = jevalx_raw(S_SESSION,ctx);
+      } else {
         ctxx = vm.createContext(new X,{microtaskMode});
         [ctxx,[_console]] = jevalx_raw(S_SETUP,ctxx);
         _console.log = console.log; _console.error = console.error;
         if (ctx) Object.assign(ctxx,ctx);
+        ctxx.evalx = (js)=>jevalx_raw(js,ctxx)[1];//
       }
       eval(S_ENTER);
-      let promise=jevalx_raw(`(async()=>await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return z})(eval(${jss})))()`,ctxx,{filename:call_id})[1];
+      //let promise=jevalx_raw(`(async()=>await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return z})(eval(${jss})))()`,ctxx,{filename:call_id})[1];
+      let promise=jevalx_raw(`(async()=>await(async(z)=>{while(z&&((z.then)&&(z=await z)||(typeof z=='function')&&(z=z())));return z})(evalx(${jss})))()`,ctxx,{filename:call_id})[1];
       Promise.prototype.catch.call(promise,tmp_ex=>{});//@s23,--trace-warnings
       timers.setTimeout(()=>{Promise.prototype.then.call(promise,tmp=>resolve(safeCopy(tmp)),reject)},1)//@(s17,s18,s19,s23,s24,s25)
     }catch(ex){reject(ex)}});
@@ -76,4 +88,4 @@ let jevalx= async(js,ctx,options={})=>{
   }
   if (return_arr) return [err,rst,ctxx,call_id,js]; if (err) throw err; return rst;
 }
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SESSION,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1'}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SESSION,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1.1'}

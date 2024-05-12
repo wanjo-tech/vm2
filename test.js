@@ -2571,7 +2571,8 @@ LAST:(async()=>{ //normal case:
   // quick testing return a function that hacks:
 
   // core doesn't pass the ddos-alike codes:
-  try{ console.log('deadloop',await jevalx(`(async()=>{while(1);})`)) }catch(ex){ console.log('deadloop.ex',ex); }
+  //try{ console.log('deadloop',await jevalx(`(async()=>{while(1);})`)) }catch(ex){ console.log('deadloop.ex',ex); }
+  try{ console.log('deadloop',await jevalx(`(async()=>0)().then(()=>{while(1);});1`)) }catch(ex){ console.log('deadloop.ex',ex); }
 
   //try{ console.log('deadloop2',await jevalx(`(async()=>{let lp=1;while(1){console.log(lp++,new Date());await Promise.resolve(11)};})();true`)) }catch(ex){ console.log('deadloop2.ex',ex); }
 
