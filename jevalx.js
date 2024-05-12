@@ -9,14 +9,26 @@ const Array_isArray = Array.isArray;
 const Array_from = Array.from;
 const Object_getOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
 const Object_entries= Object.entries;
+
 let BlackListCopy = new Set(['then', 'toString', 'toJSON', 'constructor']);
-const safeCopy = (obj) => {
+//@(s27,t10,t13,t8,t9)
+const safeCopy = (obj, cache = new Map()) => {
   if (obj === null || typeof obj !== 'object') { return obj; }
-  if (Array_isArray(obj)) return Array_from(obj,v=>safeCopy(v));
+  if (cache.has(obj)) {
+    return cache.get(obj);
+  }
+  if (Array_isArray(obj)) {
+    const arrayCopy = Array_from(obj, v => safeCopy(v, cache));
+    cache.set(obj, arrayCopy);
+    return arrayCopy;
+  }
   const descriptors = Object_getOwnPropertyDescriptors(obj);
   const safeObj = {};
+  cache.set(obj, safeObj);
   for (const [key, descriptor] of Object_entries(descriptors)) {
-    if(!descriptor.get&&!BlackListCopy.has(key)&&obj[key]!==obj){safeObj[key]=safeCopy(descriptor.value)}
+    if (!descriptor.get && !BlackListCopy.has(key) && obj[key] !== obj) {
+      safeObj[key] = safeCopy(descriptor.value, cache);
+    }
   }
   return safeObj;
 };
@@ -76,7 +88,6 @@ ctx.console = console;
         jevalx_raw(S_SETUP,ctxx);
         if (ctx) Object.assign(ctxx,ctx);
         ctxx.evalx = (js)=>jevalx_raw(js,ctxx)[1];//
-        //ctxx.console = console;//
       }
       eval(S_ENTER);
       //let promise=jevalx_raw(`(async()=>await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return z})(eval(${jss})))()`,ctxx,{filename:call_id})[1];
