@@ -21,17 +21,18 @@ const safeCopy = (obj) => {
   return safeObj;
 };
 
-const S_SESSION = `[console,Promise,Object,Function,globalThis]`;
 const S_SETUP = `(()=>{if ('function'!=typeof clearTimeout){
-  let Object=({}).constructor;
-  Object.defineProperty(Object.prototype,'__proto__',{get(){console.error('911_get')},set(newValue){console.error('911_set',newValue)}});
-  `+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')+`
-  //Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//
-  //['call','bind','apply'].forEach(prop=>{delete Function.prototype[prop]});
-  let WhiteListGlobal = ['Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set','console'];for (let v of Object.getOwnPropertyNames(this)){if(WhiteListGlobal.indexOf(v)>=0)delete this[v]}
-  let WhiteListObject = ['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'];
-  for(let k of Object.getOwnPropertyNames(Object)){if(WhiteListObject.indexOf(k)>=0){delete Object[k]}}
-}return ${S_SESSION}})()`;
+let Object=({}).constructor;
+Object.defineProperty(Object.prototype,'__proto__',{get(){console.error('911_get')},set(newValue){console.error('911_set',newValue)}});
+`+['Object.prototype.__defineGetter__','Object.prototype.__defineSetter__','Object.prototype.__lookupSetter__','Object.prototype.__lookupGetter__'].map(v=>'delete '+v+';').join('')+`
+//Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//
+//['call','bind','apply'].forEach(prop=>{delete Function.prototype[prop]});
+
+let WhiteListGlobal = ['console','Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set'];for (let v of Object.getOwnPropertyNames(this)){if(!(WhiteListGlobal.indexOf(v)>=0)){delete this[v]}}
+
+let WhiteListObject = ['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'];
+for(let k of Object.getOwnPropertyNames(Object)){if(!(WhiteListObject.indexOf(k)>=0)){ delete Object[k]}}
+}})()`;
 let jevalx_host_name_a=['Promise','Object','Function','RangeError','TypeError'];
 const S_ENTER = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=X;`).join('')
 const S_EXIT = jevalx_host_name_a.map(v=>`${v}.prototype.constructor=${v};`).join('');
@@ -55,23 +56,27 @@ let jevalx= async(js,ctx,options={})=>{
     rst = await new Promise((resolve,reject)=>{try{
       let _console;
       if (ctx && vm.isContext(ctx)){
-/** kinda Proxy way ;)
-let ctx={console};
-let ctxx= require('vm').createContext(new Proxy(ctx,{get(target,prop,receiver){
-  if (prop in target) return target[prop];//
-  console.error('Proxy',typeof prop,prop,'==>',target[prop]);
+
+/** example Proxy way ;)
+let ctx={};//..
+let ctxx= require('vm').createContext(new Proxy({},{get(target,prop,receiver){
+  //if (prop in target) return target[prop];//no
+  if (prop in ctx) return ctx[prop];//
+  console.error('SKIP Proxy',typeof prop,prop);
 }}));
-ctx.evalx = (js)=>jevalx_raw(js,ctxx)[1];//
 var {X,S_SETUP,jevalx,jevalx_raw} = require('./jevalx');
-jevalx_raw(S_SETUP,ctxx);//!!
+jevalx_raw(S_SETUP,ctxx);
+ctx.evalx = (js)=>jevalx_raw(js,ctxx)[1];//
+ctx.console = console;
 */
-        [ctxx,[_console]] = jevalx_raw(S_SESSION,ctx);
+        ctxx = ctx;//
       } else {
         ctxx = vm.createContext(new X,{microtaskMode});
-        [ctxx,[_console]] = jevalx_raw(S_SETUP,ctxx);
-        _console.log = console.log; _console.error = console.error;
+        ctxx.console = console;//
+        jevalx_raw(S_SETUP,ctxx);
         if (ctx) Object.assign(ctxx,ctx);
         ctxx.evalx = (js)=>jevalx_raw(js,ctxx)[1];//
+        //ctxx.console = console;//
       }
       eval(S_ENTER);
       //let promise=jevalx_raw(`(async()=>await(async(z)=>{while(z&&((z instanceof Promise)&&(z=await z)||(typeof z=='function')&&(z=z())));return z})(eval(${jss})))()`,ctxx,{filename:call_id})[1];
@@ -89,4 +94,4 @@ jevalx_raw(S_SETUP,ctxx);//!!
   }
   if (return_arr) return [err,rst,ctxx,call_id,js]; if (err) throw err; return rst;
 }
-if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SESSION,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1.1'}
+if (typeof module!='undefined') module.exports = {jevalx,jevalx_raw,S_SETUP,S_ENTER,S_EXIT,X,VER:'v1.1'}
