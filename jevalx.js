@@ -14,9 +14,7 @@ let BlackListCopy = new Set(['then', 'toString', 'toJSON', 'constructor']);
 //@(s27,t10,t13,t8,t9)
 const safeCopy = (obj, cache = new Map()) => {
   if (obj === null || typeof obj !== 'object') { return obj; }
-  if (cache.has(obj)) {
-    return cache.get(obj);
-  }
+  if (cache.has(obj)) { return cache.get(obj); }
   if (Array_isArray(obj)) {
     const arrayCopy = Array_from(obj, v => safeCopy(v, cache));
     cache.set(obj, arrayCopy);
@@ -40,7 +38,7 @@ Object.defineProperty(Object.prototype,'__proto__',{get(){console.error('911_get
 //Promise.delay=async(t)=>{let i=0;if (t>0){let t0=new Date().getTime();while(new Date().getTime()<t0+t)++i}return i};//
 //['call','bind','apply'].forEach(prop=>{delete Function.prototype[prop]});
 
-let WhiteListGlobal = ['console','Object','Array','JSON','Promise','Function','eval','globalThis','Date','Math','Number','String','Set'];for (let v of Object.getOwnPropertyNames(this)){if(!(WhiteListGlobal.indexOf(v)>=0)){delete this[v]}}
+let WhiteListGlobal = ['console','Object','Array','JSON','Promise','Function','eval','Date','Math','Number','String','Set'];for (let v of Object.getOwnPropertyNames(this)){if(!(WhiteListGlobal.indexOf(v)>=0)){delete this[v]}}
 
 let WhiteListObject = ['name','fromEntries','keys','entries','is','values','getOwnPropertyNames'];
 for(let k of Object.getOwnPropertyNames(Object)){if(!(WhiteListObject.indexOf(k)>=0)){ delete Object[k]}}
